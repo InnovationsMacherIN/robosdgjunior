@@ -1,0 +1,135 @@
+/* ProgrammingArea.css */
+
+.programming-area-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  height: 100%;
+}
+
+.programming-area-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.programming-area-controls {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.programming-area-content {
+  flex-grow: 1;
+  min-height: 400px;
+  padding: var(--spacing-4);
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow-y: auto;
+}
+
+.programming-area-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--text-secondary);
+  border: 2px dashed var(--secondary-color);
+  border-radius: var(--radius-lg);
+  font-size: 1.1rem;
+}
+
+.dropped-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.block {
+  padding: var(--spacing-4);
+  background-color: var(--background-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.block:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.block-title {
+  font-size: 1.1rem;
+}
+
+.block-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Debug view */
+.debug-view {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: #f8f9fa;
+  border-radius: var(--radius-md);
+  font-family: monospace;
+}
+
+.debug-view pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Button styles */
+.button-execute {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.button-execute:disabled {
+  background-color: var(--secondary-color);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button-execute.executing {
+  background-color: var(--warning-color);
+  animation: pulse 2s infinite;
+}
+
+.button-clear {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.button-clear:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}

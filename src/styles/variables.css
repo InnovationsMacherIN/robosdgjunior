@@ -1,0 +1,35 @@
+:root {
+  /* Väripaletti */
+  --primary-color: #2563eb;      /* Sininen päätoiminnoille */
+  --primary-hover: #1d4ed8;
+  --secondary-color: #4b5563;    /* Harmaa toissijaisille toiminnoille */
+  --secondary-hover: #374151;
+  --success-color: #16a34a;      /* Vihreä onnistuneille toiminnoille */
+  --warning-color: #ea580c;      /* Oranssi varoituksille */
+  --error-color: #dc2626;        /* Punainen virheille */
+  --background-light: #f8fafc;   /* Vaalea tausta */
+  --background-dark: #1e293b;    /* Tumma tausta */
+
+  /* Tekstin värit */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-light: #f8fafc;
+
+  /* Varjot */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* Pyöristykset */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  /* Välit */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+}

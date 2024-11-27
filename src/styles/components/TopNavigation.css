@@ -1,0 +1,39 @@
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.control-buttons {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.button-start {
+  background-color: var(--success-color);
+  color: var(--text-light);
+}
+
+.button-stop {
+  background-color: var(--error-color);
+  color: var(--text-light);
+}
+
+.button-save {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+.button-menu,
+.button-connect {
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+}
+
+.button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

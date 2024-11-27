@@ -1,0 +1,58 @@
+/* Lisätään nämä aiempien tyylien jatkoksi */
+
+.block-input-text,
+.block-input-number,
+.block-input-select {
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-2);
+  border: 1px solid var(--secondary-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  background-color: white;
+}
+
+.range-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.block-input-range {
+  flex-grow: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  background: var(--secondary-color);
+  border-radius: 3px;
+  outline: none;
+}
+
+.block-input-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: background .3s ease-in-out;
+}
+
+.block-input-range::-webkit-slider-thumb:hover {
+  background: var(--primary-hover);
+}
+
+.range-value {
+  min-width: 2.5em;
+  text-align: center;
+  padding: 2px 6px;
+  background: var(--background-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.block-input-select {
+  cursor: pointer;
+}
+
+.block-input-select option {
+  padding: var(--spacing-1) var(--spacing-2);
+}

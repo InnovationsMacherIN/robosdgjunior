@@ -10,6 +10,8 @@ class Ble3 extends Component {
       characteristicCache_rx: null,
       characteristicCache_temp: null,
       connected: false,
+      sending_data: false,
+      stopButtonClicked: false
     };
   }
 
@@ -124,16 +126,88 @@ class Ble3 extends Component {
     return this.state.connected;
   }
 
-  async sendData(data) {
+  async sendData(commands, counter = 0) {
     if (!this.state.connected || !this.state.characteristicCache_rx) {
       throw new Error('Not connected to device');
     }
-    await this.state.characteristicCache_rx.writeValue(new TextEncoder().encode(data));
+
+    // Jos counter on 0, kyseessä on uusi komentosarja
+    if (counter === 0) {
+      if (this.state.stopButtonClicked) {
+        this.setState({ stopButtonClicked: false });
+        console.log("reset stop button");
+      }
+      // Muunnetaan string-muotoiset komennot arrayksi
+      if (typeof commands === 'string') {
+        commands = commands.split(':').filter(cmd => cmd).map(cmd => cmd + ':');
+      }
+      console.log('Starting new command sequence:', commands);
+    }
+
+    // Lähetetään nykyinen komento
+    const encoder = new TextEncoder('utf-8');
+    const data = encoder.encode(commands[counter]);
+
+    console.log('Sending command:', commands[counter]);
+    this.setState({ sending_data: true });
+
+    try {
+      await this.state.characteristicCache_rx.writeValue(data);
+
+      // Odotetaan vahvistusta micro:bitiltä
+      await Promise.race([
+        this.waitForConfirmation(counter),
+        this.timeout(20000)
+      ]);
+
+      // Jos ei olla vielä viimeisessä komennossa ja stop-nappia ei ole painettu
+      if (counter < commands.length - 1 && !this.state.stopButtonClicked) {
+        // Rekursiivinen kutsu seuraavalle komennolle
+        await this.sendData(commands, counter + 1);
+      }
+
+    } catch (error) {
+      console.error('Error in sendData:', error);
+      this.setState({ sending_data: false });
+      throw error;
+    }
+
+    // Jos tämä oli viimeinen komento tai tuli virhe
+    if (counter === commands.length - 1 || this.state.stopButtonClicked) {
+      this.setState({ sending_data: false });
+    }
   }
 
-  handleCharacteristicValueChanged(event) {
-    const value = new TextDecoder().decode(event.target.value);
-    console.log(value);
+  timeout(ms) {
+    return new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Command timeout')), ms)
+    );
+  }
+
+  waitForConfirmation(counter) {
+    return new Promise((resolve, reject) => {
+      const handleResponse = (event) => {
+        const value = new TextDecoder().decode(event.target.value).trim();
+        console.log('Received confirmation:', value);
+
+        if (value === 'OK' || value === 'UC') {
+          this.state.characteristicCache_tx.removeEventListener(
+            'characteristicvaluechanged',
+            handleResponse
+          );
+          resolve(counter + 1);
+        } else if (value === 'STOP') {
+          reject(new Error('Program was stopped'));
+        } else {
+          reject(new Error(`Invalid confirmation value: ${value}`));
+        }
+      };
+
+      this.state.characteristicCache_tx.addEventListener(
+        'characteristicvaluechanged',
+        handleResponse
+      );
+    });
   }
 
   render() {

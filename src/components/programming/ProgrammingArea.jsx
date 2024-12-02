@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Play, Trash2 } from 'lucide-react';
 import '../../styles/components/ProgrammingArea.css';
+import DroppedBlock from './Block'
 
 const ProgrammingArea = ({
                            droppedBlocks,
                            handleDragOver,
                            handleDrop,
-                           onClearBlocks
+                           onClearBlocks,
+                           onUpdateBlock,
+                           handleDragStart,
+                           handleBlockInputChange
                          }) => {
   // Lisätään useEffect debuggausta varten
   useEffect(() => {
@@ -17,32 +21,6 @@ const ProgrammingArea = ({
 
 
   const [isExecuting, setIsExecuting] = useState(false);
-  const renderBlockValue = (block) => {
-    let valueText = '';
-
-    // Näytä ensisijainen syöte
-    if (block.inputValue !== undefined) {
-      if (block.inputType === 'select') {
-        // Etsi valitun arvon label options-listasta
-        const option = block.options?.find(opt => opt.value === block.inputValue);
-        valueText = option ? option.label : block.inputValue;
-      } else {
-        valueText = block.inputValue;
-      }
-    }
-
-    // Lisää toinen syöte jos se on olemassa
-    if (block.secondInputValue !== undefined) {
-      if (block.secondInputType === 'select') {
-        const option = block.options?.find(opt => opt.value === block.secondInputValue);
-        valueText += ` ${option ? option.label : block.secondInputValue}`;
-      } else {
-        valueText += ` ${block.secondInputValue}`;
-      }
-    }
-
-    return valueText ? ` (${valueText})` : '';
-  };
 
   const handleExecute = async () => {
     if (!bleConnection?.isConnected) {
@@ -80,6 +58,49 @@ const ProgrammingArea = ({
     }
   };
 
+  const renderBlockInput = (block, index) => {
+    switch(block.inputType) {
+      case 'text':
+        return (
+          <input
+            type="text"
+            value={block.inputValue || ''}
+            maxLength={block.maxLength || 8}
+            onChange={(e) => onUpdateBlock(index, { ...block, inputValue: e.target.value })}
+            className="block-input block-input-text"
+          />
+        );
+      case 'select':
+        return (
+          <select
+            value={block.inputValue}
+            onChange={(e) => onUpdateBlock(index, { ...block, inputValue: e.target.value })}
+            className="block-input block-input-select"
+          >
+            {block.options?.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        );
+      case 'number':
+        return (
+          <input
+            type="number"
+            value={block.inputValue}
+            min={block.inputMin}
+            max={block.inputMax}
+            step={block.inputStep}
+            onChange={(e) => onUpdateBlock(index, { ...block, inputValue: e.target.value })}
+            className="block-input block-input-number"
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="programming-area-container">
       <div className="programming-area-header">
@@ -108,20 +129,15 @@ const ProgrammingArea = ({
           </div>
         ) : (
           <div className="dropped-blocks">
-            {droppedBlocks.map((block, index) => (
-              <div
-                key={`${block.id}-${index}`}
-                className={`block ${block.className || ''}`}
-              >
-                <div className="block-header">
-                  <span className="block-title">
-                    {block.title}
-                    {renderBlockValue(block)}
-                  </span>
-                </div>
-                <p className="block-description">{block.description}</p>
-              </div>
-            ))}
+          {droppedBlocks.map((block, index) => (
+            <DroppedBlock
+              key={`${block.id}-${index}`}
+              block={block}
+              index={index}
+              onDragStart={handleDragStart}
+              onInputChange={handleBlockInputChange}
+            />
+          ))}
           </div>
         )}
       </div>

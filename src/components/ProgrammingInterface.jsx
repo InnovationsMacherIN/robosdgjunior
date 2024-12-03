@@ -35,6 +35,7 @@ const ProgrammingInterface = () => {
   const [droppedBlocks, setDroppedBlocks] = useState([]);
   const [isExecuting, setIsExecuting] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [currentDropPosition, setCurrentDropPosition] = useState(null);
 
   /**
    * Reference to Bluetooth connection component
@@ -88,6 +89,11 @@ const ProgrammingInterface = () => {
     e.preventDefault();
   };
 
+  // Lisätään callback jota kutsutaan dragOverissa
+  const handleDragOverPosition = (toIndex) => {
+    setCurrentDropPosition(toIndex);
+  };
+
   /**
    * handleDrop - handler
    * Handles block dropping into programming area
@@ -98,27 +104,32 @@ const ProgrammingInterface = () => {
   const handleDrop = (e) => {
     e.preventDefault();
 
+    const cleanup = () => {
+      document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
+      document.querySelectorAll('.block.drop-target').forEach(el =>
+        el.classList.remove('drop-target'));
+      document.querySelectorAll('.block.shift-right').forEach(el =>
+        el.classList.remove('shift-right'));
+    };
+
     if (isInternalDrag(e)) {
+
       //get drag data from internal reordering
-      const {fromIndex, toIndex} = JSON.parse(
+      const {fromIndex} = JSON.parse(
         e.dataTransfer.getData('application/internal')
       );
-      handleReorder(fromIndex, toIndex);
+      if ( fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+        handleReorder(fromIndex, currentDropPosition);
+      } else {
+        return;
+      }
     } else {
       const blockData = e.dataTransfer.getData('application/json');
-
-      //console.log('Dropped block data:', {
-      //  raw: blockData,
-      //  parsed: JSON.parse(blockData),
-      //  currentBlocks: droppedBlocks
-      //}); FOR TESTING
-
       const block = JSON.parse(blockData);
-
-      //console.log('Dropped block with values:', block); FOR TESTING
-
       setDroppedBlocks([...droppedBlocks, block]);
     }
+    cleanup();
+    setCurrentDropPosition(null);
   };
 
   /**
@@ -130,6 +141,7 @@ const ProgrammingInterface = () => {
    */
   const handleReorder = (fromIndex, toIndex) => {
     setDroppedBlocks(blocks => {
+      console.log('handle reorder:', blocks, fromIndex, toIndex);
       const newBlocks = [...blocks];
       const [movedBlock] = newBlocks.splice(fromIndex, 1)
       newBlocks.splice(toIndex, 0, movedBlock);
@@ -224,6 +236,27 @@ const ProgrammingInterface = () => {
   };
 
   /**
+    * handleDeleteBlock - handler
+   * @param blockToDelete
+   */
+  const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
+    setDroppedBlocks(currentBlocks => {
+      const newBlocks = currentBlocks.filter((block, index) => {
+        if (!block) {
+          return false;
+        }
+        const shouldKeep = !(block.id === blockToDelete.id &&
+          block.inputValue === blockToDelete.inputValue &&
+        index === blockToDeleteIndex);
+        return shouldKeep;
+      });
+
+      console.log('After deletion:', newBlocks);
+      return newBlocks;
+    });
+  };
+
+  /**
    * Updates a single block in programming area
    * Creates a new array of blocks to maintain React state immutability
    *
@@ -256,6 +289,8 @@ const ProgrammingInterface = () => {
         onUpdateBlock={handleUpdateBlock}
         handleDragStart={handleDragStart}
         handleBlockInputChange={handleBlockInputChange}
+        onDeleteBlock={handleDeleteBlock}
+        onDragOverPosition={handleDragOverPosition}
       />
 
       <BlocksPanel

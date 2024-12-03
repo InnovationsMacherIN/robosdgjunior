@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Play, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import DeleteZone from './DeleteZone';
 import '../../styles/components/ProgrammingArea.css';
 import DroppedBlock from './Block'
 
@@ -10,8 +12,35 @@ const ProgrammingArea = ({
                            onClearBlocks,
                            onUpdateBlock,
                            handleDragStart,
-                           handleBlockInputChange
+                           handleBlockInputChange,
+                           onDeleteBlock,
+                           onDragOverPosition,
                          }) => {
+
+  const { t } = useTranslation();
+  const [isDraggingBlock, setIsDraggingBlock] = useState(false);
+
+  // Päivitetty handleBlockDragStart wrapper-funktio
+  const handleBlockDragStart = (e, block) => {
+    setIsDraggingBlock(true);
+    if (handleDragStart) {
+      handleDragStart(e, block);
+    }
+  };
+
+  const handleBlockDragEnd = () => {
+    setIsDraggingBlock(false);
+  };
+
+  // Komponentti unmount cleanup
+  useEffect(() => {
+    document.addEventListener('dragend', handleBlockDragEnd);
+    return () => {
+      document.removeEventListener('dragend', handleBlockDragEnd);
+    };
+  }, []);
+
+
   // Lisätään useEffect debuggausta varten
   useEffect(() => {
     if (droppedBlocks.length > 0) {
@@ -101,6 +130,7 @@ const ProgrammingArea = ({
     }
   };
 
+
   return (
     <div className="programming-area-container">
       <div className="programming-area-header">
@@ -129,18 +159,29 @@ const ProgrammingArea = ({
           </div>
         ) : (
           <div className="dropped-blocks">
-          {droppedBlocks.map((block, index) => (
+          {droppedBlocks?.filter(block => block !== null && block !== undefined)
+            .map((block, index) => (
+            block && (
             <DroppedBlock
               key={`${block.id}-${index}`}
               block={block}
               index={index}
-              onDragStart={handleDragStart}
               onInputChange={handleBlockInputChange}
+              onDragStart={(e) => handleBlockDragStart(e, block)}
+              onDragEnd={handleBlockDragEnd}
+              onDragOverPosition={onDragOverPosition}
             />
+            )
           ))}
           </div>
         )}
+        <DeleteZone
+          onDelete={(block, index) => onDeleteBlock(block, index)}
+          isDraggingBlock={isDraggingBlock}
+          onDragOverPosition={onDragOverPosition}
+        />
       </div>
+
     </div>
   );
 };

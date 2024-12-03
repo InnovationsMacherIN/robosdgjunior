@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 /**
  * Block.jsx
  * Individual programming block component used in programming area
@@ -7,18 +7,73 @@ import React from 'react';
  * @component
  */
 
-const DroppedBlock = ({ block, index, onDragStart, onInputChange }) => {
+const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
+  const blockRef = useRef(null);
+
   const handleDragStart = (e) => {
     e.dataTransfer.setData('application/internal',
       JSON.stringify({ fromIndex: index }));
     onDragStart(e, index);
+    console.log('Dragging block:', index);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    const dropZone = e.currentTarget.getBoundingClientRect();
-    const dropPosition = e.clientY - dropZone.top;
-    const toIndex = dropPosition < dropZone.height / 2 ? index : index + 1;
+    const blockElement = blockRef.current;
+    if (!blockElement) return;
+
+    const rect = blockElement.getBoundingClientRect();
+    const relativeY = e.clientY - rect.top;
+    const height = rect.height;
+
+    // Määritellään pudotusalueet: ylä- ja alapuolisko
+    const position = relativeY < height / 2 ? 'before' : 'after';
+    const toIndex = position === 'before' ? index : index + 1;
+
+    onDragOverPosition(toIndex);
+
+    // Poistetaan vanhat indikaattorit ja siirtymät
+    document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
+    document.querySelectorAll('.block.drop-target').forEach(el =>
+      el.classList.remove('drop-target'));
+    document.querySelectorAll('.block.shift-right').forEach(el =>
+      el.classList.remove('shift-right'));
+
+    // Lisätään kohde-blokin highlight ja siirto
+    blockElement.classList.add('drop-target');
+
+    // Luodaan ja lisätään uusi indikaattori alkuperäiselle paikalle
+    const indicator = document.createElement('div');
+    indicator.className = 'block-drop-indicator';
+    blockElement.parentElement.insertBefore(indicator, blockElement);
+
+    // Lisätään shift-right luokka kaikille seuraaville blokeille
+    let nextElement = blockElement.nextElementSibling;
+    while (nextElement) {
+      nextElement.classList.add('shift-right');
+      nextElement = nextElement.nextElementSibling;
+    }
+
+    // Tallenna tieto dataTransferiin
+    e.dataTransfer.setData('application/drop-position',
+      JSON.stringify({ toIndex, position }));
+
+    //console.log('Drag over:', { index, position, toIndex });
+  };
+
+  const handleDragLeave = (e) => {
+    const blockElement = blockRef.current;
+    if (!blockElement) return;
+
+    // Poistetaan indikaattorit ja siirtymät viiveellä
+    setTimeout(() => {
+      if (!blockElement.matches(':hover')) {
+        blockElement.classList.remove('drop-target');
+        document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
+        document.querySelectorAll('.block.shift-right').forEach(el =>
+          el.classList.remove('shift-right'));
+      }
+    }, 50);
   };
 
   const handleInputChange = (value, isSecondInput = false) => {
@@ -114,15 +169,19 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange }) => {
 
   return (
     <div
+      ref={blockRef}
       className={`block ${block.className || ''}`}
       draggable="true"
       onDragStart={handleDragStart}
+      onDragEnd={onDragEnd}
+      onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
     >
       <div className="block-header">
         <span className="block-title">
           {block.title}
-          {renderBlockValue(block)}
+          {//renderBlockValue(block)}
+            block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
         </span>
       </div>
       {block.hasInput && (

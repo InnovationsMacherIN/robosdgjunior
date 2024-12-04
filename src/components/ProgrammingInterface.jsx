@@ -29,6 +29,7 @@ const ProgrammingInterface = () => {
    * @state {Array} droppedBlocks - Blocks placed in the programming area
    * @state {boolean} isExecuting - Flag for program execution status.
    * @state {boolean} connected - Bluetooth connection status.
+   * @state {number} currentDropPosition - Current drop position for block reordering
    *
    */
   const [selectedCategory, setSelectedCategory] = useState('Steering');
@@ -118,15 +119,25 @@ const ProgrammingInterface = () => {
       const {fromIndex} = JSON.parse(
         e.dataTransfer.getData('application/internal')
       );
+      console.log('From index:', fromIndex, 'To index:', currentDropPosition);
       if ( fromIndex !== currentDropPosition && currentDropPosition !== -1) {
         handleReorder(fromIndex, currentDropPosition);
       } else {
         return;
       }
     } else {
+      console.log('Dropping block:', currentDropPosition);
       const blockData = e.dataTransfer.getData('application/json');
       const block = JSON.parse(blockData);
-      setDroppedBlocks([...droppedBlocks, block]);
+      if (currentDropPosition !== null) {
+        setDroppedBlocks(blocks => {
+          const newBlocks = [...blocks];
+          newBlocks.splice(currentDropPosition, 0, block);
+          return newBlocks;
+        });
+      } else {
+        setDroppedBlocks([...droppedBlocks, block]);
+      }
     }
     cleanup();
     setCurrentDropPosition(null);

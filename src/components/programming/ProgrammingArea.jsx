@@ -1,3 +1,24 @@
+/**
+ * ProgrammingArea Component
+ *
+ * Main area where users can drop and arrange programming blocks.
+ * Handles block arrangement, deletion, and provides visual feedback
+ * during drag and drop operations.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Array} props.droppedBlocks - Array of blocks currently in programming area
+ * @param {boolean} props.isExecuting - Flag for program execution state
+ * @param {function} props.handleDragOver - Handler for drag over events
+ * @param {function} props.handleDrop - Handler for drop events
+ * @param {function} props.onClearBlocks - Handler for clearing all blocks
+ * @param {function} props.onUpdateBlock - Handler for updating block properties
+ * @param {function} props.handleDragStart - Handler for starting block drag
+ * @param {function} props.handleBlockInputChange - Handler for block input changes
+ * @param {function} props.onDeleteBlock - Handler for block deletion
+ * @param {function} props.onDragOverPosition - Handler for updating drop position
+ */
+
 import React, { useEffect, useState } from 'react';
 import { Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +28,7 @@ import DroppedBlock from './Block'
 
 const ProgrammingArea = ({
                            droppedBlocks,
+                           isExecuting,
                            handleDragOver,
                            handleDrop,
                            onClearBlocks,
@@ -20,7 +42,14 @@ const ProgrammingArea = ({
   const { t } = useTranslation();
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
 
-  // Päivitetty handleBlockDragStart wrapper-funktio
+  /**
+   * Wrapper function for block drag start events
+   * Updates drag state and calls parent handler if provided
+   *
+   * @param {DragEvent} e - The drag event object
+   * @param {Object} block - The block being dragged
+   * @returns {void}
+   */
   const handleBlockDragStart = (e, block) => {
     setIsDraggingBlock(true);
     if (handleDragStart) {
@@ -28,11 +57,22 @@ const ProgrammingArea = ({
     }
   };
 
+  /**
+   * Resets dragging state when drag operation ends
+   *
+   * @returns {void}
+   */
   const handleBlockDragEnd = () => {
     setIsDraggingBlock(false);
   };
 
-  // Komponentti unmount cleanup
+  /**
+   * Sets up global drag end event listener and cleanup
+   * Ensures drag state is reset even if drop happens outside component
+   *
+   * @effect
+   * @returns {function} Cleanup function to remove event listener
+   */
   useEffect(() => {
     document.addEventListener('dragend', handleBlockDragEnd);
     return () => {
@@ -41,52 +81,58 @@ const ProgrammingArea = ({
   }, []);
 
 
-  // Lisätään useEffect debuggausta varten
-  useEffect(() => {
-    if (droppedBlocks.length > 0) {
-      console.log('Current blocks in programming area:', droppedBlocks);
-    }
-  }, [droppedBlocks]);
+  /**
+   * Debug logging for monitoring blocks in programming area
+   * Only logs when blocks array is not empty
+   *
+   * @effect
+   * @listens droppedBlocks
+   *
+   * @returns {void}
+   */
+  //useEffect(() => {
+  //  if (droppedBlocks.length > 0) {
+  //    console.log('Current blocks in programming area:', droppedBlocks);
+  //  }
+  //}, [droppedBlocks]);
 
 
-  const [isExecuting, setIsExecuting] = useState(false);
-
-  const handleExecute = async () => {
-    if (!bleConnection?.isConnected) {
-      alert('Yhdistä micro:bit ensin');
-      return;
-    }
-
-    if (droppedBlocks.length === 0) {
-      alert('Lisää lohkoja ennen suoritusta');
-      return;
-    }
-
-    if (droppedBlocks[0].id !== 'start') {
-      alert('Ohjelman pitää alkaa Start-lohkolla');
-      return;
-    }
-
-    setIsExecuting(true);
-    try {
-      // Tässä voidaan käyttää joko lohkojen omia command-funktioita
-      // tai ulkopuolista convertBlocksToCommands funktiota
-      const commands = droppedBlocks.map(block => {
-        if (typeof block.command === 'function') {
-          return block.command(block.inputValue, block.secondInputValue);
-        }
-        return block.command;
-      }).join('');
-
-      await bleConnection.sendData(commands);
-    } catch (error) {
-      console.error('Ohjelman suoritus epäonnistui:', error);
-      alert('Ohjelman suoritus epäonnistui. Tarkista yhteys ja yritä uudelleen.');
-    } finally {
-      setIsExecuting(false);
-    }
-  };
-
+  /**
+   * renderBlockInput - function
+   * Renders input field for a block based on input type
+   * Supports three input types: text, select, and number
+   * Each input type has specific validation and display properties
+   *
+   * @param {Object} block - Block configuration object
+   * @param {string} block.inputType - Type of input ('text', 'select', or 'number')
+   * @param {string} [block.inputValue] - Current value of the input
+   * @param {number} [block.maxLength] - Maximum length for text input
+   * @param {number} [block.inputMin] - Minimum value for number input
+   * @param {number} [block.inputMax] - Maximum value for number input
+   * @param {Array} [block.options] - Options array for select input
+   * @param {number} index - Index of block in programming area
+   * @returns {React.ReactElement|null} Rendered input element or null if input type not supported
+   *
+   * @example
+   * // For a number input
+   * renderBlockInput({
+   *   inputType: 'number',
+   *   inputValue: 5,
+   *   inputMin: 0,
+   *   inputMax: 10
+   * }, 0);
+   *
+   * @example
+   * // For a select input
+   * renderBlockInput({
+   *   inputType: 'select',
+   *   inputValue: 'option1',
+   *   options: [
+   *     { value: 'option1', label: 'Option 1' },
+   *     { value: 'option2', label: 'Option 2' }
+   *   ]
+   * }, 1);
+   */
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'text':
@@ -130,7 +176,14 @@ const ProgrammingArea = ({
     }
   };
 
-
+  /**
+   * Renders the programming area interface
+   * Includes header controls, block dropping area, and delete zone
+   * Provides visual feedback for drag and drop operations
+   *
+   * @component
+   * @returns {React.ReactElement} The programming area UI
+   */
   return (
     <div className="programming-area-container">
       <div className="programming-area-header">
@@ -155,11 +208,11 @@ const ProgrammingArea = ({
       >
         {droppedBlocks.length === 0 ? (
           <div className="programming-area-placeholder">
-            Raahaa ja pudota lohkoja tänne luodaksesi ohjelman
+            {t('programmingArea.dragDropHint')}
           </div>
         ) : (
           <div className="dropped-blocks">
-          {droppedBlocks?.filter(block => block !== null && block !== undefined)
+            {droppedBlocks?.filter(block => block !== null && block !== undefined)
             .map((block, index) => (
             block && (
             <DroppedBlock

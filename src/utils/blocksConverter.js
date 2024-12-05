@@ -30,6 +30,15 @@ const convertBlocksToCommands = (blocks) => {
   //commands += FULL_VELOCITY + DELIMITER;
 
   blocks.forEach(block => {
+    if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
+      // Jos kyseessä on container-block (toisto), käsitellään sen sisältö erikseen
+      const childCommands = convertBlocksToCommands(block.childBlocks);
+      const times = parseInt(block.inputValue) || 1;
+
+      for (let i = 0; i < times; i++) {
+        commands += childCommands;
+      }
+    } else {
     switch(block.id) {
       // Display 'A'
       case 'show-text':
@@ -148,6 +157,7 @@ const convertBlocksToCommands = (blocks) => {
       case 'start':
         // Ei tarvitse tuottaa komentoa
         break;
+    }
     }
   });
 

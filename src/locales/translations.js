@@ -13,7 +13,8 @@ export const translations = {
     programmingArea: {
       title: "Programmierbereich",
       placeholder: "Ziehen Sie Blocke hierher",
-      clearAll: "Alles loschen"
+      clearAll: "Alles loschen",
+      dragDropHint: 'Ziehe Blöcke hierher, um ein Programm zu erstellen',
     },
     categories: {
       Steering: "Steuerung",
@@ -22,6 +23,18 @@ export const translations = {
       Combinations: "Kombinationen",
       Sounds: "Tone",
       Settings: "Einstellungen"
+    },
+    alerts: {
+      connectMicrobit: 'Verbinde zuerst den micro:bit',
+      addBlocksFirst: 'Füge Blöcke hinzu, bevor du das Programm ausführst',
+      startBlockRequired: 'Das Programm muss mit einem Start-Block beginnen',
+      executionFailed: 'Programmausführung fehlgeschlagen. Überprüfe die Verbindung und versuche es erneut'
+    },
+    confirms: {
+      clearAllBlocks: 'Möchtest du wirklich alle Blöcke löschen?'
+    },
+    errors: {
+      executionFailed: 'Programmausführung fehlgeschlagen:'
     },
     menu: {
       language: "Sprache",
@@ -45,7 +58,7 @@ export const translations = {
     },
     programmingArea: {
       title: "Programming Area",
-      placeholder: "Drag blocks here",
+      dragDropHint: 'Drag and drop blocks here to create a program',
       clearAll: "Clear All"
     },
     categories: {
@@ -55,6 +68,18 @@ export const translations = {
       Combinations: "Combinations",
       Sounds: "Sounds",
       Settings: "Settings"
+    },
+    alerts: {
+      connectMicrobit: 'Connect micro:bit first',
+      addBlocksFirst: 'Add blocks before running the program',
+      startBlockRequired: 'Program must start with a Start block',
+      executionFailed: 'Program execution failed. Check connection and try again'
+    },
+    confirms: {
+      clearAllBlocks: 'Do you really want to delete all blocks?'
+    },
+    errors: {
+      executionFailed: 'Program execution failed:'
     },
     menu: {
       language: "Language",
@@ -78,7 +103,7 @@ export const translations = {
     },
     programmingArea: {
       title: "Ohjelmointialue",
-      placeholder: "Raahaa lohkot tahan",
+      dragDropHint: 'Raahaa ja pudota lohkoja tähän luodaksesi ohjelman',
       clearAll: "Tyhjenna kaikki"
     },
     categories: {
@@ -88,6 +113,18 @@ export const translations = {
       Combinations: "Yhdistelmat",
       Sounds: "Aanet",
       Settings: "Asetukset"
+    },
+    alerts: {
+      connectMicrobit: 'Yhdistä micro:bit ensin',
+      addBlocksFirst: 'Lisää lohkoja ennen ohjelman suoritusta',
+      startBlockRequired: 'Ohjelman täytyy alkaa Start-lohkolla',
+      executionFailed: 'Ohjelman suoritus epäonnistui. Tarkista yhteys ja yritä uudelleen'
+    },
+    confirms: {
+      clearAllBlocks: 'Haluatko varmasti poistaa kaikki lohkot?'
+    },
+    errors: {
+      executionFailed: 'Ohjelman suoritus epäonnistui:'
     },
     menu: {
       language: "Kieli",
@@ -111,7 +148,7 @@ export const translations = {
     },
     programmingArea: {
       title: "プログラミングエリア",
-      placeholder: "ブロックをここにドラッグ",
+      dragDropHint: 'ここにブロックをドラッグ＆ドロップしてプログラムを作成',
       clearAll: "すべて消去"
     },
     categories: {
@@ -121,6 +158,18 @@ export const translations = {
       Combinations: "組み合わせ",
       Sounds: "サウンド",
       Settings: "設定"
+    },
+    alerts: {
+      connectMicrobit: 'まずmicro:bitを接続してください',
+      addBlocksFirst: 'プログラムを実行する前にブロックを追加してください',
+      startBlockRequired: 'プログラムはスタートブロックから始める必要があります',
+      executionFailed: 'プログラムの実行に失敗しました。接続を確認して再試行してください'
+    },
+    confirms: {
+      clearAllBlocks: '全てのブロックを削除してもよろしいですか？'
+    },
+    errors: {
+      executionFailed: 'プログラムの実行に失敗しました:'
     },
     menu: {
       language: "言語",

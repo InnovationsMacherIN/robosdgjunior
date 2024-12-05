@@ -1,10 +1,19 @@
-/* Perustyylit */
+/** global.css
+* Used all throughout the application
+*/
+
+/* Base Reset
+ * Reset default browser styles for consistent starting point
+ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Base Typography and Colors
+ * Set default font family and colors for the entire application
+ */
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background-color: var(--background-light);
@@ -12,6 +21,9 @@ body {
   line-height: 1.5;
 }
 
+/* Button Reset
+ * Remove default button styles and set consistent base styles
+ */
 button {
   cursor: pointer;
   border: none;
@@ -19,7 +31,9 @@ button {
   font-family: inherit;
 }
 
-/* Yleiset apuluokat */
+/* Common Utility Classes
+ * Reusable classes for common patterns
+ */
 .button {
   display: inline-flex;
   align-items: center;
@@ -30,11 +44,17 @@ button {
   transition: all 0.2s;
 }
 
+/* Button Icon Styles
+ * Consistent sizing for icons within buttons
+ */
 .button svg {
   width: 1.25rem;
   height: 1.25rem;
 }
 
+/* Button Variants
+ * Different button styles for different purposes
+ */
 .button-primary {
   background-color: var(--primary-color);
   color: var(--text-light);

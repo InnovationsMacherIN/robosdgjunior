@@ -1,11 +1,11 @@
 /* ProgrammingArea.css */
 
 .programming-area-container {
-
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
   height: 100%;
+  min-width: 100%;
 }
 
 .programming-area-header {
@@ -27,11 +27,13 @@
   position: relative;
   flex-grow: 1;
   min-height: 400px;
+  width: 100%;
+  min-width: 100vw;
   padding: var(--spacing-4);
   background-color: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .programming-area-placeholder {
@@ -48,8 +50,10 @@
 
 .dropped-blocks {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--spacing-4);
+  min-width: max-content;
+  height: fit-content;
 }
 
 
@@ -260,4 +264,79 @@
   100% {
     opacity: 1;
   }
+}
+
+
+
+
+
+/* Container-lohkon perustyylit */
+.block-container {
+  position: relative;
+  min-height: 120px; /* Tilaa myös child-lohkoille */
+  min-width: 150px;
+  border: 2px dashed rgba(255,255,255,0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column; /* Takaisin pystysuuntaiseen järjestykseen */
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+/* Container-lohkon pääsisältö (otsikko ja inputit) */
+.block-container .block-header,
+.block-container .block-input-container {
+  flex-shrink: 0;
+}
+
+/* Child-lohkojen container */
+.block-container .child-blocks {
+  display: flex;
+  flex-direction: row; /* Child-lohkot vaakariviin */
+  flex-wrap: nowrap; /* Ei rivinvaihtoa */
+  gap: 1rem;
+  padding: 0.5rem;
+  margin-top: auto; /* Työntää child-lohkot alas */
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  min-height: 50px;
+  overflow-x: auto; /* Vaakasuora skrollaus jos lohkoja on paljon */
+  align-items: center;
+}
+
+/* Container-lohko kun siinä on child-lohkoja */
+.block-container.has-children {
+  min-width: max-content; /* Levenee tarpeen mukaan */
+  padding-bottom: 2rem; /* Tilaa child-lohkoille */
+}
+
+/* Child-lohkojen tyylit */
+.block-container .child-blocks .block {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* Drag & drop tyylit */
+.block-container.drag-over {
+  border-color: white;
+  transform: scale(1.02);
+}
+
+/* Scrollbar-tyylit child-lohkojen containerille */
+.block-container .child-blocks::-webkit-scrollbar {
+  height: 6px;
+}
+
+.block-container .child-blocks::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+.block-container .child-blocks::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+.block-container .child-blocks::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.4);
 }

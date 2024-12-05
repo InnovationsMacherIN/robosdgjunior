@@ -6,13 +6,16 @@
  * - Bluetooth connection to micro:bit device.
  * - Main UI elements and  layout
  *
+ * Uses refs for maintaining Bluetooth connection and state management
+ * for block handling and program execution.
+ *
  * Structure:
  *
  *
  * @component
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import TopNavigation from './navigation/TopNavigation';
 import ProgrammingArea from './programming/ProgrammingArea';
 import BlocksPanel from './blocks/BlocksPanel';
@@ -20,8 +23,13 @@ import Ble3 from './bluetooth/Ble3';
 import { categories, blocksByCategory } from '../config/blocksConfig';
 import { convertBlocksToCommands } from '../utils/blocksConverter';
 import '../styles/ProgrammingInterface.css';
+import { useTranslation } from 'react-i18next';
+import { saveBlocks, loadBlocks, hasSavedBlocks, clearSavedBlocks } from '../utils/blockStorage';
+import ZoomableArea from '../utils/zoomableArea';
 
 const ProgrammingInterface = () => {
+  const { t } = useTranslation();
+
   /**
    * State declaratiions
    *
@@ -40,6 +48,8 @@ const ProgrammingInterface = () => {
 
   /**
    * Reference to Bluetooth connection component
+   * Uses useRef hook to maintain connection between component re-renders
+   *
    * @type {React.RefObject}
    */
   const ble3Ref = useRef();
@@ -55,6 +65,23 @@ const ProgrammingInterface = () => {
     setConnected(isConnected);
   };
 
+  // Ladataan tallennetut lohkot kun komponentti mountataan
+  useEffect(() => {
+    if (hasSavedBlocks()) {
+      const savedBlocks = loadBlocks();
+      if (savedBlocks) {
+        setDroppedBlocks(savedBlocks);
+      }
+    }
+  }, []);
+
+  // Tallennetaan lohkot kun ne muuttuvat
+  useEffect(() => {
+    if (droppedBlocks.length > 0) {
+      saveBlocks(droppedBlocks);
+    }
+  }, [droppedBlocks]);
+
   /**
    * handleDragStart - handler
    * Handles the start of block dragging
@@ -69,14 +96,9 @@ const ProgrammingInterface = () => {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
     };
-
-    // Handle second input if it exists
     if (block.hasSecondInput) {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
-
-    //console.log('Dragging block with values:', blockToTransfer); FOR TESTING
-
     e.dataTransfer.setData('application/json', JSON.stringify(blockToTransfer));
   };
 
@@ -90,17 +112,34 @@ const ProgrammingInterface = () => {
     e.preventDefault();
   };
 
-  // Lisätään callback jota kutsutaan dragOverissa
+  /**
+   * handleDragOverPosition - handler
+   * Updates the current drop position during drag operation
+   * Used as a callback for drag over events to track where blocks can be dropped
+   *
+   * @param {number} toIndex - Target index for the block being dragged
+   *                          -1 indicates drop in delete zone
+   *                          null indicates drop at end of list
+   * @returns {void}
+   *
+   * @example
+   * // When dragging over second block position
+   * handleDragOverPosition(1)
+   *
+   * // When dragging over delete zone
+   * handleDragOverPosition(-1)
+   */
   const handleDragOverPosition = (toIndex) => {
     setCurrentDropPosition(toIndex);
   };
 
   /**
-   * handleDrop - handler
-   * Handles block dropping into programming area
-   * Adds new block to droppedBlocks state
+   * handleDrop - Handles block dropping in programming area
+   *Manages both new block addition and reordering of existing blocks.
+   *Cleanup removes visual indicators after drop operation.
    *
    * @param {DragEvent} e - Drop event
+   * @returns {void}
    */
   const handleDrop = (e) => {
     e.preventDefault();
@@ -173,9 +212,11 @@ const ProgrammingInterface = () => {
 
   /**
    * Updates block input values when they are changed in programming area
+   *
    * @param {number} index - Index of the block in droppedBlocks array
    * @param {string|number} value - New value for the input
    * @param {boolean} isSecondInput - Whether updating first or second input
+   * @returns {void}
    */
   const handleBlockInputChange = (index, value, isSecondInput) => {
     setDroppedBlocks(blocks => {
@@ -202,8 +243,9 @@ const ProgrammingInterface = () => {
    * @function
    */
   const handleClearBlocks = () => {
-    if (window.confirm('Haluatko varmasti tyhjentää kaikki lohkot?')) {
+    if (window.confirm(t('confirms.clearAllBlocks'))) {
       setDroppedBlocks([]);
+      clearSavedBlocks();
     }
   };
 
@@ -215,21 +257,22 @@ const ProgrammingInterface = () => {
    * Converts blocks to commands (using convertBlocksToCommands method from utils/blocksConverter.js component)
    * and sends them to micro:bit via Bluetooth (using ble3Ref.current.sendData method from Ble3 component)
    *
+   * @throws {Error} If connection is missing or execution fails
    * @returns {Promise<void>}
    */
   const handleExecute = async () => {
     if (!ble3Ref.current?.isConnected()) {
-      alert('Yhdistä micro:bit ensin');
+      alert(t('alerts.connectMicrobit'));
       return;
     }
 
     if (droppedBlocks.length === 0) {
-      alert('Lisää lohkoja ennen suoritusta');
+      alert(t('alerts.addBlocksFirst'));
       return;
     }
 
     if (droppedBlocks[0].id !== 'start') {
-      alert('Ohjelman pitää alkaa Start-lohkolla');
+      alert(t('alerts.startBlockRequired'));
       return;
     }
 
@@ -239,16 +282,19 @@ const ProgrammingInterface = () => {
       console.log('Sending commands:', commands); // Debug log
       await ble3Ref.current.sendData(commands);
     } catch (error) {
-      console.error('Ohjelman suoritus epäonnistui:', error);
-      alert('Ohjelman suoritus epäonnistui. Tarkista yhteys ja yritä uudelleen.');
+      console.error(t('errors.executionFailed'), error);
+      alert(t('alerts.executionFailed'));
     } finally {
       setIsExecuting(false);
     }
   };
 
   /**
-    * handleDeleteBlock - handler
-   * @param blockToDelete
+   * handleDeleteBlock - Removes block from programming area
+   *
+   * @param {Object} blockToDelete - Block to be deleted
+   * @param {number} blockToDeleteIndex - Index of block to delete
+   * @returns {void}
    */
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setDroppedBlocks(currentBlocks => {
@@ -261,8 +307,6 @@ const ProgrammingInterface = () => {
         index === blockToDeleteIndex);
         return shouldKeep;
       });
-
-      console.log('After deletion:', newBlocks);
       return newBlocks;
     });
   };
@@ -292,17 +336,20 @@ const ProgrammingInterface = () => {
         isExecuting={isExecuting}
       />
 
-      <ProgrammingArea
-        droppedBlocks={droppedBlocks}
-        handleDragOver={handleDragOver}
-        handleDrop={handleDrop}
-        onClearBlocks={handleClearBlocks}
-        onUpdateBlock={handleUpdateBlock}
-        handleDragStart={handleDragStart}
-        handleBlockInputChange={handleBlockInputChange}
-        onDeleteBlock={handleDeleteBlock}
-        onDragOverPosition={handleDragOverPosition}
-      />
+      <ZoomableArea >
+        <ProgrammingArea
+          droppedBlocks={droppedBlocks}
+          isExecuting={isExecuting}
+          handleDragOver={handleDragOver}
+          handleDrop={handleDrop}
+          onClearBlocks={handleClearBlocks}
+          onUpdateBlock={handleUpdateBlock}
+          handleDragStart={handleDragStart}
+          handleBlockInputChange={handleBlockInputChange}
+          onDeleteBlock={handleDeleteBlock}
+          onDragOverPosition={handleDragOverPosition}
+        />
+      </ZoomableArea>
 
       <BlocksPanel
         categories={categories}

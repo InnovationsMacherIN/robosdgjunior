@@ -334,6 +334,8 @@ const ProgrammingInterface = () => {
         onStartClick={handleExecute}
         connected={connected}
         isExecuting={isExecuting}
+        onClearBlocks={handleClearBlocks}
+        droppedBlocks={droppedBlocks}
       />
 
       <ZoomableArea >
@@ -342,7 +344,7 @@ const ProgrammingInterface = () => {
           isExecuting={isExecuting}
           handleDragOver={handleDragOver}
           handleDrop={handleDrop}
-          onClearBlocks={handleClearBlocks}
+
           onUpdateBlock={handleUpdateBlock}
           handleDragStart={handleDragStart}
           handleBlockInputChange={handleBlockInputChange}

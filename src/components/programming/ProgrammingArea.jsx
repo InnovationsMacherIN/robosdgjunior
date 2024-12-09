@@ -31,7 +31,7 @@ const ProgrammingArea = ({
                            isExecuting,
                            handleDragOver,
                            handleDrop,
-                           onClearBlocks,
+
                            onUpdateBlock,
                            handleDragStart,
                            handleBlockInputChange,
@@ -186,20 +186,7 @@ const ProgrammingArea = ({
    */
   return (
     <div className="programming-area-container">
-      <div className="programming-area-header">
-        <h2>Ohjelmointialue</h2>
-        <div className="programming-area-controls">
 
-          <button
-            className="button button-clear"
-            onClick={onClearBlocks}
-            disabled={droppedBlocks.length === 0}
-          >
-            <Trash2 className="w-4 h-4" />
-            Tyhjennä kaikki
-          </button>
-        </div>
-      </div>
 
       <div
         className="programming-area-content"

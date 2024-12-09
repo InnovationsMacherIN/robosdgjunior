@@ -8,7 +8,8 @@ export const translations = {
       save: "Programm speichern",
       menu: "Menu",
       connect: "Verbinden",
-      disconnect: "Trennen"
+      disconnect: "Trennen",
+      clear: "Alles loschen",
     },
     programmingArea: {
       title: "Programmierbereich",
@@ -54,7 +55,8 @@ export const translations = {
       save: "Save Program",
       menu: "Menu",
       connect: "Connect",
-      disconnect: "Disconnect"
+      disconnect: "Disconnect",
+      clear: "Clear All",
     },
     programmingArea: {
       title: "Programming Area",
@@ -95,11 +97,12 @@ export const translations = {
     controls: {
       start: "Suorita ohjelma",
       executing: "Suoritetaan...",
-      stop: "Pysayta",
+      stop: "Pysäytä",
       save: "Tallenna ohjelma",
       menu: "Valikko",
-      connect: "Yhdista",
-      disconnect: "Katkaise yhteys"
+      connect: "Yhdistä",
+      disconnect: "Katkaise yhteys",
+      clear: "Tyhjennä kaikki",
     },
     programmingArea: {
       title: "Ohjelmointialue",
@@ -144,7 +147,8 @@ export const translations = {
       save: "プログラム保存",
       menu: "メニュー",
       connect: "接続",
-      disconnect: "切断"
+      disconnect: "切断",
+      clear: "すべて消去",
     },
     programmingArea: {
       title: "プログラミングエリア",

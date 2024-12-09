@@ -1,9 +1,11 @@
 import React from 'react';
-import { Play, Square, Save, Menu, Radio } from 'lucide-react';
+import {Play, Square, Save, Menu, Radio, Trash2} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/components/TopNavigation.css';
 
 const TopNavigation = ({
+                         droppedBlocks,
+                         onClearBlocks,
                          onConnectClick,
                          onDisconnectClick,
                          onStartClick,
@@ -24,23 +26,23 @@ const TopNavigation = ({
           onClick={onStartClick}
           disabled={isExecuting || !connected}
         >
-          <Play size={24} />
+          <Play size={24}/>
           {isExecuting ? t('controls.executing') : t('controls.start')}
         </button>
         <button className="button button-stop">
-          <Square size={24} />
+          <Square size={24}/>
           {t('controls.stop')}
         </button>
       </div>
 
       <div className="control-buttons">
         <button className="button button-save">
-          <Save size={24} />
+          <Save size={24}/>
           {t('controls.save')}
         </button>
         <div className="dropdown">
           <button className="button button-menu">
-            <Menu size={24} />
+            <Menu size={24}/>
             {t('controls.menu')}
           </button>
           <div className="dropdown-content">
@@ -59,6 +61,14 @@ const TopNavigation = ({
         >
           <Radio size={24}/>
           {connected ? t('controls.disconnect') : t('controls.connect')}
+        </button>
+        <button
+          className="button button-clear"
+          onClick={onClearBlocks}
+          disabled={droppedBlocks.length === 0}
+        >
+          <Trash2 className="w-4 h-4"/>
+          {t('controls.clear')}
         </button>
       </div>
     </div>

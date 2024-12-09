@@ -161,7 +161,7 @@
 
 .dropped-blocks {
   display: flex;
-  flex-direction: row; /* Muutettu columnista rowksi */
+  flex-direction: row;
   gap: 1rem;
   padding: 1rem;
   flex-wrap: wrap; /* Jos palikat eivät mahdu yhdelle riville */

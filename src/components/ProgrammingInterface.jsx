@@ -158,14 +158,14 @@ const ProgrammingInterface = () => {
       const {fromIndex} = JSON.parse(
         e.dataTransfer.getData('application/internal')
       );
-      console.log('From index:', fromIndex, 'To index:', currentDropPosition);
+      //console.log('From index:', fromIndex, 'To index:', currentDropPosition);
       if ( fromIndex !== currentDropPosition && currentDropPosition !== -1) {
         handleReorder(fromIndex, currentDropPosition);
       } else {
         return;
       }
     } else {
-      console.log('Dropping block:', currentDropPosition);
+      //console.log('Dropping block:', currentDropPosition);
       const blockData = e.dataTransfer.getData('application/json');
       const block = JSON.parse(blockData);
       if (currentDropPosition !== null) {
@@ -191,7 +191,7 @@ const ProgrammingInterface = () => {
    */
   const handleReorder = (fromIndex, toIndex) => {
     setDroppedBlocks(blocks => {
-      console.log('handle reorder:', blocks, fromIndex, toIndex);
+      //console.log('handle reorder:', blocks, fromIndex, toIndex);
       const newBlocks = [...blocks];
       const [movedBlock] = newBlocks.splice(fromIndex, 1)
       newBlocks.splice(toIndex, 0, movedBlock);
@@ -279,10 +279,10 @@ const ProgrammingInterface = () => {
     setIsExecuting(true);
     try {
       const commands = convertBlocksToCommands(droppedBlocks);
-      console.log('Sending commands:', commands); // Debug log
+      //console.log('Sending commands:', commands); // Debug log
       await ble3Ref.current.sendData(commands);
     } catch (error) {
-      console.error(t('errors.executionFailed'), error);
+      //console.error(t('errors.executionFailed'), error);
       alert(t('alerts.executionFailed'));
     } finally {
       setIsExecuting(false);

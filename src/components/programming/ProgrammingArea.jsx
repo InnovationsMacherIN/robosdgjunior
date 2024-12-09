@@ -90,11 +90,11 @@ const ProgrammingArea = ({
    *
    * @returns {void}
    */
-  //useEffect(() => {
-  //  if (droppedBlocks.length > 0) {
-  //    console.log('Current blocks in programming area:', droppedBlocks);
-  //  }
-  //}, [droppedBlocks]);
+  useEffect(() => {
+    if (droppedBlocks.length > 0) {
+      console.log('Current blocks in programming area:', droppedBlocks);
+    }
+  }, [droppedBlocks]);
 
 
   /**
@@ -212,6 +212,7 @@ const ProgrammingArea = ({
           </div>
         ) : (
           <div className="dropped-blocks">
+
             {droppedBlocks?.filter(block => block !== null && block !== undefined)
             .map((block, index) => (
             block && (

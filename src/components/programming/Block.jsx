@@ -14,6 +14,8 @@
  */
 
 import React, {useRef, useState, useEffect} from 'react';
+import BlockVisual from "../../utils/BlockVisual.jsx";
+import '../../styles/BlockVisualElements.css';
 
 const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
 
@@ -355,6 +357,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         onDragLeave={handleContainerDragLeave}
         onDrop={handleContainerDrop}
       >
+        <BlockVisual blockId={block.id} />
         <div className="block-header">
           <span className="block-title">
             {block.title}
@@ -393,6 +396,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
       >
+        <BlockVisual blockId={block.id} />
         <div className="block-header">
         <span className="block-title">
           {block.title}

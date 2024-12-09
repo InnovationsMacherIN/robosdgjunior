@@ -17,6 +17,8 @@
 
 import React from 'react';
 import '../../styles/components/BlocksPanel.css';
+import '../../styles/BlockVisualElements.css';
+import BlockVisual from '../../utils/BlockVisual';
 
 const BlocksPanel = ({
                        categories,
@@ -192,6 +194,7 @@ const BlocksPanel = ({
             draggable="true"
             onDragStart={(e) => handleDragStart(e, block)}
           >
+            <BlockVisual blockId={block.id} />
             <div className="block-header">
               <span className="block-title">{block.title}</span>
             </div>

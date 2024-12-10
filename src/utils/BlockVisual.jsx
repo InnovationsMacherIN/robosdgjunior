@@ -1,53 +1,33 @@
 import React from 'react';
+import icon_nuoli from '../assets/icons/nuoli.svg';
+import icon_puoli from '../assets/icons/puoli-pallo.svg';
 
 const BlockVisual = ({ blockId }) => {
-  const getVisualClass = (id) => {
-    switch (id) {
-      case 'forward':
-        return 'visual-forward';
-      case 'backward':
-        return 'visual-backward';
-      case 'left':
-      case 'turn-left':
-        return 'visual-turn-left';
-      case 'right':
-      case 'turn-right':
-        return 'visual-turn-right';
+  const getIconSrc = (blockId) => {
+    switch (blockId) {
+      case 'start':
+        return icon_nuoli;
+      case 'end':
+        return icon_nuoli;
       case 'melody':
       case 'sound':
-        return 'visual-sound';
-      case 'show-text':
-      case 'show-picture':
-      case 'leds-off':
-        return 'visual-display';
-      case 'motor':
-      case 'wait':
-        return 'visual-settings'
+        return icon_puoli;
+      // Add more cases for other block IDs
       default:
-        return '';
+        return ''; // Default icon or empty string if no icon
     }
   };
 
-  const visualClass = getVisualClass(blockId);
-  if (!visualClass) return null;
-
-  if (visualClass === 'visual-forward') {
-    return (
-    <div className="block-visual">
-      <div className="visual-forward">
-        <div className="visual-forward-wave wave-1" />
-        <div className="visual-forward-wave wave-2" />
-        <div className="visual-forward-wave wave-3" />
-        <div className="visual-forward-arrow" />
+  return (
+    <div className="block-visual-container">
+      <div className="icon-box">
+        <img src={getIconSrc(blockId)} alt="Block Icon" className="block-icon" />
+      </div>
+      <div className="block-visual">
+        {/* Existing visual elements */}
       </div>
     </div>
-    );
-  } else {
-    return (
-      <div className={`block-visual ${visualClass}`}/>
-    );
-  }
-
+  );
 };
 
 export default BlockVisual;

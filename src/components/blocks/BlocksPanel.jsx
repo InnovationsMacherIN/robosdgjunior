@@ -15,10 +15,14 @@
  * @returns {React.ReactElement} Panel containing categorized programming blocks
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import '../../styles/components/BlocksPanel.css';
 import '../../styles/BlockVisualElements.css';
 import BlockVisual from '../../utils/BlockVisual';
+import BlockIconConfig from "../../config/blockIconConfig";
+import '../../styles/blockIconConfig.css';
+import BlockTooltip from "../BlockTooltip.jsx";
+import '../../styles/BlockTooltip.css';
 
 const BlocksPanel = ({
                        categories,
@@ -27,6 +31,33 @@ const BlocksPanel = ({
                        blocksByCategory,
                        handleDragStart
                      }) => {
+
+  /**
+   * Tooltip state
+   * */
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [mousePosition, setMousePosition] = useState(null);
+
+  /**
+   * ToolTip functions
+   * */
+
+  const handleMouseEnter = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+    setShowTooltip(true);
+  };
+
+  const handleMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+    setMousePosition(null);
+  };
+
+  ///////////////
+
 
   /**
    * handleInputChange - handler (funktion)
@@ -193,12 +224,23 @@ const BlocksPanel = ({
             className={`block ${block.className}`}
             draggable="true"
             onDragStart={(e) => handleDragStart(e, block)}
+            onMouseEnter={handleMouseEnter}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
           >
             <BlockVisual blockId={block.id} />
-            <div className="block-header">
+            {showTooltip && (
+              <BlockTooltip
+                title={block.title}
+                description={block.description}
+                mousePosition={mousePosition}
+              />
+            )}
+            {/*<div className="block-header">
               <span className="block-title">{block.title}</span>
             </div>
-            <p className="block-description">{block.description}</p>
+            <p className="block-description">{block.description}</p>*/}
+            <BlockIconConfig blockId={block.id} />
             < div className="block-input-container">
             {renderInput(block)}
               </div>
@@ -245,6 +287,7 @@ const BlocksPanel = ({
               </div>
             ))}
           </div>
+
           </div>
           );
         };

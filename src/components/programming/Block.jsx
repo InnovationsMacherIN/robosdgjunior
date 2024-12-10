@@ -16,10 +16,40 @@
 import React, {useRef, useState, useEffect} from 'react';
 import BlockVisual from "../../utils/BlockVisual.jsx";
 import '../../styles/BlockVisualElements.css';
+import BlockTooltip from "../BlockTooltip.jsx";
+import '../../styles/BlockTooltip.css';
+import BlockIconConfig from "../../config/blockIconConfig";
+import '../../styles/blockIconConfig.css';
 
 const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
+
+  /**
+   * Tooltip state
+   * */
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [mousePosition, setMousePosition] = useState(null);
+
+  /**
+   * ToolTip functions
+   * */
+
+  const handleMouseEnter = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+    setShowTooltip(true);
+  };
+
+  const handleMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+    setMousePosition(null);
+  };
+
+  ///////////////
 
   useEffect(() => {
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
@@ -374,7 +404,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         </div>
         {block.hasInput && (
           <div className="block-input-container">
-            <label>{block.inputLabel}</label>
+            {/*<label>{block.inputLabel}</label>*/}
             {renderBlockInput(block, index)}
           </div>
         )}
@@ -399,6 +429,9 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         ref={blockRef}
         className={`block ${block.className || ''}`}
         draggable="true"
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         onDragStart={handleDragStart}
         onDragEnd={onDragEnd}
         onDragLeave={handleDragLeave}
@@ -406,25 +439,33 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
       >
         <BlockVisual blockId={block.id} />
         <div className="block-header">
-        <span className="block-title">
+          {/*<span className="block-title">
           {block.title}
           {//renderBlockValue(block)}
             block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
-        </span>
+        </span>*/}
         </div>
+        <BlockIconConfig blockId={block.id} />
         {block.hasInput && (
           <div className="block-input-container">
-            <label>{block.inputLabel}</label>
+            {/*<label>{block.inputLabel}</label>*/}
             {renderBlockInput(block, index)}
           </div>
         )}
         {block.hasSecondInput && (
           <div className="block-input-container">
-            <label>{block.secondInputLabel}</label>
+            {/*<label>{block.secondInputLabel}</label>*/}
             {renderSecondInput(block)}
           </div>
         )}
-        <p className="block-description">{block.description}</p>
+        {/*<p className="block-description">{block.description}</p>*/}
+        {showTooltip && (
+            <BlockTooltip
+                title={block.title}
+                description={block.description}
+                mousePosition={mousePosition}
+            />
+        )}
       </div>
     );
 };

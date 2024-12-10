@@ -47,4 +47,14 @@
   --spacing-4: 1rem;     /* 16px */
   --spacing-6: 1.5rem;   /* 24px */
   --spacing-8: 2rem;     /* 32px */
+
+
+
+  /*
+  * Block fixed sizes
+  */
+  --block-width: 120px;
+  --block-height: 100px;
+  --container-block-min-width: 250px;
+  --container-block-min-height: 150px;
 }

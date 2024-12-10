@@ -18,8 +18,10 @@
 }
 
 .block {
+  height: 100px;
+  width: 100px;
   position: relative;
-  //padding-bottom: 10px; /* Adjust this value to provide space for the input field */
+  padding-bottom: 10px; /* Adjust this value to provide space for the input field */
 }
 
 .block-input-text,

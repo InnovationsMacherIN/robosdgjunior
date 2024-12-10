@@ -200,10 +200,15 @@
 
 /* ProgrammingArea.css */
 .block-input-container {
-  margin: 0.5rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  position: absolute;
+  bottom: -30px; /* Adjust this value to control how much the input field sticks out */
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .block-input {

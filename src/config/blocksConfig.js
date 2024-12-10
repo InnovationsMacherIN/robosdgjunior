@@ -34,6 +34,14 @@ export const blocksByCategory = {
         }
         return commands;
       }
+    },
+    {
+      id: 'end',
+      title: 'Loppu',
+      description: 'Ohjelman tulee päättyä tähän lohkoon',
+      className: 'block-steering',
+      action: 'END',
+      command: 'end:'
     }
   ],
   'LED Display': [

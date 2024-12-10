@@ -92,6 +92,7 @@ const ProgrammingInterface = () => {
    */
   const handleDragStart = (e, block) => {
     // Clone the block to avoid reference issues
+    console.log('Drag start:', block);
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
@@ -165,7 +166,7 @@ const ProgrammingInterface = () => {
         return;
       }
     } else {
-      //console.log('Dropping block:', currentDropPosition);
+      console.log('Dropping block:', currentDropPosition);
       const blockData = e.dataTransfer.getData('application/json');
       const block = JSON.parse(blockData);
       if (currentDropPosition !== null) {
@@ -275,6 +276,20 @@ const ProgrammingInterface = () => {
       alert(t('alerts.startBlockRequired'));
       return;
     }
+
+    // Tarkista, että ketjussa ei ole enempää kuin yksi 'end' palikka
+    const endBlocks = droppedBlocks.filter(block => block.id === 'end');
+    if (endBlocks.length > 1) {
+      alert(t('alerts.tooManyEndBlocks'));
+      return;
+    }
+
+    // Tarkista, että viimeinen palikka on 'end'
+    if (droppedBlocks[droppedBlocks.length - 1].id !== 'end') {
+      alert(t('alerts.endBlockRequired'));
+      return;
+    }
+
 
     setIsExecuting(true);
     try {

@@ -1,0 +1,75 @@
+.programming-area-blocks {
+  position: relative;
+  width: calc(100vw - 2rem); /* Huomioidaan marginaalit */
+  height: calc(100vh - 180px); /* Jätetään tilaa top-naville ja bottom-paneelille */
+  min-height: 400px;
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-4);
+  overflow: auto;
+  margin: 1rem;
+  flex: 1;
+}
+
+.block-chain-container {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-4);
+  width: fit-content;
+  cursor: grab;
+  z-index: 10;
+  user-select: none;
+  transition: transform 0.1s ease;
+  padding: 1rem;
+  min-width: 200px;
+}
+
+/* Varmistetaan että overlay peittää koko alueen */
+.programming-area-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 5;
+  display: none;
+}
+
+.programming-area-overlay.active {
+  display: block;
+}
+
+/* Block chain hover effect */
+.block-chain-container {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-4);
+  width: fit-content;
+  cursor: grab;
+  z-index: 10;
+  user-select: none;
+  transition: all 0.2s ease; /* Muutetaan transition koskemaan kaikkia ominaisuuksia */
+  padding: 1rem;
+  min-width: 200px;
+  border-radius: var(--radius-md);
+}
+
+/* Hover-tila ketjulle */
+.block-chain-container:hover {
+  background-color: rgba(0, 0, 0, 0.03); /* Kevyt taustaväri hover-tilassa */
+}
+
+/* Aktiivinen raahaus */
+.block-chain-container.dragging {
+  cursor: grabbing;
+  background-color: rgba(0, 0, 0, 0.05); /* Hieman tummempi tausta raahattaessa */
+}
+
+/* Varmistetaan että hover-efekti ei näy kun raahataan yksittäistä blokkia */
+.block-chain-container:has(.block:hover) {
+  background-color: transparent;
+}

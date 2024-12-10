@@ -110,9 +110,10 @@
 .blocks-container {
   display: flex;
   gap: 1rem;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
   overflow-x: auto;
   flex-wrap: wrap;
+  margin: 1rem 0;
 }
 
 .block {

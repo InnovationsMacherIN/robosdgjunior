@@ -19,11 +19,12 @@
  * @param {function} props.onDragOverPosition - Handler for updating drop position
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import DeleteZone from './DeleteZone';
 import '../../styles/components/ProgrammingArea.css';
+import '../../styles/draggableBlocks.css';
 import DroppedBlock from './Block'
 
 const ProgrammingArea = ({
@@ -31,7 +32,6 @@ const ProgrammingArea = ({
                            isExecuting,
                            handleDragOver,
                            handleDrop,
-
                            onUpdateBlock,
                            handleDragStart,
                            handleBlockInputChange,
@@ -41,6 +41,57 @@ const ProgrammingArea = ({
 
   const { t } = useTranslation();
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
+
+  // Lisää nämä tilamuuttujat komponentin alkuun
+  const [activeChain, setActiveChain] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [chainPositions, setChainPositions] = useState({});
+  const areaRef = useRef(null);
+  ////////////////////////
+
+  // Lisää nämä handlerit ennen returnia
+  const handleChainDragStart = useCallback((e, chainId) => {
+    // Jos käyttäjä raahaa mitä tahansa muuta kuin start-blockia, ei siirretä koko ketjua
+    const draggingBlock = e.target.closest('.block');
+    if (draggingBlock && draggingBlock.querySelector('[data-block-id]')?.dataset.blockId !== 'start') {
+      return;
+    }
+
+    // Jos raahataan start-blockista tai tyhjästä alueesta, siirretään koko ketju
+    const chain = e.currentTarget;
+    const rect = chain.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+
+    setActiveChain(chainId);
+    setDragOffset({ x: offsetX, y: offsetY });
+    chain.classList.add('dragging');
+  }, []);
+
+  const handleChainDrag = useCallback((e) => {
+    if (!activeChain) return;
+
+    const areaRect = areaRef.current.getBoundingClientRect();
+    const x = e.clientX - areaRect.left - dragOffset.x;
+    const y = e.clientY - areaRect.top - dragOffset.y;
+
+    setChainPositions(prev => ({
+      ...prev,
+      [activeChain]: { x, y }
+    }));
+  }, [activeChain, dragOffset]);
+
+  const handleChainDragEnd = useCallback(() => {
+    if (!activeChain) return;
+
+    const chain = document.querySelector(`[data-chain-id="${activeChain}"]`);
+    if (chain) {
+      chain.classList.remove('dragging');
+    }
+
+    setActiveChain(null);
+  }, [activeChain]);
+  //////////////////////
 
   /**
    * Wrapper function for block drag start events
@@ -185,44 +236,46 @@ const ProgrammingArea = ({
    * @returns {React.ReactElement} The programming area UI
    */
   return (
-    <div className="programming-area-container">
-
-
+    <div
+      ref={areaRef}
+      className="programming-area-blocks"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      onMouseMove={handleChainDrag}
+      onMouseUp={handleChainDragEnd}
+    >
       <div
-        className="programming-area-content"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
+        className="block-chain-container"
+        data-chain-id="main-chain"
+        style={{
+          left: chainPositions["main-chain"]?.x || '20px',
+          top: chainPositions["main-chain"]?.y || '20px'
+        }}
+        onMouseDown={(e) => handleChainDragStart(e, "main-chain")}
       >
-        {droppedBlocks.length === 0 ? (
-          <div className="programming-area-placeholder">
-            {t('programmingArea.dragDropHint')}
-          </div>
-        ) : (
-          <div className="dropped-blocks">
-
-            {droppedBlocks?.filter(block => block !== null && block !== undefined)
-            .map((block, index) => (
-            block && (
+        <div className="dropped-blocks">
+          {droppedBlocks.map((block, index) => (
             <DroppedBlock
-              key={`${block.id}-${index}`}
+              key={index}
               block={block}
               index={index}
+              onDragStart={handleBlockDragStart}
               onInputChange={handleBlockInputChange}
-              onDragStart={(e) => handleBlockDragStart(e, block)}
-              onDragEnd={handleBlockDragEnd}
               onDragOverPosition={onDragOverPosition}
             />
-            )
           ))}
-          </div>
-        )}
-        <DeleteZone
-          onDelete={(block, index) => onDeleteBlock(block, index)}
-          isDraggingBlock={isDraggingBlock}
-          onDragOverPosition={onDragOverPosition}
-        />
+        </div>
       </div>
 
+      <div className={`programming-area-overlay ${activeChain !== null ? 'active' : ''}`} />
+
+      <DeleteZone
+        isDraggingBlock={isDraggingBlock} // Muutettu tämä rivi
+        onDelete={(block, index) => {
+          onDeleteBlock(block, index);
+        }}
+        onDragOverPosition={onDragOverPosition}
+      />
     </div>
   );
 };

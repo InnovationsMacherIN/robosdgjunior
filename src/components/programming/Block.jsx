@@ -42,12 +42,20 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    *
    * @param {DragEvent} e - Drag event object
    */
+      // DroppedBlock (Block.jsx) komponentissa
   const handleDragStart = (e) => {
-    e.dataTransfer.setData('application/internal',
-      JSON.stringify({ fromIndex: index }));
-    onDragStart(e, index);
-    console.log('Dragging block:', index);
-  };
+        const isStartBlock = block.id === 'start';
+        if (isStartBlock) {
+          e.preventDefault();
+          return;
+        }
+
+        e.dataTransfer.setData('application/json', JSON.stringify(block));
+        e.dataTransfer.setData('application/internal',
+            JSON.stringify({ fromIndex: index }));
+        console.log('Drag start:', index, block);
+        onDragStart(e, block);
+      };
 
   /**
    * handleDragOver - handler (function)

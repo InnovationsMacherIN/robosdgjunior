@@ -29,7 +29,9 @@ export const translations = {
       connectMicrobit: 'Verbinde zuerst den micro:bit',
       addBlocksFirst: 'Füge Blöcke hinzu, bevor du das Programm ausführst',
       startBlockRequired: 'Das Programm muss mit einem Start-Block beginnen',
-      executionFailed: 'Programmausführung fehlgeschlagen. Überprüfe die Verbindung und versuche es erneut'
+      executionFailed: 'Programmausführung fehlgeschlagen. Überprüfe die Verbindung und versuche es erneut',
+      endBlockRequired: 'Das Programm muss mit einem End-Block enden',
+      tooManyEndBlocks: 'Es darf nur ein End-Block vorhanden sein',
     },
     confirms: {
       clearAllBlocks: 'Möchtest du wirklich alle Blöcke löschen?'
@@ -75,7 +77,9 @@ export const translations = {
       connectMicrobit: 'Connect micro:bit first',
       addBlocksFirst: 'Add blocks before running the program',
       startBlockRequired: 'Program must start with a Start block',
-      executionFailed: 'Program execution failed. Check connection and try again'
+      executionFailed: 'Program execution failed. Check connection and try again',
+      endBlockRequired: 'Program must end with an End block ',
+      tooManyEndBlocks: 'There can only be one End block',
     },
     confirms: {
       clearAllBlocks: 'Do you really want to delete all blocks?'
@@ -121,7 +125,9 @@ export const translations = {
       connectMicrobit: 'Yhdistä micro:bit ensin',
       addBlocksFirst: 'Lisää lohkoja ennen ohjelman suoritusta',
       startBlockRequired: 'Ohjelman täytyy alkaa Start-lohkolla',
-      executionFailed: 'Ohjelman suoritus epäonnistui. Tarkista yhteys ja yritä uudelleen'
+      executionFailed: 'Ohjelman suoritus epäonnistui. Tarkista yhteys ja yritä uudelleen',
+      endBlockRequired: 'Ohjelman täytyy päättyä End-lohkolla',
+      tooManyEndBlocks: 'Ohjelmassa voi olla vain yksi End-lohko',
     },
     confirms: {
       clearAllBlocks: 'Haluatko varmasti poistaa kaikki lohkot?'
@@ -167,7 +173,10 @@ export const translations = {
       connectMicrobit: 'まずmicro:bitを接続してください',
       addBlocksFirst: 'プログラムを実行する前にブロックを追加してください',
       startBlockRequired: 'プログラムはスタートブロックから始める必要があります',
-      executionFailed: 'プログラムの実行に失敗しました。接続を確認して再試行してください'
+      executionFailed: 'プログラムの実行に失敗しました。接続を確認して再試行してください',
+      endBlockRequired: 'プログラムはエンドブロックで終了する必要があります',
+      tooManyEndBlocks: 'エンドブロックは1つだけである必要があります',
+
     },
     confirms: {
       clearAllBlocks: '全てのブロックを削除してもよろしいですか？'

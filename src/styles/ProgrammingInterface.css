@@ -141,13 +141,81 @@
 
 /* Erikoistapaus "toista" palikalle */
 .block-container {
-  width: auto;      /* Kumotaan kiinteä koko */
-  height: auto;     /* Kumotaan kiinteä koko */
-  min-width: var(--block-width); /* Annetaan vähimmäiskoko */
-  min-height: var(--block-height);
-  max-width: none;  /* Poistetaan maksimikoko */
-  max-height: none;
+  /* Fixed dimensions */
+  --container-height: 120px;
+  height: var(--container-height);
+  min-width: var(--block-width);
+
+  /* Flex layout */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  /* Visual styling */
+  background-color: var(--success-color);
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(255,255,255,0.3);
+  padding: 1rem;
+  position: relative;
+  transition: all 0.3s ease;
 }
+
+/* Child Blocks Container
+ * Horizontal scrollable container for child blocks
+ * Positioned at the bottom of the U-shape
+ */
+.child-blocks-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin-top: auto;
+  min-height: 60px;
+  width: 100%;
+  overflow-x: auto;
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm);
+  align-items: center;
+}
+
+/* Child Block Styles
+ * Individual blocks within the container
+ */
+.child-block {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* Container State Styles */
+.block-container.has-children {
+  min-width: max-content;
+}
+
+.block-container.drag-over {
+  border-color: white;
+  background-color: var(--success-color-dark);
+}
+
+/* Scrollbar Styles for Child Container */
+.child-blocks-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.child-blocks-container::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+.child-blocks-container::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+.child-blocks-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.4);
+}
+/* Block-container (Toista lohko) erityiskoodi loppuu */
 
 
 
@@ -189,6 +257,94 @@
   gap: 1rem;
   padding: 1rem;
   flex-wrap: wrap; /* Jos palikat eivät mahdu yhdelle riville */
+}
+
+/* Start Block Styles
+ * Creates a block with semicircle on the left side
+ * Maintains consistent height with other blocks
+ */
+.block-start {
+  --block-height: 100px;
+  height: var(--block-height);
+  /* Perustyylit */
+  background-color: var(--success-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1rem 1rem 3rem; /* Extra padding left for semicircle */
+  margin-left: 1.5rem; /* Space for the semicircle */
+
+  /* Pyöristykset oikealla puolella */
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* Start Block Semicircle
+ * Creates the left side semicircle using pseudo-element
+ */
+.block-start::before {
+  content: '';
+  position: absolute;
+  left: -1.5rem; /* Half of the semicircle width */
+  top: 0;
+  height: 100%;
+  width: 3rem; /* Semicircle width */
+  background-color: var(--success-color);
+  border-radius: 3rem 0 0 3rem; /* Full left side radius */
+}
+
+/* End Block Styles
+ * Creates a block with semicircle on the right side
+ * Uses error color for visual distinction
+ */
+.block-end {
+  --block-height: 100px;
+  height: var(--block-height);
+  /* Perustyylit */
+  background-color: var(--error-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1rem 3rem 1rem 1rem; /* Extra padding right for semicircle */
+  margin-right: 1.5rem; /* Space for the semicircle */
+
+  /* Pyöristykset vasemmalla puolella */
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+/* End Block Semicircle
+ * Creates the right side semicircle using pseudo-element
+ */
+.block-end::after {
+  content: '';
+  position: absolute;
+  right: -1.5rem; /* Half of the semicircle width */
+  top: 0;
+  height: 100%;
+  width: 3rem; /* Semicircle width */
+  background-color: var(--error-color);
+  border-radius: 0 3rem 3rem 0; /* Full right side radius */
+}
+
+/* Hover effects for both blocks */
+.block-start:hover::before,
+.block-start:hover {
+  background-color: var(--success-color-dark);
+}
+
+.block-end:hover::after,
+.block-end:hover {
+  background-color: var(--error-color-dark);
+}
+
+/* Drag and drop styles */
+.block-start.dragging,
+.block-end.dragging {
+  opacity: 0.8;
+}
+
+/* Disable dragging for start block */
+.block-start {
+  cursor: default;
 }
 
 /* Responsiivisuus */

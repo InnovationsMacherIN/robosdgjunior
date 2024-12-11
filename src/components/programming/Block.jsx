@@ -386,42 +386,46 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
 // Jos kyseessä on container-lohko
   if (block.isContainer) {
     return (
-      <div
-        ref={blockRef}
-        className={`block ${block.className} ${hasChildren ? 'has-children' : ''}`}
-        draggable="true"
-        onDragStart={handleDragStart}
-        onDragOver={handleContainerDragOver}
-        onDragLeave={handleContainerDragLeave}
-        onDrop={handleContainerDrop}
-      >
-        <BlockVisual blockId={block.id} />
-        <div className="block-header">
-          <span className="block-title">
-            {block.title}
-            {block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
-          </span>
-        </div>
-        {block.hasInput && (
-          <div className="block-input-container">
-            {/*<label>{block.inputLabel}</label>*/}
-            {renderBlockInput(block, index)}
+        <div
+            ref={blockRef}
+            className={`block block-container ${hasChildren ? 'has-children' : ''}`}
+            draggable="true"
+            onDragStart={handleDragStart}
+            onDragOver={handleContainerDragOver}
+            onDragLeave={handleContainerDragLeave}
+            onDrop={handleContainerDrop}
+        >
+          {/* Main block content */}
+          <div className="block-content">
+            <BlockVisual blockId={block.id} />
+            <div className="block-header">
+            <span className="block-title">
+              {block.title}
+              {block.inputValue && ` (${block.inputValue})`}
+            </span>
+            </div>
+            {block.hasInput && (
+                <div className="block-input-container">
+                  {renderBlockInput(block, index)}
+                </div>
+            )}
           </div>
-        )}
-        <div className="child-blocks">
-          {block.childBlocks?.map((childBlock, childIndex) => (
-            <DroppedBlock
-              key={`child-${childIndex}`}
-              block={childBlock}
-              index={childIndex}
-              onInputChange={(value) => handleChildInputChange(childIndex, value)}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-              onDragOverPosition={onDragOverPosition}
-            />
-          ))}
+
+          {/* Child blocks container */}
+          <div className="child-blocks-container">
+            {block.childBlocks?.map((childBlock, childIndex) => (
+                <DroppedBlock
+                    key={`child-${childIndex}`}
+                    block={childBlock}
+                    index={childIndex}
+                    onInputChange={(value) => handleChildInputChange(childIndex, value)}
+                    onDragStart={onDragStart}
+                    onDragEnd={onDragEnd}
+                    onDragOverPosition={onDragOverPosition}
+                />
+            ))}
+          </div>
         </div>
-      </div>
     );
   }
     return (

@@ -438,13 +438,13 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         onDragOver={handleDragOver}
       >
         <BlockVisual blockId={block.id} />
-        <div className="block-header">
-          {/*<span className="block-title">
+        {/*<div className="block-header">
+          <span className="block-title">
           {block.title}
           {//renderBlockValue(block)}
             block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
-        </span>*/}
-        </div>
+        </span>
+        </div>*/}
         <BlockIconConfig blockId={block.id} />
         {block.hasInput && (
           <div className="block-input-container">

@@ -9,7 +9,7 @@ export const blocksByCategory = {
       id: 'start',
       title: 'Kun Start painettu',
       description: 'Ohjelman tulee alkaa tällä lohkolla',
-      className: 'block-steering',
+      className: 'block-steering block-start', // lisätty start-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
       action: 'START',
       command: 'start:'
     },
@@ -34,6 +34,14 @@ export const blocksByCategory = {
         }
         return commands;
       }
+    },
+    {
+      id: 'end',
+      title: 'Loppu',
+      description: 'Ohjelman tulee päättyä tähän lohkoon',
+      className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
+      action: 'END',
+      command: 'end:'
     }
   ],
   'LED Display': [

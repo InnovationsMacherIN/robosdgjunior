@@ -1,0 +1,24 @@
+.block-visual-container {
+  position: relative;
+  width: 100%; /* Ensure the container takes the full width of the block */
+}
+
+.icon-box {
+  position: absolute;
+  bottom: 100%; /* Align the bottom of the icon box with the top of the block */
+  left: 0;
+  width: 100%; /* Make the icon box the same width as the block */
+  height: 50px;
+  background: rgba(211, 211, 211, 0.5); /* Light grey and semi-transparent */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.block-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

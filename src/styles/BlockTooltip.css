@@ -1,0 +1,30 @@
+.block-tooltip {
+  /* position: fixed;  Fixed position suhteessa viewport:iin */
+  transform: translate(-50px, 50px); /* Siirretään tooltip hieman oikealle ja alaspäin */
+  background-color: #1e293b;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 120px;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  pointer-events: none; /* Tooltip ei häiritse muuta interaktiota */
+}
+
+.block-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.block-tooltip-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.block-tooltip-description {
+  font-size: 0.9em;
+  opacity: 0.9;
+}

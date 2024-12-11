@@ -1,22 +1,53 @@
-/* Lisätään nämä aiempien tyylien jatkoksi */
+/* BlocksPanel.css */
+
+/* Input Field Base Styles
+ * Common styles for all input types in blocks
+ * Used for text, number and select inputs in blocks when block is in BlockPanel area
+ */
+
+.block-input-container {
+  position: absolute;
+  bottom: -30px; /* Adjust this value to control how much the input field sticks out */
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.block {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  padding-bottom: 10px; /* Adjust this value to provide space for the input field */
+}
 
 .block-input-text,
 .block-input-number,
 .block-input-select {
   width: 100%;
-  padding: var(--spacing-1) var(--spacing-2);
+  padding: 0 0;
   border: 1px solid var(--secondary-color);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   background-color: white;
+  min-width: 50px;
 }
 
+/* Range Input Container
+ * Wrapper for range slider and its value display
+ */
 .range-container {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
 }
 
+/* Range Slider Styling
+ * Custom styling for range input type
+ */
 .block-input-range {
   flex-grow: 1;
   height: 6px;
@@ -26,6 +57,9 @@
   outline: none;
 }
 
+/* Range Slider Thumb
+ * Custom styling for the draggable thumb element
+ */
 .block-input-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
@@ -36,10 +70,14 @@
   transition: background .3s ease-in-out;
 }
 
+/* Range Slider Thumb Hover State */
 .block-input-range::-webkit-slider-thumb:hover {
   background: var(--primary-hover);
 }
 
+/* Range Value Display
+ * Shows current value of range slider
+ */
 .range-value {
   min-width: 2.5em;
   text-align: center;
@@ -49,10 +87,16 @@
   font-size: 0.8rem;
 }
 
+/* Select Input Styling
+ * Custom styling for dropdown selects
+ */
 .block-input-select {
   cursor: pointer;
 }
 
+/* Select Options Styling */
 .block-input-select option {
   padding: var(--spacing-1) var(--spacing-2);
 }
+
+

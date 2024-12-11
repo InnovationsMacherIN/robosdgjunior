@@ -1,0 +1,74 @@
+/* src/styles/blockIconConfig.css */
+
+/* Container styles */
+.block-icon-container {
+  /* Asemoidaan ikoni absoluuttisesti keskelle block-elementtiä */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Perusasetukset container-elementille */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Containerin koko */
+  width: 60px;
+  height: 60px;
+
+  /* Varmistetaan että ikoni ei häiritse muuta sisältöä */
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Base icon styles */
+.block-icon {
+  /* Ikonin perusasetukset */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+/* Movement block specific styles */
+.movement-icon {
+  /* Perhonen.png kuvan erityisasetukset */
+  filter: brightness(1.1);
+}
+
+/* Sound block specific styles */
+.sound-icon {
+  /* Puoli-pallo.svg kuvan erityisasetukset */
+  filter: brightness(1.2);
+}
+
+/* Hover effects */
+.block:hover .block-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* High contrast theme support */
+@media (prefers-contrast: high) {
+  .block-icon {
+    opacity: 1;
+    filter: none;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .block-icon {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .block-icon {
+    opacity: 1;
+    filter: none;
+  }
+}

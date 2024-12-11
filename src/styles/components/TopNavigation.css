@@ -1,3 +1,9 @@
+/* TopNavigation.css */
+
+/* Main Navigation Container
+* Fixed position top bar on top of the page containing primary controls
+* Uses flexbox for equal spacing between button groups
+*/
 .top-nav {
   display: flex;
   justify-content: space-between;
@@ -7,11 +13,19 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Control Button Groups
+* Contains groups of related action buttons
+* Uses flexbox with consistent spacing
+*/
 .control-buttons {
   display: flex;
   gap: var(--spacing-2);
 }
 
+/* Action Buttons
+* Different button styles for different actions
+* Using CSS variables for consistent theming
+*/
 .button-start {
   background-color: var(--success-color);
   color: var(--text-light);
@@ -33,7 +47,78 @@
   color: var(--text-light);
 }
 
+/* Button Hover Effects
+* Subtle animation for better interactivity
+*/
 .button:hover {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+/* Dropdown Menu Container
+* Positioned relative for absolute positioning of content
+*/
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content
+* Hidden by default, shown on hover
+* Uses absolute positioning with shadow for depth
+*/
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  z-index: 1;
+  border-radius: var(--radius-md);
+}
+
+/* Dropdown Hover State
+* Shows dropdown content when container is hovered
+*/
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Language Selector Container
+* Contains language selection options
+*/
+.language-selector {
+  padding: 1rem;
+}
+
+/* Language Selector Header
+* Descriptive text above language options
+*/
+.language-selector span {
+  display: block;
+  padding-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Language Option Buttons
+* Individual language selection buttons
+* Full width with hover effect
+*/
+.language-selector button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Language Button Hover State
+* Visual feedback for interactive elements
+*/
+.language-selector button:hover {
+  background-color: var(--background-light);
 }

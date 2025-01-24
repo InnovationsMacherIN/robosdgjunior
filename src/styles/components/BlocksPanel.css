@@ -7,14 +7,17 @@
 
 .block-input-container {
   position: absolute;
-  bottom: -30px; /* Adjust this value to control how much the input field sticks out */
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  border-top: 2px solid white;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.0);
+  border-left: 4px solid white;
+  border-right: 4px solid white;
+  border-bottom: 4px solid white;
 }
 
 .block {
@@ -22,6 +25,8 @@
   width: 100px;
   position: relative;
   padding-bottom: 10px; /* Adjust this value to provide space for the input field */
+  margin-left: -23px;
+  border-radius: 0px !important;
 }
 
 .block-input-text,

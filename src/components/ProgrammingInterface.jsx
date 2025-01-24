@@ -30,6 +30,8 @@ import ZoomableArea from '../utils/zoomableArea';
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
 
+
+
   /**
    * State declaratiions
    *

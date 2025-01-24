@@ -60,12 +60,14 @@
 /* Block shifting animation */
 .block {
   position: relative;
-  padding: var(--spacing-4);
-  background-color: var(--background-light);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease;
   z-index: 2;
+}
+
+.block-icon.movement-icon {
+  margin-bottom: -21px;
 }
 
 /* Drop indicator styles */
@@ -114,8 +116,25 @@
 }
 
 .block-movement {
-  background-color: #2563eb; /* Sininen liikkeelle */
-  color: white;
+  width: 117px; /* Leveys vastaa SVG:n viewBox-arvoa */
+  height: 163px; /* Korkeus vastaa SVG:n viewBox-arvoa */
+  background-size: contain; /* Skaalaa SVG kokonaan näkyville */
+  background-repeat: no-repeat; /* Ei toisteta taustaa */
+  background-position: center; /* Keskitetään tausta */
+  position: relative; /* Salli lapsielementtien sijoittelu */
+
+  justify-content: center; /* Keskitys vaakasuunnassa */
+  align-items: center; /* Keskitys pystysuunnassa */
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.41"><path fill="%23004c9a" stroke="%23000000" stroke-width="2" d="M111.91,161.41H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.77L55.15,1.33c3.16-1.81,7.06-1.76,10.17.13l46.59,28.31v35.92c-.01,1.37-1.13,2.48-2.5,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
+  min-height: 150px !important;
+}
+
+.block.block-movement {
+  margin-right: -10px;
+}
+
+.block {
+  box-shadow: none !important;
 }
 
 .block-combination {
@@ -134,8 +153,8 @@
 }
 
 .block:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-0px);
+  box-shadow: none;
 }
 
 .block-header {
@@ -208,7 +227,7 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.0);
 }
 
 .block-input {

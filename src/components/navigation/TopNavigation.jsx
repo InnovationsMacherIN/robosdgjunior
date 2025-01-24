@@ -2,6 +2,12 @@ import React from 'react';
 import {Play, Square, Save, Menu, Radio, Trash2} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/components/TopNavigation.css';
+import RoboStop from '../../assets/icons/StopIcon.jsx';
+import RoboStart from '../../assets/icons/StartIcon.jsx';
+import RoboLogo from '../../assets/icons/robo-sdg-jr-logo.jsx';
+import RoboSave from '../../assets/icons/RoboSave.jsx';
+import RoboConnect from '../../assets/icons/RoboConnect.jsx';
+
 
 const TopNavigation = ({
                          droppedBlocks,
@@ -20,29 +26,34 @@ const TopNavigation = ({
 
   return (
     <div className="top-nav">
-      <div className="control-buttons">
-        <button
-          className={`button button-start ${isExecuting ? 'executing' : ''}`}
-          onClick={onStartClick}
-          disabled={isExecuting || !connected}
-        >
-          <Play size={24}/>
-          {isExecuting ? t('controls.executing') : t('controls.start')}
-        </button>
-        <button className="button button-stop">
-          <Square size={24}/>
-          {t('controls.stop')}
-        </button>
-      </div>
 
-      <div className="control-buttons">
+        <div className="control-buttons">
+            <div className="logo">
+                <RoboLogo style={{width: '120px',marginRight: '10px'}}/>
+            </div>
+
+            <button
+                className={`button button-start ${isExecuting ? 'executing' : ''}`}
+                onClick={onStartClick}
+                disabled={isExecuting || !connected}
+            >
+                <RoboStart style={{width: '30px', height: '30px'}}/>
+                {isExecuting ? t('controls.executing') : t('controls.start')}
+            </button>
+            <button className="button button-stop">
+                <RoboStop style={{width: '30px', height: '30px'}}/>
+                {t('controls.stop')}
+            </button>
+        </div>
+
+        <div className="control-buttons">
         <button className="button button-save">
-          <Save size={24}/>
+          <RoboSave style={{width: '30px', height: '30px'}}/>
           {t('controls.save')}
         </button>
         <div className="dropdown">
           <button className="button button-menu">
-            <Menu size={24}/>
+            <Menu size={44}/>
             {t('controls.menu')}
           </button>
           <div className="dropdown-content">
@@ -59,7 +70,7 @@ const TopNavigation = ({
           className={`button button-connect ${connected ? 'connected' : ''}`}
           onClick={connected ? onDisconnectClick : onConnectClick}
         >
-          <Radio size={24}/>
+            <RoboConnect style={{width: '30px', height: '30px'}}/>
           {connected ? t('controls.disconnect') : t('controls.connect')}
         </button>
         <button

@@ -3,7 +3,7 @@
 /* Container styles */
 .block-icon-container {
   position: absolute;
-  top: 48%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
@@ -13,6 +13,10 @@
   height: 70px;
   pointer-events: none;
   z-index: 1;
+}
+
+.block-display .block-icon-container {
+  width: 65px;
 }
 
   /* Perusasetukset container-elementille */

@@ -106,13 +106,22 @@
 
 /* Block colors - lisätään takaisin värimääritykset */
 .block-steering {
-  background-color: var(--success-color);
+  margin-top: 1px !important;
   color: white;
 }
 
 .block-display {
-  background-color: #9333ea; /* Violetti displaylle */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 161.54"><path fill="%23ec663b" stroke="%23000000" stroke-width="2" d="M111.91,159.54H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V27.9S17.65,10.35,41.23,2.81c12.61-4.04,25.8-3.6,38.38.55,22.35,7.37,32.3,24.54,32.3,24.54v35.92c-.01,1.37-1.13,2.48-2.5,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
+  min-height: 150px !important;
+  min-height: 150px !important;
   color: white;
+  margin-right: -9px;
 }
 
 .block-movement {
@@ -143,8 +152,15 @@
 }
 
 .block-sound {
-  background-color: #db2777; /* Pinkki äänille */
-  color: white;
+  background-size: contain; /* Skaalaa SVG kokonaan näkyville */
+  background-repeat: no-repeat; /* Ei toisteta taustaa */
+  background-position: center; /* Keskitetään tausta */
+  position: relative; /* Salli lapsielementtien sijoittelu */
+  margin-right: -10px;
+  justify-content: center; /* Keskitys vaakasuunnassa */
+  align-items: center; /* Keskitys pystysuunnassa */
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 162.57"><path fill="%23e72e55" stroke="%23000000" stroke-width="2" d="M111.91,160.57H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.68c0-.76.51-1.42,1.24-1.62L109.57.07c1.17-.32,2.32.56,2.32,1.77v63.01c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
+  min-height: 150px !important;
 }
 
 .block-settings {

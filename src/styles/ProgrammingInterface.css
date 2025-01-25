@@ -56,6 +56,7 @@
 .button-menu:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 .button-connect:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 
+
 .lucide.lucide-menu {
   margin: auto;
 }
@@ -248,7 +249,8 @@
 }
 
 .block-steering {
-  background-color: #22c55e;
+
+
 }
 
 .block-header {
@@ -290,12 +292,12 @@
   --block-height: 100px;
   height: var(--block-height);
   /* Perustyylit */
-  background-color: var(--success-color);
+
   position: relative;
   display: flex;
   align-items: center;
   padding: 1rem 1rem 1rem 3rem; /* Extra padding left for semicircle */
-  margin-left: 1.5rem; /* Space for the semicircle */
+  margin-left: -10px; /* Space for the semicircle */
 
   /* Pyöristykset oikealla puolella */
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -304,15 +306,19 @@
 /* Start Block Semicircle
  * Creates the left side semicircle using pseudo-element
  */
-.block-start::before {
+/* .block-start::before {
   content: '';
   position: absolute;
-  left: -1.5rem; /* Half of the semicircle width */
+  left: -2.5rem;
   top: 0;
   height: 100%;
   width: 3rem; /* Semicircle width */
-  background-color: var(--success-color);
-  border-radius: 3rem 0 0 3rem; /* Full left side radius */
+/*  background-color: var(--success-color);
+ border-radius: 3rem 0 0 3rem; /* Full left side radius */
+/* } */
+
+.block-start .block-input-container {
+  display: none !important;
 }
 
 /* End Block Styles
@@ -351,7 +357,7 @@
 /* Hover effects for both blocks */
 .block-start:hover::before,
 .block-start:hover {
-  background-color: var(--success-color-dark);
+
 }
 
 .block-end:hover::after,
@@ -367,7 +373,17 @@
 
 /* Disable dragging for start block */
 .block-start {
-  cursor: default;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px !important;
+  width: 126.48px;
+  height: 161.14px;
+  margin: -2px;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 128.48 163.14"><path fill="%2300983a" stroke="%23000000" stroke-width="2" d="M126.48,161.14H20.16C-5.64,113.13-6.73,55.64,17.21,6.68l2.95-6.03c0-.45.45-.77.87-.61l51.1,18.46c1.75.63,3.67.61,5.41-.05L125.58.06c.43-.16.88.15.88.61v64.74c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
 }
 
 /* Responsiivisuus */

@@ -2,12 +2,12 @@
 export const translations = {
   de: {
     controls: {
-      start: "",
+      start: "Programm ausfuhren",
       executing: "Wird ausgefuhrt...",
-      stop: "",
-      save: "",
-      menu: "",
-      connect: "",
+      stop: "Stoppen",
+      save: "Programm speichern",
+      menu: "Menu",
+      connect: "Verbinden",
       disconnect: "Trennen",
       clear: "Alles loschen",
     },

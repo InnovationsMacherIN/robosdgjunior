@@ -38,23 +38,23 @@ const TopNavigation = ({
                 disabled={isExecuting || !connected}
             >
                 <RoboStart style={{width: '30px', height: '30px'}}/>
-                {isExecuting ? t('controls.executing') : t('controls.start')}
+                {/*isExecuting ? t('controls.executing') : t('controls.start')*/}
             </button>
             <button className="button button-stop">
                 <RoboStop style={{width: '30px', height: '30px'}}/>
-                {t('controls.stop')}
+                {/*t('controls.stop')*/}
             </button>
         </div>
 
         <div className="control-buttons">
         <button className="button button-save">
           <RoboSave style={{width: '30px', height: '30px'}}/>
-          {t('controls.save')}
+          {/*t('controls.save')*/}
         </button>
         <div className="dropdown">
           <button className="button button-menu">
             <Menu size={44}/>
-            {t('controls.menu')}
+            {/*t('controls.menu')*/}
           </button>
           <div className="dropdown-content">
             <div className="language-selector">
@@ -71,7 +71,7 @@ const TopNavigation = ({
           onClick={connected ? onDisconnectClick : onConnectClick}
         >
             <RoboConnect style={{width: '30px', height: '30px'}}/>
-          {connected ? t('controls.disconnect') : t('controls.connect')}
+          {/*connected ? t('controls.disconnect') : t('controls.connect')*/}
         </button>
         <button
           className="button button-clear"
@@ -79,7 +79,7 @@ const TopNavigation = ({
           disabled={droppedBlocks.length === 0}
         >
           <Trash2 className="w-4 h-4"/>
-          {t('controls.clear')}
+          {/*t('controls.clear')*/}
         </button>
       </div>
     </div>

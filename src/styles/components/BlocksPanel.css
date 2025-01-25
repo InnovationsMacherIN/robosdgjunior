@@ -104,4 +104,15 @@
   padding: var(--spacing-1) var(--spacing-2);
 }
 
-
+.category-button[data-category="Control"] {
+  background-color: #00A302; /* Example color */
+}
+.category-button[data-category="LED Display"] {
+  background-color: #FF6633;
+}
+.category-button[data-category="Movement"] {
+  background-color: #004B9B; /* Example color */
+}
+.category-button[data-category="Sounds"] {
+  background-color: #EB2B54; /* Example color */
+}

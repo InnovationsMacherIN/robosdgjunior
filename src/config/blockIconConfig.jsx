@@ -16,7 +16,7 @@ const BlockIconConfig = ({ blockId }) => {
   const getIconSrc = (blockId) => {
     switch (blockId) {
       case 'start':
-        return 'icon_start';
+        return icon_start;
       case 'end':
         return '';
       case 'melody':

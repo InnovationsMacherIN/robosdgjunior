@@ -21,8 +21,14 @@ import '../../styles/BlockVisualElements.css';
 import BlockVisual from '../../utils/BlockVisual';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
-import BlockTooltip from "../BlockTooltip.jsx";
-import '../../styles/BlockTooltip.css';
+//import BlockTooltip from "../BlockTooltip.jsx";
+//import '../../styles/BlockTooltip.css';
+
+import icon_control from "../../assets/icons/robo-play-icon.svg";
+import icon_visual from "../../assets/icons/robo-play-icon.svg";
+import icon_sounds from "../../assets/icons/robo-play-icon.svg";
+import icon_movement from "../../assets/icons/robo-play-icon.svg";
+
 
 const BlocksPanel = ({
                        categories,
@@ -189,6 +195,33 @@ const BlocksPanel = ({
     }
   };
 
+
+  const getCategoryImage = (category) => {
+
+    const getIconSrc = (category) => {
+      switch (category) {
+        case 'Control':
+          return icon_control;
+        case 'LED Display':
+          return icon_visual;
+        case 'Movement':
+          return icon_movement;
+        case 'Sounds':
+          return icon_sounds;
+        default:
+          return ''; // Default icon or empty string if no icon
+      }
+    }
+
+    return (
+      <div>
+        <img src={getIconSrc(category)} alt="Category Image" className="category-image"/>
+      </div>
+    );
+  };
+
+
+
   /**
    * BlocksPanel -komponentti
    *
@@ -207,12 +240,16 @@ const BlocksPanel = ({
         {categories.map((category) => (
           <button
             key={category}
-            className={`category-button ${
+            className={`category-button  ${
               selectedCategory === category ? 'active' : ''
             }`}
             onClick={() => setSelectedCategory(category)}
+            data-category={category}
           >
-            {category}
+            {/*
+              {category}
+              */}
+            {getCategoryImage(category)}
           </button>
         ))}
       </div>
@@ -229,13 +266,13 @@ const BlocksPanel = ({
             onMouseLeave={handleMouseLeave}
           >
             <BlockVisual blockId={block.id} />
-            {showTooltip && (
+            {/*showTooltip && (
               <BlockTooltip
                 title={block.title}
                 description={block.description}
                 mousePosition={mousePosition}
               />
-            )}
+            )*/}
             {/*<div className="block-header">
               <span className="block-title">{block.title}</span>
             </div>

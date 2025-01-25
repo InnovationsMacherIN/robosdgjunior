@@ -16,8 +16,8 @@
 import React, {useRef, useState, useEffect} from 'react';
 import BlockVisual from "../../utils/BlockVisual.jsx";
 import '../../styles/BlockVisualElements.css';
-import BlockTooltip from "../BlockTooltip.jsx";
-import '../../styles/BlockTooltip.css';
+//import BlockTooltip from "../BlockTooltip.jsx";
+//import '../../styles/BlockTooltip.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 
@@ -463,13 +463,13 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           </div>
         )}
         {/*<p className="block-description">{block.description}</p>*/}
-        {showTooltip && (
+        {/*showTooltip && (
             <BlockTooltip
                 title={block.title}
                 description={block.description}
                 mousePosition={mousePosition}
             />
-        )}
+        )*/}
       </div>
     );
 };

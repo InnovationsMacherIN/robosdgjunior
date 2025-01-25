@@ -1,10 +1,11 @@
-export const categories = ['Steering', 'LED Display', 'Movements', 'Combinations', 'Sounds', 'Settings'];
+export const categories = ['Control', 'LED Display', 'Movement', 'Sounds'];
+// export const categories = ['Steering', 'LED Display', 'Movements', 'Combinations', 'Sounds', 'Settings']; ORIGINAL
 
 // ProgrammingInterface.jsx
 // ProgrammingInterface.jsx blocksByCategory päivitys
 
 export const blocksByCategory = {
-  'Steering': [
+  'Control': [
     {
       id: 'start',
       title: 'Kun Start painettu',
@@ -42,6 +43,20 @@ export const blocksByCategory = {
       className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
       action: 'END',
       command: 'end:'
+    },
+    {
+      id: 'wait',
+      title: 'Odota',
+      description: 'Odota määrätty aika',
+      className: 'block-settings',
+      hasInput: true,
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 0.1,
+      inputMax: 9.9,
+      inputStep: 0.1,
+      defaultValue: 1,
+      command: (duration) => `W${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     }
   ],
   'LED Display': [
@@ -97,7 +112,7 @@ export const blocksByCategory = {
       command: 'A00:'
     }
   ],
-  'Movements': [
+  'Movement': [
     {
       id: 'forward',
       title: 'Eteenpäin',
@@ -181,9 +196,7 @@ export const blocksByCategory = {
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `BR${duration}${duration % 1 === 0 ? '.0:' : ':'}`
-    }
-  ],
-  'Combinations': [
+    },
     {
       id: 'dance',
       title: 'Tanssi',
@@ -261,6 +274,85 @@ export const blocksByCategory = {
       command: 'PIROUETTE'
     }
   ],
+  /*
+  'Combinations': [
+    {
+      id: 'dance',
+      title: 'Tanssi',
+      description: 'Suorita tanssiliike',
+      className: 'block-combination',
+      hasInput: true,
+      inputType: 'number',
+      inputLabel: 'Toistot',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
+      hasSecondInput: true,
+      secondInputType: 'select',
+      secondInputLabel: 'Voimakkuus',
+      options: [
+        { value: 'easy', label: 'Kevyt' },
+        { value: 'middle', label: 'Keskitaso' },
+        { value: 'strong', label: 'Voimakas' }
+      ],
+      command: 'DANCE'
+    },
+    {
+      id: 'zigzag',
+      title: 'Siksak',
+      description: 'Liiku siksakilla',
+      className: 'block-combination',
+      hasInput: true,
+      inputType: 'number',
+      inputLabel: 'Toistot',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
+      hasSecondInput: true,
+      secondInputType: 'select',
+      secondInputLabel: 'Voimakkuus',
+      options: [
+        { value: 'easy', label: 'Kevyt' },
+        { value: 'middle', label: 'Keskitaso' },
+        { value: 'strong', label: 'Voimakas' }
+      ],
+      command: 'ZIGZAG'
+    },
+    {
+      id: 'shake',
+      title: 'Ravista',
+      description: 'Ravistele robottia',
+      className: 'block-combination',
+      hasInput: true,
+      inputType: 'number',
+      inputLabel: 'Toistot',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
+      hasSecondInput: true,
+      secondInputType: 'select',
+      secondInputLabel: 'Voimakkuus',
+      options: [
+        { value: 'easy', label: 'Kevyt' },
+        { value: 'middle', label: 'Keskitaso' },
+        { value: 'strong', label: 'Voimakas' }
+      ],
+      command: 'SHAKE'
+    },
+    {
+      id: 'pirouette',
+      title: 'Piruetti',
+      description: 'Pyörähdä ympäri',
+      className: 'block-combination',
+      hasInput: true,
+      inputType: 'number',
+      inputLabel: 'Toistot',
+      inputMin: 1,
+      inputMax: 5,
+      defaultValue: 1,
+      command: 'PIROUETTE'
+    }
+  ],*/
   'Sounds': [
     {
       id: 'melody',
@@ -307,6 +399,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     }
   ],
+  /*
   'Settings': [
     {
       id: 'motor',
@@ -329,19 +422,5 @@ export const blocksByCategory = {
       defaultValue: 20,
       command: (motor, speed) => `G${motor}${speed < 10 ? '0' + speed : speed}:`
     },
-    {
-      id: 'wait',
-      title: 'Odota',
-      description: 'Odota määrätty aika',
-      className: 'block-settings',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 0.1,
-      inputMax: 9.9,
-      inputStep: 0.1,
-      defaultValue: 1,
-      command: (duration) => `W${duration}${duration % 1 === 0 ? '.0:' : ':'}`
-    }
-  ]
+  ]*/
 };

@@ -7,6 +7,7 @@ import RoboStart from '../../assets/icons/StartIcon.jsx';
 import RoboLogo from '../../assets/icons/robo-sdg-jr-logo.jsx';
 import RoboSave from '../../assets/icons/RoboSave.jsx';
 import RoboConnect from '../../assets/icons/RoboConnect.jsx';
+import RoboClose from '../../assets/icons/robo-close.jsx';
 
 
 const TopNavigation = ({
@@ -78,7 +79,7 @@ const TopNavigation = ({
           onClick={onClearBlocks}
           disabled={droppedBlocks.length === 0}
         >
-          <Trash2 className="w-4 h-4"/>
+            <RoboClose style={{width: '26px', height: '50px'}}/>
           {/*t('controls.clear')*/}
         </button>
       </div>

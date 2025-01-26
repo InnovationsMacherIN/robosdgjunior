@@ -24,10 +24,10 @@ import '../../styles/blockIconConfig.css';
 //import BlockTooltip from "../BlockTooltip.jsx";
 //import '../../styles/BlockTooltip.css';
 
-import icon_control from "../../assets/icons/robo-play-icon.svg";
-import icon_visual from "../../assets/icons/robo-play-icon.svg";
-import icon_sounds from "../../assets/icons/robo-play-icon.svg";
-import icon_movement from "../../assets/icons/robo-play-icon.svg";
+import icon_control from "../../assets/icons/robo-trafficlight.svg";
+import icon_visual from "../../assets/icons/robo-screen.svg";
+import icon_sounds from "../../assets/icons/robo-sound.svg";
+import icon_movement from "../../assets/icons/robo-movement.svg";
 
 
 const BlocksPanel = ({

@@ -32,14 +32,14 @@
   min-font-size: 60px;
   color: var(--text-light);
   border-radius:250px !important;
-  box-shadow: 2px 2px 0 black, 4px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
 }
 
 .button-stop {
   background-color: var(--error-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 2px 2px 0 black, 4px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   border-radius:250px !important;
 }
 
@@ -47,7 +47,7 @@
   background-color: var(--primary-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 2px 2px 0 black, 4px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   border-radius:250px !important;
 }
 
@@ -56,7 +56,7 @@
   color: var(--text-light);
   height:65px;
   width: 65px;
-  box-shadow: 2px 2px 0 black, 4px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   border-radius:250px !important;
 }
 
@@ -64,7 +64,7 @@
   background-color: var(--secondary-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 2px 2px 0 black, 4px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   border-radius:250px !important;
 }
 

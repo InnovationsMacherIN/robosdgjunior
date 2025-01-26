@@ -105,14 +105,14 @@
 }
 
 .category-button[data-category="Control"] {
-  background-color: #00A302; /* Example color */
+  background-color: #575757; /* Example color */
 }
 .category-button[data-category="LED Display"] {
-  background-color: #FF6633;
+  background-color: #FF4F14;
 }
 .category-button[data-category="Movement"] {
-  background-color: #004B9B; /* Example color */
+  background-color: #003c9a; /* Example color */
 }
 .category-button[data-category="Sounds"] {
-  background-color: #EB2B54; /* Example color */
+  background-color: #F71F66; /* Example color */
 }

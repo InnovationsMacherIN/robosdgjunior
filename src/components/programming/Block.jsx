@@ -20,6 +20,7 @@ import '../../styles/BlockVisualElements.css';
 //import '../../styles/BlockTooltip.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
+import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 
 const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
 
@@ -242,6 +243,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
+        /*
         return (
           <input
             type="number"
@@ -252,6 +254,14 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             onChange={(e) => handleInputChange(e.target.value)}
           />
         );
+        */
+        return (
+          <CustomNumberInput
+            value={block.inputValue}
+            onChange={(value) => handleInputChange(value)}
+          />
+        );
+
       case 'select':
         return (
           <select

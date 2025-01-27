@@ -26,11 +26,47 @@ const BlockIconConfig = ({ blockId }) => {
         return icon_start;
       case 'end':
         return icon_stop;
-      case 'melody':
+      case 'melody_1':
         return icon_emoji_love;
-      case 'sound':
+      case 'melody_2':
         return icon_emoji_love;
-        return icon_puoli;
+      case 'melody_3':
+        return icon_emoji_love;
+      case 'melody_4':
+        return icon_emoji_love;
+      case 'melody_5':
+        return icon_emoji_love;
+      case 'melody_6':
+        return icon_emoji_love;
+      case 'melody_7':
+        return icon_emoji_love;
+      case 'melody_8':
+        return icon_emoji_love;
+      case 'melody_9':
+        return icon_emoji_love;
+      case 'melody_10':
+        return icon_emoji_love;
+      case 'sound_1':
+        return icon_emoji_love;
+      case 'sound_2':
+        return icon_emoji_love;
+      case 'sound_3':
+        return icon_emoji_love;
+      case 'sound_4':
+        return icon_emoji_love;
+      case 'sound_5':
+        return icon_emoji_love;
+      case 'sound_6':
+        return icon_emoji_love;
+      case 'sound_7':
+        return icon_emoji_love;
+      case 'sound_8':
+        return icon_emoji_love;
+      case 'sound_9':
+        return icon_emoji_love;
+      case 'sound_10':
+        return icon_emoji_love;
+        //return icon_puoli;
       case 'forward':
         return icon_nuoli;
       case 'backward':
@@ -47,7 +83,31 @@ const BlockIconConfig = ({ blockId }) => {
         return icon_zigzag
       case 'shake':
         return icon_shake
-      case 'show-picture':
+      case 'show-picture_1':
+        return icon_picture
+      case 'show-picture_2':
+        return icon_picture
+      case 'show-picture_3':
+        return icon_picture
+      case 'show-picture_4':
+        return icon_picture
+      case 'show-picture_5':
+        return icon_picture
+      case 'show-picture_6':
+        return icon_picture
+      case 'show-picture_7':
+        return icon_picture
+      case 'show-picture_8':
+        return icon_picture
+      case 'show-picture_9':
+        return icon_picture
+      case 'show-picture_10':
+        return icon_picture
+      case 'show-picture_11':
+        return icon_picture
+      case 'show-picture_12':
+        return icon_picture
+      case 'show-picture_13':
         return icon_picture
       case 'wait':
         return icon_wait

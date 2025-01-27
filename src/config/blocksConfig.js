@@ -60,7 +60,7 @@ export const blocksByCategory = {
     }
   ],
   'LED Display': [
-    {
+    /*{
       id: 'show-text',
       title: 'Kirjoita',
       description: 'Näytä teksti LED-näytöllä (max 8 merkkiä)',
@@ -71,29 +71,245 @@ export const blocksByCategory = {
       inputLabel: 'Teksti',
       maxLength: 8,
       command: (text) => `${text}:`
-    },
+    },*/
     {
-      id: 'show-picture',
+      id: 'show-picture_1',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'select',
-      inputLabel: 'Kuva',
+      inputLabel: 'image_Froehlich',
       options: [
-        { value: '01', label: 'Fröhlich' },
-        { value: '02', label: 'Herz' },
-        { value: '03', label: 'Herz klein' },
-        { value: '04', label: 'Traurig' },
-        { value: '05', label: 'Böse' },
-        { value: '06', label: 'Müde' },
-        { value: '07', label: 'Überrascht' },
-        { value: '08', label: 'Richtig' },
-        { value: '09', label: 'Falsch' },
-        { value: '10', label: 'Zwinkern' },
-        { value: '11', label: 'Alien' },
-        { value: '12', label: 'Pfeil nach links' },
+        { value: '01', label: 'Fröhlich' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_2',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Herz',
+      options: [
+        { value: '02', label: 'Herz' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_3',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Herz_klein',
+      options: [
+        { value: '03', label: 'Herz klein' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_4',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Traurig',
+      options: [
+        { value: '04', label: 'Traurig' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_5',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Bose',
+      options: [
+        { value: '05', label: 'Böse' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_6',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Mude',
+      options: [
+        { value: '06', label: 'Müde' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_7',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Uberrascht',
+      options: [
+        { value: '07', label: 'Überrascht' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_8',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Richtig',
+      options: [
+        { value: '08', label: 'Richtig' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_9',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Falsch',
+      options: [
+        { value: '09', label: 'Falsch' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_10',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Zwinkern',
+      options: [
+        { value: '10', label: 'Zwinkern' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_11',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Alien',
+      options: [
+        { value: '11', label: 'Alien' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_12',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'image_Pfeil_nach_links',
+      options: [
+        { value: '12', label: 'Pfeil nach links' }
+      ],
+      hasSecondInput: true,
+      secondInputType: 'number',
+      secondInputLabel: 'Sekunnit',
+      secondInputMin: 1,
+      secondInputMax: 9,
+      command: (picId, duration) => `A${picId}${duration}:`
+    },
+    {
+      id: 'show-picture_13',
+      title: 'Näytä kuva',
+      description: 'Näytä valittu kuva LED-näytöllä',
+      className: 'block-display',
+      action: 'SHOW_PICTURE',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'picture_Pfeil_nach_rechts',
+      options: [
         { value: '13', label: 'Pfeil nach rechts' }
       ],
       hasSecondInput: true,
@@ -122,7 +338,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `Bv${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -136,7 +352,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `Bz${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -150,7 +366,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `Bl${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -164,7 +380,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `Br${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -178,7 +394,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `BL${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -192,7 +408,7 @@ export const blocksByCategory = {
       inputType: 'number',
       inputLabel: 'Sekunnit',
       inputMin: 0.1,
-      inputMax: 9.9,
+      inputMax: 9.0,
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `BR${duration}${duration % 1 === 0 ? '.0:' : ':'}`
@@ -355,45 +571,261 @@ export const blocksByCategory = {
   ],*/
   'Sounds': [
     {
-      id: 'melody',
+      id: 'melody_1',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
-      inputLabel: 'Melodia',
+      inputLabel: 'Melody_Tusch',
       options: [
-        { value: 'M01', label: 'Tusch' },
-        { value: 'M02', label: 'Romantisch' },
-        { value: 'M03', label: 'Star Wars' },
-        { value: 'M04', label: 'Super Mario' },
-        { value: 'M05', label: 'Donauwalzer' },
-        { value: 'M06', label: 'Tango Kriminalis' },
-        { value: 'M07', label: "Don't Worry be Happy" },
-        { value: 'M08', label: 'Somewhere over the Rainbow' },
-        { value: 'M09', label: 'Harry Potter' },
+        { value: 'M01', label: 'Tusch' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_2',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_Romantisch',
+      options: [
+        { value: 'M02', label: 'Romantisch' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_3',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_Star_wars',
+      options: [
+        { value: 'M03', label: 'Star Wars' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_4',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_Super_Mario',
+      options: [
+        { value: 'M04', label: 'Super Mario' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_5',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_Donauwalzer',
+      options: [
+        { value: 'M05', label: 'Donauwalzer' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_6',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_tango',
+      options: [
+        { value: 'M06', label: 'Tango Kriminalis' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_7',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_happy',
+      options: [
+        { value: 'M07', label: "Don't Worry be Happy" }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_8',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_rainbow',
+      options: [
+        { value: 'M08', label: 'Somewhere over the Rainbow' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_9',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_H_P',
+      options: [
+        { value: 'M09', label: 'Harry Potter' }
+      ],
+      command: (melodyId) => `${melodyId}:`
+    },
+    {
+      id: 'melody_10',
+      title: 'Soita melodia',
+      description: 'Soita valittu melodia',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Melody_H_B',
+      options: [
         { value: 'M10', label: 'Happy Birthday' }
       ],
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'sound',
+      id: 'sound_1',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
-      inputLabel: 'Ääni',
+      inputLabel: 'Sound_Kichern',
       options: [
-        { value: 'K01', label: 'Kichern' },
-        { value: 'K02', label: 'Fröhlich' },
-        { value: 'K03', label: 'Hallo' },
-        { value: 'K04', label: 'Mysteriös' },
-        { value: 'K05', label: 'Traurig' },
-        { value: 'K06', label: 'Rutschen' },
-        { value: 'K07', label: 'Aufsteigen' },
-        { value: 'K08', label: 'Federn' },
-        { value: 'K09', label: 'Funkeln' },
+        { value: 'K01', label: 'Kichern' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_2',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Fröhlich',
+      options: [
+        { value: 'K02', label: 'Fröhlich' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_3',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Hallo',
+      options: [
+        { value: 'K03', label: 'Hallo' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_4',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Mysteriös',
+      options: [
+        { value: 'K04', label: 'Mysteriös' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_5',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Traurig',
+      options: [
+        { value: 'K05', label: 'Traurig' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_6',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Rutschen',
+      options: [
+        { value: 'K06', label: 'Rutschen' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_7',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Aufsteigen',
+      options: [
+        { value: 'K07', label: 'Aufsteigen' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_8',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Federn',
+      options: [
+        { value: 'K08', label: 'Federn' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_9',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Funkeln',
+      options: [
+        { value: 'K09', label: 'Funkeln' }
+      ],
+      command: (soundId) => `${soundId}:`
+    },
+    {
+      id: 'sound_10',
+      title: 'Soita ääni',
+      description: 'Soita valittu ääni (vain micro:bit V2)',
+      className: 'block-sound',
+      hasInput: true,
+      inputType: 'select',
+      inputLabel: 'Sound_Gähnen',
+      options: [
         { value: 'K10', label: 'Gähnen' }
       ],
       command: (soundId) => `${soundId}:`

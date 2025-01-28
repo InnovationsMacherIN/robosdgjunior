@@ -1,5 +1,5 @@
-import React from 'react';
-import {Play, Square, Save, Menu, Radio, Trash2} from 'lucide-react';
+import React, {useState} from 'react';
+import {Play, Square, Save, Menu, Radio, Trash2, Circle} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/components/TopNavigation.css';
 import RoboStop from '../../assets/icons/StopIcon.jsx';
@@ -17,7 +17,9 @@ const TopNavigation = ({
                          onDisconnectClick,
                          onStartClick,
                          connected,
-                         isExecuting
+                         isExecuting,
+                         isBlocksView,
+                         toggleView
                        }) => {
   const { t, i18n } = useTranslation();
 
@@ -44,6 +46,14 @@ const TopNavigation = ({
             <button className="button button-stop">
                 <RoboStop style={{width: '30px', height: '30px'}}/>
                 {/*t('controls.stop')*/}
+            </button>
+            <button className="button button-code-view" onClick={toggleView}>
+              {isBlocksView ? (
+                <Square style={{ width: '30px', height: '30px' }} />
+              ) : (
+                <Circle style={{ width: '30px', height: '30px' }} />
+              )}
+              {/*t('controls.code')*/}
             </button>
         </div>
 

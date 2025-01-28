@@ -48,6 +48,11 @@ const ProgrammingInterface = () => {
   const [connected, setConnected] = useState(false);
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
+  const [isBlocksView, setIsBlocksView] = useState(true);
+
+  const toggleView = () => {
+    setIsBlocksView(!isBlocksView)
+  }
 
   /**
    * Reference to Bluetooth connection component
@@ -358,6 +363,8 @@ const ProgrammingInterface = () => {
         isExecuting={isExecuting}
         onClearBlocks={handleClearBlocks}
         droppedBlocks={droppedBlocks}
+        isBlocksView={isBlocksView}
+        toggleView={toggleView}
       />
 
       <ZoomableArea
@@ -375,7 +382,13 @@ const ProgrammingInterface = () => {
           handleDragStart={handleDragStart}
           handleBlockInputChange={handleBlockInputChange}
           onDragOverPosition={handleDragOverPosition}
-        />
+        /> {!isBlocksView && (
+        <div className="popup">
+          <h2 >Code View</h2>
+          <p>This is the code view popup.</p>
+          <button onClick={toggleView}>Close</button>
+        </div>
+      )}
       </ZoomableArea>
 
       <BlocksPanel

@@ -18,12 +18,14 @@ const CustomNumberInput = ({ value, onChange }) => {
         onClick={() => setShowPopup(true)}
       />
       {showPopup && (
-        <div className="popup">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-            <button key={number} onClick={() => handleButtonClick(number)}>
-              {number}
-            </button>
-          ))}
+        <div className="popup-overlay">
+          <div className="popup">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+              <button key={number} onClick={() => handleButtonClick(number)}>
+                {number}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

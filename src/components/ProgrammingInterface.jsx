@@ -47,6 +47,7 @@ const ProgrammingInterface = () => {
   const [isExecuting, setIsExecuting] = useState(false);
   const [connected, setConnected] = useState(false);
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
+  const [isDraggingBlock, setIsDraggingBlock] = useState(false);
 
   /**
    * Reference to Bluetooth connection component
@@ -95,6 +96,8 @@ const ProgrammingInterface = () => {
   const handleDragStart = (e, block) => {
     // Clone the block to avoid reference issues
     console.log('Drag start:', block);
+    setIsDraggingBlock(true);
+
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
@@ -146,6 +149,7 @@ const ProgrammingInterface = () => {
    */
   const handleDrop = (e) => {
     e.preventDefault();
+    setIsDraggingBlock(false);
 
     const cleanup = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
@@ -314,6 +318,7 @@ const ProgrammingInterface = () => {
    * @returns {void}
    */
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
+    setIsDraggingBlock(false);
     setDroppedBlocks(currentBlocks => {
       const newBlocks = currentBlocks.filter((block, index) => {
         if (!block) {
@@ -355,7 +360,11 @@ const ProgrammingInterface = () => {
         droppedBlocks={droppedBlocks}
       />
 
-      <ZoomableArea >
+      <ZoomableArea
+        onDeleteBlock={handleDeleteBlock}
+        onDragOverPosition={handleDragOverPosition}
+        isDraggingBlock={isDraggingBlock}
+      >
         <ProgrammingArea
           droppedBlocks={droppedBlocks}
           isExecuting={isExecuting}
@@ -365,7 +374,6 @@ const ProgrammingInterface = () => {
           onUpdateBlock={handleUpdateBlock}
           handleDragStart={handleDragStart}
           handleBlockInputChange={handleBlockInputChange}
-          onDeleteBlock={handleDeleteBlock}
           onDragOverPosition={handleDragOverPosition}
         />
       </ZoomableArea>

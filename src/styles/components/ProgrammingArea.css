@@ -1,5 +1,13 @@
 /* ProgrammingArea.css */
 
+/* ProgrammingArea.css */
+.programming-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .programming-area-container {
   display: flex;
   flex-direction: column;
@@ -302,28 +310,6 @@
   font-size: 0.9rem;
 }
 
-.delete-zone {
-  position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: white;  /* Lisätty selkeä taustaväri */
-  border: 3px dashed var(--error-color);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.delete-zone.visible {
-  opacity: 1;
-  pointer-events: all;
-}
 
 @keyframes pulse {
   0% {

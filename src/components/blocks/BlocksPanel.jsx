@@ -23,6 +23,7 @@ import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 //import BlockTooltip from "../BlockTooltip.jsx";
 //import '../../styles/BlockTooltip.css';
+import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 
 import icon_control from "../../assets/icons/robo-trafficlight.svg";
 import icon_visual from "../../assets/icons/robo-screen.svg";
@@ -37,6 +38,8 @@ const BlocksPanel = ({
                        blocksByCategory,
                        handleDragStart
                      }) => {
+
+  const [blocks, setBlocks] = useState(blocksByCategory);
 
   /**
    * Tooltip state
@@ -65,33 +68,48 @@ const BlocksPanel = ({
   ///////////////
 
 
-  /**
-   * handleInputChange - handler (funktion)
+      /**
+   * handleInputChange - handler (function)
    * Updates block input values during configuration
    * Handles both primary and secondary inputs for blocks
    *
-   * @param {Event} e - Input change event
+   * @param {Event|string|number} valueOrEvent - Input change event or direct value
    * @param {string} blockId - Unique identifier for the block
    * @param {string} [inputType='primary'] - Type of input being updated
    *
    * @returns {void}
    */
-  const handleInputChange = (e, blockId, inputType = 'primary') => {
-    const block = blocksByCategory[selectedCategory].find(b => b.id === blockId);
+  const handleInputChange = (valueOrEvent, blockId, inputType = 'primary') => {
+    const value = valueOrEvent.target ? valueOrEvent.target.value : valueOrEvent;
+    console.log('handleInputChange', value, blockId, inputType);
+    console.log('blocks', blocks);
+    console.log('selectedCategory', selectedCategory);
+    const block = blocks[selectedCategory].find(b => b.id === blockId);
     if (!block) return;
 
-    // Luo kopio lohkosta päivitetyillä arvoilla
     const updatedBlock = { ...block };
 
     if (inputType === 'primary') {
-      updatedBlock.inputValue = e.target.value;
+      updatedBlock.inputValue = value;
+      console.log('updatedBlock', updatedBlock);
     } else {
-      updatedBlock.secondInputValue = e.target.value;
+      updatedBlock.secondInputValue = value;
     }
 
-    // Kun lohkoa raahataan, handleDragStart saa päivitetyn version
-    const originalDragStart = (e) => handleDragStart(e, updatedBlock);
-    e.target.closest('.block').ondragstart = originalDragStart;
+    const updatedBlocks = blocks[selectedCategory].map(b =>
+      b.id === blockId ? updatedBlock : b
+    );
+
+    setBlocks({
+      ...blocks,
+      [selectedCategory]: updatedBlocks
+    });
+
+    const blockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (blockElement) {
+      const originalDragStart = (e) => handleDragStart(e, updatedBlock);
+      blockElement.ondragstart = originalDragStart;
+    }
   };
 
   /**
@@ -115,7 +133,7 @@ const BlocksPanel = ({
           <div className="input-group">
             {/*block.inputLabel && (
               <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
+            )
             <input
               id={`${block.id}-input`}
               type="number"
@@ -125,6 +143,12 @@ const BlocksPanel = ({
               defaultValue={block.defaultValue}
               onChange={(e) => handleInputChange(e, block.id)}
               onClick={(e) => e.stopPropagation()}
+              className="block-input-number"
+            />*/}
+            <CustomNumberInput
+              id={`${block.id}-input`}
+              value={block.inputValue}
+              onChange={(value) => handleInputChange(value, block.id)}
               className="block-input-number"
             />
           </div>
@@ -288,6 +312,7 @@ const BlocksPanel = ({
                       <label htmlFor={`${block.id}-second-input`}>
                         {block.secondInputLabel}
                       </label>
+                      {/*
                       <input
                         id={`${block.id}-second-input`}
                         type="number"
@@ -298,6 +323,8 @@ const BlocksPanel = ({
                         onClick={(e) => e.stopPropagation()}
                         className="block-input-number"
                       />
+                      */}
+                      <CustomNumberInput />
                     </div>
                   ) : (
                     <div className="input-group">

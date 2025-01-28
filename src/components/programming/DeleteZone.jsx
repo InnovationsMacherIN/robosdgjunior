@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import '../../styles/components/ProgrammingArea.css';
+import '../../styles/DeleteZone.css';
 
 const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (isDraggingBlock) {
+      console.log('Block is being dragged');
+    }
+  }, [isDraggingBlock]);
+
+  useEffect(() => {
+    if (isHovered) {
+      console.log('Block is being hovered');
+    }
+  }, [isHovered]);
 
   return (
     <div

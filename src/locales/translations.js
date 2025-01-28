@@ -10,6 +10,7 @@ export const translations = {
       connect: "Verbinden",
       disconnect: "Trennen",
       clear: "Alles loschen",
+      icon: "Icon",
     },
     programmingArea: {
       title: "Programmierbereich",
@@ -59,6 +60,7 @@ export const translations = {
       connect: "Connect",
       disconnect: "Disconnect",
       clear: "Clear All",
+      icon: "Icon",
     },
     programmingArea: {
       title: "Programming Area",
@@ -107,6 +109,7 @@ export const translations = {
       connect: "Yhdistä",
       disconnect: "Katkaise yhteys",
       clear: "Tyhjennä kaikki",
+      icon: "Kuvake",
     },
     programmingArea: {
       title: "Ohjelmointialue",
@@ -155,6 +158,7 @@ export const translations = {
       connect: "接続",
       disconnect: "切断",
       clear: "すべて消去",
+      icon: "アイコン",
     },
     programmingArea: {
       title: "プログラミングエリア",

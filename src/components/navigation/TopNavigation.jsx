@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Play, Square, Save, Menu, Radio, Trash2, Circle} from 'lucide-react';
+import {Square, Menu, Circle, Bird, Egg, Laugh} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/components/TopNavigation.css';
 import RoboStop from '../../assets/icons/StopIcon.jsx';
@@ -22,10 +22,15 @@ const TopNavigation = ({
                          toggleView
                        }) => {
   const { t, i18n } = useTranslation();
+  const [Icon, setIcon] = useState(Bird);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
+
+  const changeIcon = (newIcon) => {
+    setIcon(newIcon);
+  }
 
   return (
     <div className="top-nav">
@@ -58,6 +63,20 @@ const TopNavigation = ({
         </div>
 
         <div className="control-buttons">
+          <div className="dropdown">
+            <button className="button button-profile">
+              <Icon style={{width: '40px', height: '40px', color:'white'}}/>
+              {/*t('controls.menu')*/}
+            </button>
+            <div className="dropdown-content">
+              <div className="language-selector">
+                <span>{t('controls.icon')}</span>
+                <button onClick={() => changeIcon(Bird)}><Bird/></button>
+                <button onClick={() => changeIcon(Egg)}><Egg/></button>
+                <button onClick={() => changeIcon(Laugh)}><Laugh/></button>
+              </div>
+            </div>
+          </div>
         <button className="button button-save">
           <RoboSave style={{width: '30px', height: '30px'}}/>
           {/*t('controls.save')*/}

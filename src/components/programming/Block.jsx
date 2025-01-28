@@ -261,7 +261,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             onChange={(value) => handleInputChange(value)}
           />
         );
-
       case 'select':
         return (
           <select
@@ -275,13 +274,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             ))}
           </select>
         );
-      default:
+      case 'text':
         return (
           <input
             type="text"
             defaultValue={block.defaultValue}
             onChange={(e) => handleInputChange(e.target.value)}
           />
+        );
+      default:
+        return (
+          <div></div>
         );
     }
   };

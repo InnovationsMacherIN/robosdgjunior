@@ -21,16 +21,27 @@ import '../../styles/BlockVisualElements.css';
 import BlockVisual from '../../utils/BlockVisual';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
-import BlockTooltip from "../BlockTooltip.jsx";
-import '../../styles/BlockTooltip.css';
+//import BlockTooltip from "../BlockTooltip.jsx";
+//import '../../styles/BlockTooltip.css';
+import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
+import {useTouchDrag} from "../../utils/useTouchDrag";
+
+import icon_control from "../../assets/icons/robo-trafficlight.svg";
+import icon_visual from "../../assets/icons/robo-screen.svg";
+import icon_sounds from "../../assets/icons/robo-sound.svg";
+import icon_movement from "../../assets/icons/robo-movement.svg";
+
 
 const BlocksPanel = ({
                        categories,
                        selectedCategory,
                        setSelectedCategory,
                        blocksByCategory,
-                       handleDragStart
+                       handleDragStart,
+                       handleDrop
                      }) => {
+
+  const [blocks, setBlocks] = useState(blocksByCategory);
 
   /**
    * Tooltip state
@@ -40,7 +51,7 @@ const BlocksPanel = ({
 
   /**
    * ToolTip functions
-   * */
+   *
 
   const handleMouseEnter = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -58,34 +69,106 @@ const BlocksPanel = ({
 
   ///////////////
 
+   */
 
-  /**
-   * handleInputChange - handler (funktion)
+    // Add dragState to the destructured values
+  const { handlers: touchHandlers, isDragging, dragState } = useTouchDrag({
+      onDragStart: (dragData) => {
+        const blockElement = dragData.target;
+        if (!blockElement) return;
+
+        // Create visual clone
+        const clone = blockElement.cloneNode(true);
+        clone.style.position = 'fixed';
+        clone.style.zIndex = 1000;
+        clone.style.opacity = '0.8';
+        clone.style.pointerEvents = 'none';
+        clone.classList.add('block-dragging');
+        document.body.appendChild(clone);
+
+        // Store clone and block data
+        dragState.current.clone = clone;
+        dragState.current.blockData = blocks[selectedCategory].find(
+          b => b.id === blockElement.dataset.blockId
+        );
+
+        // Position clone at touch point
+        clone.style.left = `${dragData.startX - clone.offsetWidth / 2}px`;
+        clone.style.top = `${dragData.startY - clone.offsetHeight / 2}px`;
+      },
+
+      onDragMove: (moveData) => {
+        if (!isDragging || !dragState.current.clone) return;
+
+        const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
+        const programmingArea = dropTarget?.closest('.programming-area');
+
+        // Remove previous highlights
+        document.querySelectorAll('.drag-over').forEach(el => {
+          el.classList.remove('drag-over');
+        });
+
+        // Add highlight to current drop target
+        if (programmingArea) {
+          programmingArea.classList.add('drag-over');
+        }
+      },
+
+      onDragEnd: (e, endData) => {
+        console.log('onDragEnd endData', endData);
+
+        handleDrop(e, endData);
+
+
+        // Clean up
+        document.querySelectorAll('.drag-over').forEach(el => {
+          el.classList.remove('drag-over');
+        });
+      }
+    });
+
+      /**
+   * handleInputChange - handler (function)
    * Updates block input values during configuration
    * Handles both primary and secondary inputs for blocks
    *
-   * @param {Event} e - Input change event
+   * @param {Event|string|number} valueOrEvent - Input change event or direct value
    * @param {string} blockId - Unique identifier for the block
    * @param {string} [inputType='primary'] - Type of input being updated
    *
    * @returns {void}
    */
-  const handleInputChange = (e, blockId, inputType = 'primary') => {
-    const block = blocksByCategory[selectedCategory].find(b => b.id === blockId);
+  const handleInputChange = (valueOrEvent, blockId, inputType = 'primary') => {
+    const value = valueOrEvent.target ? valueOrEvent.target.value : valueOrEvent;
+    console.log('handleInputChange', value, blockId, inputType);
+    console.log('blocks', blocks);
+    console.log('selectedCategory', selectedCategory);
+    const block = blocks[selectedCategory].find(b => b.id === blockId);
     if (!block) return;
 
-    // Luo kopio lohkosta päivitetyillä arvoilla
     const updatedBlock = { ...block };
 
     if (inputType === 'primary') {
-      updatedBlock.inputValue = e.target.value;
+      updatedBlock.inputValue = value;
+      console.log('updatedBlock', updatedBlock);
     } else {
-      updatedBlock.secondInputValue = e.target.value;
+      updatedBlock.secondInputValue = value;
     }
 
-    // Kun lohkoa raahataan, handleDragStart saa päivitetyn version
-    const originalDragStart = (e) => handleDragStart(e, updatedBlock);
-    e.target.closest('.block').ondragstart = originalDragStart;
+    const updatedBlocks = blocks[selectedCategory].map(b =>
+      b.id === blockId ? updatedBlock : b
+    );
+
+    setBlocks({
+      ...blocks,
+      [selectedCategory]: updatedBlocks
+    });
+
+    const blockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+    if (blockElement) {
+      const originalDragStart = (e) => handleDragStart(e, updatedBlock);
+      blockElement.ondragstart = originalDragStart;
+    }
   };
 
   /**
@@ -109,7 +192,7 @@ const BlocksPanel = ({
           <div className="input-group">
             {/*block.inputLabel && (
               <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
+            )
             <input
               id={`${block.id}-input`}
               type="number"
@@ -119,6 +202,12 @@ const BlocksPanel = ({
               defaultValue={block.defaultValue}
               onChange={(e) => handleInputChange(e, block.id)}
               onClick={(e) => e.stopPropagation()}
+              className="block-input-number"
+            />*/}
+            <CustomNumberInput
+              id={`${block.id}-input`}
+              value={block.inputValue}
+              onChange={(value) => handleInputChange(value, block.id)}
               className="block-input-number"
             />
           </div>
@@ -189,6 +278,33 @@ const BlocksPanel = ({
     }
   };
 
+
+  const getCategoryImage = (category) => {
+
+    const getIconSrc = (category) => {
+      switch (category) {
+        case 'Control':
+          return icon_control;
+        case 'LED Display':
+          return icon_visual;
+        case 'Movement':
+          return icon_movement;
+        case 'Sounds':
+          return icon_sounds;
+        default:
+          return ''; // Default icon or empty string if no icon
+      }
+    }
+
+    return (
+      <div>
+        <img src={getIconSrc(category)} alt="Category Image" className="category-image"/>
+      </div>
+    );
+  };
+
+
+
   /**
    * BlocksPanel -komponentti
    *
@@ -207,12 +323,16 @@ const BlocksPanel = ({
         {categories.map((category) => (
           <button
             key={category}
-            className={`category-button ${
+            className={`category-button  ${
               selectedCategory === category ? 'active' : ''
             }`}
             onClick={() => setSelectedCategory(category)}
+            data-category={category}
           >
-            {category}
+            {/*
+              {category}
+              */}
+            {getCategoryImage(category)}
           </button>
         ))}
       </div>
@@ -222,20 +342,22 @@ const BlocksPanel = ({
           <div
             key={block.id}
             className={`block ${block.className}`}
-            draggable="true"
+            draggable={!('ontouchstart' in window)}
             onDragStart={(e) => handleDragStart(e, block)}
-            onMouseEnter={handleMouseEnter}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            {...touchHandlers}
+            data-block-id={block.id}
+            //onMouseEnter={handleMouseEnter}
+            //onMouseMove={handleMouseMove}
+            //onMouseLeave={handleMouseLeave}
           >
             <BlockVisual blockId={block.id} />
-            {showTooltip && (
+            {/*showTooltip && (
               <BlockTooltip
                 title={block.title}
                 description={block.description}
                 mousePosition={mousePosition}
               />
-            )}
+            )*/}
             {/*<div className="block-header">
               <span className="block-title">{block.title}</span>
             </div>
@@ -251,6 +373,7 @@ const BlocksPanel = ({
                       <label htmlFor={`${block.id}-second-input`}>
                         {block.secondInputLabel}
                       </label>
+                      {/*
                       <input
                         id={`${block.id}-second-input`}
                         type="number"
@@ -261,6 +384,8 @@ const BlocksPanel = ({
                         onClick={(e) => e.stopPropagation()}
                         className="block-input-number"
                       />
+                      */}
+                      <CustomNumberInput />
                     </div>
                   ) : (
                     <div className="input-group">

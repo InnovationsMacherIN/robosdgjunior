@@ -5,23 +5,104 @@
  * Used for text, number and select inputs in blocks when block is in BlockPanel area
  */
 
+/* Touch drag styles */
+.block-dragging {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+  will-change: transform;
+  touch-action: none;
+}
+
+/* Highlight potential drop targets */
+.programming-area.drag-over {
+  background-color: rgba(37, 99, 235, 0.1);
+  transition: background-color 0.2s;
+}
+
+/* Prevent text selection during touch drag */
+.block {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none; /* Prevents browser touch actions */
+}
+
+@media (hover: none) and (pointer: coarse) {
+  /* Estä natiivin selaimen touchmove käyttäytyminen */
+  .block {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Isommat touch kohteet tabletilla */
+  .block-input-container input,
+  .block-input-container select {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 16px;
+  }
+
+  /* Selkeämpi visuaalinen palaute */
+  .block-dragging {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  .programming-area.drag-over {
+    background-color: rgba(37, 99, 235, 0.15);
+    transition: background-color 0.2s ease;
+  }
+}
+
+/* Touch-friendly block size on tablets */
+@media (max-width: 1024px) {
+  .block {
+    min-height: 60px; /* Slightly larger touch target */
+    margin-bottom: 1rem; /* More space between blocks */
+  }
+
+  .block-input-container input,
+  .block-input-container select {
+    min-height: 44px; /* Larger touch targets for inputs */
+    font-size: 16px; /* Prevent iOS zoom on focus */
+  }
+}
+
 .block-input-container {
   position: absolute;
-  bottom: -30px; /* Adjust this value to control how much the input field sticks out */
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  border-top: 2px solid white;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.0);
+  border-left: 4px solid white;
+  border-right: 4px solid white;
+  border-bottom: 4px solid white;
+}
+
+
+.blocks-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem 3rem;
+  margin: 1rem 0;
 }
 
 .block {
   height: 100px;
   width: 100px;
   position: relative;
-  padding-bottom: 10px; /* Adjust this value to provide space for the input field */
+  padding-bottom: 10px;
+  margin-left: -23px;
+  border-radius: 0px !important;
 }
 
 .block-input-text,
@@ -99,4 +180,15 @@
   padding: var(--spacing-1) var(--spacing-2);
 }
 
-
+.category-button[data-category="Control"] {
+  background-color: #575757;
+}
+.category-button[data-category="LED Display"] {
+  background-color: #FF4F14;
+}
+.category-button[data-category="Movement"] {
+  background-color: #003c9a;
+}
+.category-button[data-category="Sounds"] {
+  background-color: #F71F66;
+}

@@ -30,6 +30,8 @@ import ZoomableArea from '../utils/zoomableArea';
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
 
+
+
   /**
    * State declaratiions
    *
@@ -45,6 +47,14 @@ const ProgrammingInterface = () => {
   const [isExecuting, setIsExecuting] = useState(false);
   const [connected, setConnected] = useState(false);
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
+  const [isDraggingBlock, setIsDraggingBlock] = useState(false);
+  const [isBlocksView, setIsBlocksView] = useState(true);
+  const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
+
+
+  const toggleView = () => {
+    setIsBlocksView(!isBlocksView)
+  }
 
   /**
    * Reference to Bluetooth connection component
@@ -93,6 +103,8 @@ const ProgrammingInterface = () => {
   const handleDragStart = (e, block) => {
     // Clone the block to avoid reference issues
     console.log('Drag start:', block);
+    setIsDraggingBlock(true);
+
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
@@ -140,10 +152,13 @@ const ProgrammingInterface = () => {
    *Cleanup removes visual indicators after drop operation.
    *
    * @param {DragEvent} e - Drop event
+   * @param {Object} dropEvent - Drop event data
    * @returns {void}
    */
-  const handleDrop = (e) => {
+  const handleDrop = (e, dropEvent) => {
+    console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
+    setIsDraggingBlock(false);
 
     const cleanup = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
@@ -153,35 +168,53 @@ const ProgrammingInterface = () => {
         el.classList.remove('shift-right'));
     };
 
-    if (isInternalDrag(e)) {
+    const isTouchEvent = e.type === 'touchend';
 
-      //get drag data from internal reordering
-      const {fromIndex} = JSON.parse(
+    if (isTouchEvent) {
+      // Kosketustapahtuman käsittely
+      const touch = e.changedTouches[0];
+      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+      const programmingArea = dropTarget?.closest('.programming-area');
+      console.log('Touch drop:', dropTarget, programmingArea);
+
+      if (programmingArea) {
+        const blockData = dropEvent.blockData;
+        if (blockData) {
+          const newBlock = { ...blockData };
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+        }
+      }
+    } else if (isInternalDrag(e)) {
+      // Drag & drop sisäisen järjestelyn käsittely
+      const { fromIndex } = JSON.parse(
         e.dataTransfer.getData('application/internal')
       );
-      //console.log('From index:', fromIndex, 'To index:', currentDropPosition);
-      if ( fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+      if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
         handleReorder(fromIndex, currentDropPosition);
       } else {
         return;
       }
     } else {
-      console.log('Dropping block:', currentDropPosition);
+      // Uuden lohkon lisääminen
       const blockData = e.dataTransfer.getData('application/json');
-      const block = JSON.parse(blockData);
-      if (currentDropPosition !== null) {
-        setDroppedBlocks(blocks => {
-          const newBlocks = [...blocks];
-          newBlocks.splice(currentDropPosition, 0, block);
-          return newBlocks;
-        });
-      } else {
-        setDroppedBlocks([...droppedBlocks, block]);
+      if (blockData) {
+        const block = JSON.parse(blockData);
+        if (currentDropPosition !== null) {
+          setDroppedBlocks(blocks => {
+            const newBlocks = [...blocks];
+            newBlocks.splice(currentDropPosition, 0, block);
+            return newBlocks;
+          });
+        } else {
+          setDroppedBlocks([...droppedBlocks, block]);
+        }
       }
     }
+
     cleanup();
     setCurrentDropPosition(null);
   };
+
 
   /**
    * handleReorder - handler
@@ -208,7 +241,7 @@ const ProgrammingInterface = () => {
    * @returns {boolean} - true if internal drag
    */
   const isInternalDrag = (e) => {
-    return e.dataTransfer.types.includes('application/internal');
+    return e.dataTransfer.types.includes('application/internal') ?? false;
   }
 
   /**
@@ -262,7 +295,9 @@ const ProgrammingInterface = () => {
    * @returns {Promise<void>}
    */
   const handleExecute = async () => {
+    console.log('Execute program');
     if (!ble3Ref.current?.isConnected()) {
+      console.log('Not connected');
       alert(t('alerts.connectMicrobit'));
       return;
     }
@@ -312,6 +347,7 @@ const ProgrammingInterface = () => {
    * @returns {void}
    */
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
+    setIsDraggingBlock(false);
     setDroppedBlocks(currentBlocks => {
       const newBlocks = currentBlocks.filter((block, index) => {
         if (!block) {
@@ -351,9 +387,15 @@ const ProgrammingInterface = () => {
         isExecuting={isExecuting}
         onClearBlocks={handleClearBlocks}
         droppedBlocks={droppedBlocks}
+        isBlocksView={isBlocksView}
+        toggleView={toggleView}
       />
 
-      <ZoomableArea >
+      <ZoomableArea
+        onDeleteBlock={handleDeleteBlock}
+        onDragOverPosition={handleDragOverPosition}
+        isDraggingBlock={isDraggingBlock}
+      >
         <ProgrammingArea
           droppedBlocks={droppedBlocks}
           isExecuting={isExecuting}
@@ -363,9 +405,14 @@ const ProgrammingInterface = () => {
           onUpdateBlock={handleUpdateBlock}
           handleDragStart={handleDragStart}
           handleBlockInputChange={handleBlockInputChange}
-          onDeleteBlock={handleDeleteBlock}
           onDragOverPosition={handleDragOverPosition}
-        />
+        /> {!isBlocksView && (
+        <div className="popup">
+          <h2 >Code View</h2>
+          <p>This is the code view popup.</p>
+          <button onClick={toggleView}>Close</button>
+        </div>
+      )}
       </ZoomableArea>
 
       <BlocksPanel
@@ -374,6 +421,7 @@ const ProgrammingInterface = () => {
         setSelectedCategory={setSelectedCategory}
         blocksByCategory={blocksByCategory}
         handleDragStart={handleDragStart}
+        handleDrop={handleDrop}
       />
 
       <Ble3 ref={ble3Ref} onConnected={handleConnected} />

@@ -28,23 +28,44 @@
 */
 .button-start {
   background-color: var(--success-color);
+  height:65px;
+  min-font-size: 60px;
   color: var(--text-light);
+  border-radius:250px !important;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
 }
 
 .button-stop {
   background-color: var(--error-color);
   color: var(--text-light);
+  height:65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
 }
 
 .button-save {
   background-color: var(--primary-color);
   color: var(--text-light);
+  height:65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
 }
 
-.button-menu,
+.button-menu {
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  height:65px;
+  width: 65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
+}
+
 .button-connect {
   background-color: var(--secondary-color);
   color: var(--text-light);
+  height:65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
 }
 
 /* Button Hover Effects
@@ -52,7 +73,7 @@
 */
 .button:hover {
   opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-0px);
 }
 
 /* Dropdown Menu Container

@@ -2,11 +2,26 @@
 
 /* Container styles */
 .block-icon-container {
-  /* Asemoidaan ikoni absoluuttisesti keskelle block-elementtiä */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 70px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.category-image {
+  max-height: 54px;
+}
+
+.block-display .block-icon-container {
+  width: 65px;
+}
 
   /* Perusasetukset container-elementille */
   display: flex;
@@ -28,26 +43,26 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.8;
+  opacity: 1;
   transition: all 0.2s ease;
 }
 
 /* Movement block specific styles */
 .movement-icon {
   /* Perhonen.png kuvan erityisasetukset */
-  filter: brightness(1.1);
+  filter: brightness(1.0);
 }
 
 /* Sound block specific styles */
 .sound-icon {
   /* Puoli-pallo.svg kuvan erityisasetukset */
-  filter: brightness(1.2);
+  filter: brightness(1.0);
 }
 
 /* Hover effects */
 .block:hover .block-icon {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.0);
 }
 
 /* High contrast theme support */

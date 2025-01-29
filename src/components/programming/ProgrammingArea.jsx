@@ -40,7 +40,6 @@ const ProgrammingArea = ({
                          }) => {
 
   const { t } = useTranslation();
-  const [isDraggingBlock, setIsDraggingBlock] = useState(false);
 
   // Lisää nämä tilamuuttujat komponentin alkuun
   const [activeChain, setActiveChain] = useState(null);
@@ -102,7 +101,6 @@ const ProgrammingArea = ({
    * @returns {void}
    */
   const handleBlockDragStart = (e, block) => {
-    setIsDraggingBlock(true);
     if (handleDragStart) {
       handleDragStart(e, block);
     }
@@ -114,7 +112,7 @@ const ProgrammingArea = ({
    * @returns {void}
    */
   const handleBlockDragEnd = () => {
-    setIsDraggingBlock(false);
+    //setIsDraggingBlock(false);
   };
 
   /**
@@ -236,6 +234,7 @@ const ProgrammingArea = ({
    * @returns {React.ReactElement} The programming area UI
    */
   return (
+    <div className="programming-area">
     <div
       ref={areaRef}
       className="programming-area-blocks"
@@ -269,13 +268,7 @@ const ProgrammingArea = ({
 
       <div className={`programming-area-overlay ${activeChain !== null ? 'active' : ''}`} />
 
-      <DeleteZone
-        isDraggingBlock={isDraggingBlock} // Muutettu tämä rivi
-        onDelete={(block, index) => {
-          onDeleteBlock(block, index);
-        }}
-        onDragOverPosition={onDragOverPosition}
-      />
+    </div>
     </div>
   );
 };

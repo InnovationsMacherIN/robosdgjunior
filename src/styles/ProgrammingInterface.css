@@ -1,3 +1,7 @@
+.second-input {
+  display: none !important;
+}
+
 .programming-container {
   display: flex;
   flex-direction: column;
@@ -15,8 +19,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #003c9a;
+  min-height:100px;
+  box-shadow: 0 0 0 black, 0px 4px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   width: 100%;
 }
 
@@ -39,16 +44,26 @@
 .button svg {
   width: 1rem;
   height: 1rem;
-  margin-right: 0.5rem;
+  margin-right: 0rem;
   flex-shrink: 0;
 }
 
-.button-start { background-color: #22c55e; }
-.button-stop { background-color: #ef4444; }
-.button-save { background-color: #3b82f6; }
-.button-menu { background-color: #6b7280; }
-.button-connect { background-color: #8b5cf6; }
+.button-start { background-color: #0cbd0f; border: 3px solid #1D1D1B; }
+.button-stop { background-color: #cc0000; border: 3px solid #1D1D1B; }
+.button-save { background-color: #0cbd0f; border: 3px solid #1D1D1B;}
+.button-menu { background-color: #2c2c2c; border: 3px solid #1D1D1B;}
+.button-connect { background-color: #993399; border: 3px solid #1D1D1B;}
 
+.button-start:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-stop:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-save:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-menu:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-connect:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-clear:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+
+.lucide.lucide-menu {
+  margin: auto;
+}
 .programming-area {
   flex-grow: 1;
   margin: 1rem;
@@ -69,8 +84,7 @@
 
 .categories {
   background-color: white;
-  padding: 1rem;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -78,28 +92,43 @@
 .category-buttons {
   display: flex;
   justify-content: left;
-  padding: 0 1rem;
+  padding: 1rem 2rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
   gap: 0.5rem;
+  border-bottom: 20px solid #f3f4f6;
+  border-top: 20px solid #f3f4f6;
 }
 
 .category-button {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   border-radius: 0.375rem;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
   white-space: nowrap;
+  min-height: 80px;
+  width: 80px;
+  border-radius: 10px;
+  border: 3px solid #1d1d1b;
+  background: #00a302;
+  box-shadow: 1px 1px 0 black, 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.category-button {
+  font-size: 0.4em;
+}
+
+.category-button:active {
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3) !important;
 }
 
 .category-button:hover {
-  background-color: #f3f4f6;
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.category-button.active {
-  background-color: #3b82f6;
-  color: white;
+.category-button:active {
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .category-button.active-steering {
@@ -107,14 +136,28 @@
   color: white;
 }
 
-.blocks-container {
+.popup {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  height: 80%;
+  width: 80%;
+  transform: translate( 5%, 5%);
+  background: black;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/*.blocks-container {
   display: flex;
   gap: 1rem;
-  padding: 2rem 1rem;
+  padding: 0.5rem 3rem;
   overflow-x: auto;
   flex-wrap: wrap;
   margin: 1rem 0;
-}
+}*/
 
 /*.block {
   padding: 0.75rem;
@@ -153,9 +196,7 @@
   gap: 0.5rem;
 
   /* Visual styling */
-  background-color: var(--success-color);
-  border-radius: var(--radius-md);
-  border: 2px solid rgba(255,255,255,0.3);
+
   padding: 1rem;
   position: relative;
   transition: all 0.3s ease;
@@ -221,11 +262,12 @@
 
 
 .block:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
 }
 
 .block-steering {
-  background-color: #22c55e;
+
+
 }
 
 .block-header {
@@ -267,12 +309,12 @@
   --block-height: 100px;
   height: var(--block-height);
   /* Perustyylit */
-  background-color: var(--success-color);
+
   position: relative;
   display: flex;
   align-items: center;
   padding: 1rem 1rem 1rem 3rem; /* Extra padding left for semicircle */
-  margin-left: 1.5rem; /* Space for the semicircle */
+  margin-left: -10px; /* Space for the semicircle */
 
   /* Pyöristykset oikealla puolella */
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -281,15 +323,19 @@
 /* Start Block Semicircle
  * Creates the left side semicircle using pseudo-element
  */
-.block-start::before {
+/* .block-start::before {
   content: '';
   position: absolute;
-  left: -1.5rem; /* Half of the semicircle width */
+  left: -2.5rem;
   top: 0;
   height: 100%;
   width: 3rem; /* Semicircle width */
-  background-color: var(--success-color);
-  border-radius: 3rem 0 0 3rem; /* Full left side radius */
+/*  background-color: var(--success-color);
+ border-radius: 3rem 0 0 3rem; /* Full left side radius */
+/* } */
+
+.block-start .block-input-container {
+  display: none !important;
 }
 
 /* End Block Styles
@@ -300,12 +346,11 @@
   --block-height: 100px;
   height: var(--block-height);
   /* Perustyylit */
-  background-color: var(--error-color);
   position: relative;
   display: flex;
   align-items: center;
-  padding: 1rem 3rem 1rem 1rem; /* Extra padding right for semicircle */
-  margin-right: 1.5rem; /* Space for the semicircle */
+  padding: 1rem 1rem 1rem 1rem; /* Extra padding right for semicircle */
+  margin-right: 0.5rem; /* Space for the semicircle */
 
   /* Pyöristykset vasemmalla puolella */
   border-radius: var(--radius-md) 0 0 var(--radius-md);
@@ -317,18 +362,16 @@
 .block-end::after {
   content: '';
   position: absolute;
-  right: -1.5rem; /* Half of the semicircle width */
   top: 0;
+  margin-left: -23px;
   height: 100%;
   width: 3rem; /* Semicircle width */
-  background-color: var(--error-color);
-  border-radius: 0 3rem 3rem 0; /* Full right side radius */
 }
 
 /* Hover effects for both blocks */
 .block-start:hover::before,
 .block-start:hover {
-  background-color: var(--success-color-dark);
+
 }
 
 .block-end:hover::after,
@@ -344,7 +387,43 @@
 
 /* Disable dragging for start block */
 .block-start {
-  cursor: default;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px !important;
+  width: 126.48px;
+  height: 161.14px;
+  margin: -2px;
+  margin-left: -23px;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 128.48 163.14"><path fill="%2300983a" stroke="%23000000" stroke-width="2" d="M126.48,161.14H20.16C-5.64,113.13-6.73,55.64,17.21,6.68l2.95-6.03c0-.45.45-.77.87-.61l105.44,15.04v50.34c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
+}
+
+.block-start .block-icon-container {
+  width: 42px;
+  top: 53%;
+}
+
+.block-end .block-icon-container {
+  width: 42px;
+  top: 53%;
+}
+
+.block-end {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px !important;
+  width: 126.48px;
+  height: 161.14px;
+  margin-left: -15px;
+  margin-top: 2px;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 134.17 163.14"><path fill="%23be1622" stroke="%23000000" stroke-width="2" d="M112.01,0h0S5.58,15.43,5.58,15.56v52.55c0,1.37-1.11,2.49-2.49,2.49h-.61c-1.37,0-2.49,1.11-2.49,2.49v37.23c0,1.37,1.11,2.49,2.49,2.49h.61c1.37,0,2.49,1.11,2.49,2.49v45.86h106.33v-.31c.06-.1.11-.21.11-.34l2.95-6.03C138.9,105.5,137.81,48.01,112.01,0Z"/></svg>');
 }
 
 /* Responsiivisuus */

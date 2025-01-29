@@ -9,10 +9,8 @@
   left: 0;
   width: 100%; /* Make the icon box the same width as the block */
   height: 50px;
-  background: rgba(211, 211, 211, 0.5); /* Light grey and semi-transparent */
-  border: 1px solid #ccc;
   border-radius: 4px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
 }

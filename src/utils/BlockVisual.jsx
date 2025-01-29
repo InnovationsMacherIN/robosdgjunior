@@ -33,7 +33,7 @@ const BlockVisual = ({ blockId }) => {
   // Määrittelee oikean polun ja kuvan blockin tyypin mukaan
   const getIconPath = (id) => {
     if (isMovementBlock(id)) {
-      return '/src/assets/icons/nuoli.svg';
+      return '/src/assets/icons/robo-movement-block-head.svg';
     } else if (isSoundBlock(id)) {
       return '/src/assets/images/perhonen.png';
     } else if (isSettingBlock(id)) {

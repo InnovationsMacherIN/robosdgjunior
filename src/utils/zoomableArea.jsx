@@ -1,16 +1,23 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import DeleteZone from "../components/programming/DeleteZone.jsx";
+import '../styles/DeleteZone.css';
 
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2;
 const ZOOM_SPEED = 0.001;
 
-const ZoomableArea = ({ children }) => {
+const ZoomableArea = ({ children,
+                        onDeleteBlock,
+                        onDragOverPosition,
+                        isDraggingBlock
+                      }) => {
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
   const touchCount = useRef(0);
+
 
   useEffect(() => {
     const container = containerRef.current;
@@ -136,6 +143,13 @@ const ZoomableArea = ({ children }) => {
         touchAction: 'none'
       }}
     >
+      <DeleteZone
+        isDraggingBlock={isDraggingBlock} // Muutettu tämä rivi
+        onDelete={(block, index) => {
+          onDeleteBlock(block, index);
+        }}
+        onDragOverPosition={onDragOverPosition}
+      />
       <div
         className="zoomable-content"
         style={{

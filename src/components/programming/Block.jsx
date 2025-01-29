@@ -16,10 +16,11 @@
 import React, {useRef, useState, useEffect} from 'react';
 import BlockVisual from "../../utils/BlockVisual.jsx";
 import '../../styles/BlockVisualElements.css';
-import BlockTooltip from "../BlockTooltip.jsx";
-import '../../styles/BlockTooltip.css';
+//import BlockTooltip from "../BlockTooltip.jsx";
+//import '../../styles/BlockTooltip.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
+import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 
 const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
 
@@ -242,6 +243,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
+        /*
         return (
           <input
             type="number"
@@ -250,6 +252,13 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             step={block.inputStep}
             defaultValue={block.defaultValue}
             onChange={(e) => handleInputChange(e.target.value)}
+          />
+        );
+        */
+        return (
+          <CustomNumberInput
+            value={block.inputValue}
+            onChange={(value) => handleInputChange(value)}
           />
         );
       case 'select':
@@ -265,13 +274,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             ))}
           </select>
         );
-      default:
+      case 'text':
         return (
           <input
             type="text"
             defaultValue={block.defaultValue}
             onChange={(e) => handleInputChange(e.target.value)}
           />
+        );
+      default:
+        return (
+          <div></div>
         );
     }
   };
@@ -463,13 +476,13 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           </div>
         )}
         {/*<p className="block-description">{block.description}</p>*/}
-        {showTooltip && (
+        {/*showTooltip && (
             <BlockTooltip
                 title={block.title}
                 description={block.description}
                 mousePosition={mousePosition}
             />
-        )}
+        )*/}
       </div>
     );
 };

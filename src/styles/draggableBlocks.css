@@ -60,13 +60,13 @@
 
 /* Hover-tila ketjulle */
 .block-chain-container:hover {
-  background-color: rgba(0, 0, 0, 0.03); /* Kevyt taustaväri hover-tilassa */
+  background-color: rgba(0, 0, 0, 0.00); /* Kevyt taustaväri hover-tilassa */
 }
 
 /* Aktiivinen raahaus */
 .block-chain-container.dragging {
   cursor: grabbing;
-  background-color: rgba(0, 0, 0, 0.05); /* Hieman tummempi tausta raahattaessa */
+  background-color: rgba(0, 0, 0, 0.00); /* Hieman tummempi tausta raahattaessa */
 }
 
 /* Varmistetaan että hover-efekti ei näy kun raahataan yksittäistä blokkia */

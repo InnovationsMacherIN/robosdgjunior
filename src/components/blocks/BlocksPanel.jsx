@@ -24,6 +24,7 @@ import '../../styles/blockIconConfig.css';
 //import BlockTooltip from "../BlockTooltip.jsx";
 //import '../../styles/BlockTooltip.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
+import {useTouchDrag} from "../../utils/useTouchDrag";
 
 import icon_control from "../../assets/icons/robo-trafficlight.svg";
 import icon_visual from "../../assets/icons/robo-screen.svg";
@@ -36,7 +37,8 @@ const BlocksPanel = ({
                        selectedCategory,
                        setSelectedCategory,
                        blocksByCategory,
-                       handleDragStart
+                       handleDragStart,
+                       handleDrop
                      }) => {
 
   const [blocks, setBlocks] = useState(blocksByCategory);
@@ -49,7 +51,7 @@ const BlocksPanel = ({
 
   /**
    * ToolTip functions
-   * */
+   *
 
   const handleMouseEnter = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -67,6 +69,63 @@ const BlocksPanel = ({
 
   ///////////////
 
+   */
+
+    // Add dragState to the destructured values
+  const { handlers: touchHandlers, isDragging, dragState } = useTouchDrag({
+      onDragStart: (dragData) => {
+        const blockElement = dragData.target;
+        if (!blockElement) return;
+
+        // Create visual clone
+        const clone = blockElement.cloneNode(true);
+        clone.style.position = 'fixed';
+        clone.style.zIndex = 1000;
+        clone.style.opacity = '0.8';
+        clone.style.pointerEvents = 'none';
+        clone.classList.add('block-dragging');
+        document.body.appendChild(clone);
+
+        // Store clone and block data
+        dragState.current.clone = clone;
+        dragState.current.blockData = blocks[selectedCategory].find(
+          b => b.id === blockElement.dataset.blockId
+        );
+
+        // Position clone at touch point
+        clone.style.left = `${dragData.startX - clone.offsetWidth / 2}px`;
+        clone.style.top = `${dragData.startY - clone.offsetHeight / 2}px`;
+      },
+
+      onDragMove: (moveData) => {
+        if (!isDragging || !dragState.current.clone) return;
+
+        const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
+        const programmingArea = dropTarget?.closest('.programming-area');
+
+        // Remove previous highlights
+        document.querySelectorAll('.drag-over').forEach(el => {
+          el.classList.remove('drag-over');
+        });
+
+        // Add highlight to current drop target
+        if (programmingArea) {
+          programmingArea.classList.add('drag-over');
+        }
+      },
+
+      onDragEnd: (e, endData) => {
+        console.log('onDragEnd endData', endData);
+
+        handleDrop(e, endData);
+
+
+        // Clean up
+        document.querySelectorAll('.drag-over').forEach(el => {
+          el.classList.remove('drag-over');
+        });
+      }
+    });
 
       /**
    * handleInputChange - handler (function)
@@ -283,11 +342,13 @@ const BlocksPanel = ({
           <div
             key={block.id}
             className={`block ${block.className}`}
-            draggable="true"
+            draggable={!('ontouchstart' in window)}
             onDragStart={(e) => handleDragStart(e, block)}
-            onMouseEnter={handleMouseEnter}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            {...touchHandlers}
+            data-block-id={block.id}
+            //onMouseEnter={handleMouseEnter}
+            //onMouseMove={handleMouseMove}
+            //onMouseLeave={handleMouseLeave}
           >
             <BlockVisual blockId={block.id} />
             {/*showTooltip && (

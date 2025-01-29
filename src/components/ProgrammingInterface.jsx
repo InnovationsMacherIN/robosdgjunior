@@ -49,6 +49,8 @@ const ProgrammingInterface = () => {
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [isBlocksView, setIsBlocksView] = useState(true);
+  const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
+
 
   const toggleView = () => {
     setIsBlocksView(!isBlocksView)
@@ -150,9 +152,11 @@ const ProgrammingInterface = () => {
    *Cleanup removes visual indicators after drop operation.
    *
    * @param {DragEvent} e - Drop event
+   * @param {Object} dropEvent - Drop event data
    * @returns {void}
    */
-  const handleDrop = (e) => {
+  const handleDrop = (e, dropEvent) => {
+    console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
     setIsDraggingBlock(false);
 
@@ -164,35 +168,53 @@ const ProgrammingInterface = () => {
         el.classList.remove('shift-right'));
     };
 
-    if (isInternalDrag(e)) {
+    const isTouchEvent = e.type === 'touchend';
 
-      //get drag data from internal reordering
-      const {fromIndex} = JSON.parse(
+    if (isTouchEvent) {
+      // Kosketustapahtuman käsittely
+      const touch = e.changedTouches[0];
+      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+      const programmingArea = dropTarget?.closest('.programming-area');
+      console.log('Touch drop:', dropTarget, programmingArea);
+
+      if (programmingArea) {
+        const blockData = dropEvent.blockData;
+        if (blockData) {
+          const newBlock = { ...blockData };
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+        }
+      }
+    } else if (isInternalDrag(e)) {
+      // Drag & drop sisäisen järjestelyn käsittely
+      const { fromIndex } = JSON.parse(
         e.dataTransfer.getData('application/internal')
       );
-      //console.log('From index:', fromIndex, 'To index:', currentDropPosition);
-      if ( fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+      if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
         handleReorder(fromIndex, currentDropPosition);
       } else {
         return;
       }
     } else {
-      console.log('Dropping block:', currentDropPosition);
+      // Uuden lohkon lisääminen
       const blockData = e.dataTransfer.getData('application/json');
-      const block = JSON.parse(blockData);
-      if (currentDropPosition !== null) {
-        setDroppedBlocks(blocks => {
-          const newBlocks = [...blocks];
-          newBlocks.splice(currentDropPosition, 0, block);
-          return newBlocks;
-        });
-      } else {
-        setDroppedBlocks([...droppedBlocks, block]);
+      if (blockData) {
+        const block = JSON.parse(blockData);
+        if (currentDropPosition !== null) {
+          setDroppedBlocks(blocks => {
+            const newBlocks = [...blocks];
+            newBlocks.splice(currentDropPosition, 0, block);
+            return newBlocks;
+          });
+        } else {
+          setDroppedBlocks([...droppedBlocks, block]);
+        }
       }
     }
+
     cleanup();
     setCurrentDropPosition(null);
   };
+
 
   /**
    * handleReorder - handler
@@ -219,7 +241,7 @@ const ProgrammingInterface = () => {
    * @returns {boolean} - true if internal drag
    */
   const isInternalDrag = (e) => {
-    return e.dataTransfer.types.includes('application/internal');
+    return e.dataTransfer.types.includes('application/internal') ?? false;
   }
 
   /**
@@ -273,7 +295,9 @@ const ProgrammingInterface = () => {
    * @returns {Promise<void>}
    */
   const handleExecute = async () => {
+    console.log('Execute program');
     if (!ble3Ref.current?.isConnected()) {
+      console.log('Not connected');
       alert(t('alerts.connectMicrobit'));
       return;
     }
@@ -397,6 +421,7 @@ const ProgrammingInterface = () => {
         setSelectedCategory={setSelectedCategory}
         blocksByCategory={blocksByCategory}
         handleDragStart={handleDragStart}
+        handleDrop={handleDrop}
       />
 
       <Ble3 ref={ble3Ref} onConnected={handleConnected} />

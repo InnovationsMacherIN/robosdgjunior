@@ -43,7 +43,7 @@ const TopNavigation = ({
             <button
                 className={`button button-start ${isExecuting ? 'executing' : ''}`}
                 onClick={onStartClick}
-                disabled={isExecuting || !connected}
+                //disabled={isExecuting || !connected}
             >
                 <RoboStart style={{width: '30px', height: '30px'}}/>
                 {/*isExecuting ? t('controls.executing') : t('controls.start')*/}

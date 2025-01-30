@@ -68,6 +68,21 @@
   border-radius:250px !important;
 }
 
+.button-profile {
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  height:65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
+}
+
+.button-code-view {
+  color: var(--text-light);
+  height:65px;
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  border-radius:250px !important;
+}
+
 /* Button Hover Effects
 * Subtle animation for better interactivity
 */
@@ -142,4 +157,92 @@
 */
 .language-selector button:hover {
   background-color: var(--background-light);
+}
+
+/* Mobile
+*/
+@media screen and (max-width: 768px) {
+
+  .logo svg {
+    max-width: 90px;
+  }
+
+  .button.button-start {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+  .button.button-stop {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+  .button.button-profile {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+  .button.button-save {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+  .button.button-connect {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+  .button.button-code-view {
+    min-width: 50px;
+    max-height: 50px;
+    padding:10px;
+  }
+
+
+  .button.button-start svg {
+    max-width: 20px;
+  }
+
+  .button svg {
+    max-width: 20px;
+    margin: auto !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .button {
+    max-width: 50px;
+    max-height: 50px;
+    padding:10px !important;
+  }
+
+  .button.button-clear svg {
+    margin-left: 2px;
+  }
+
+  .button.button-code-view svg {
+    margin-left: 2px;
+  }
+
+  .button-save svg {
+    min-width: 20px;
+  }
+
+  .button-connect svg {
+    min-width: 20px;
+  }
+
+  .top-nav {
+    min-height: 150px !important;
+  }
+
+  .category-button {
+    width: 70px !important;
+    height: 60px !important;
+  }
 }

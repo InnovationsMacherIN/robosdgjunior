@@ -8,6 +8,7 @@ import RoboLogo from '../../assets/icons/robo-sdg-jr-logo.jsx';
 import RoboSave from '../../assets/icons/RoboSave.jsx';
 import RoboConnect from '../../assets/icons/RoboConnect.jsx';
 import RoboClose from '../../assets/icons/robo-close.jsx';
+import RoboCodeView from '../../assets/icons/RoboCodeView.jsx';
 
 
 const TopNavigation = ({
@@ -54,9 +55,9 @@ const TopNavigation = ({
             </button>
             <button className="button button-code-view" onClick={toggleView}>
               {isBlocksView ? (
-                <Square style={{ width: '30px', height: '30px' }} />
+                  <RoboCodeView style={{width: '30px', height: '30px'}}/>
               ) : (
-                <Circle style={{ width: '30px', height: '30px' }} />
+                  <RoboClose style={{width: '26px', height: '50px'}}/>
               )}
               {/*t('controls.code')*/}
             </button>
@@ -65,7 +66,7 @@ const TopNavigation = ({
         <div className="control-buttons">
           <div className="dropdown">
             <button className="button button-profile">
-              <Icon style={{width: '40px', height: '40px', color:'white'}}/>
+              <Icon style={{width: '30px', height: '30px', color:'white'}}/>
               {/*t('controls.menu')*/}
             </button>
             <div className="dropdown-content">

@@ -64,6 +64,12 @@
   height: fit-content;
 }
 
+.zoomable-container {
+  border-top: 20px solid #f3f4f6;
+  border-right: 20px solid #f3f4f6;
+  border-left: 20px solid #f3f4f6;
+}
+
 
 /* Block shifting animation */
 .block {
@@ -119,6 +125,8 @@
   background-position: center; /* Keskitetään tausta */
   position: relative; /* Salli lapsielementtien sijoittelu */
   margin-right: -10px;
+  margin-top:2px;
+  margin-left: -14px !important;
   justify-content: center; /* Keskitys vaakasuunnassa */
   align-items: center; /* Keskitys pystysuunnassa */
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.14"><path fill="%23585758" stroke="%23000000" stroke-width="2" d="M111.91,161.14H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V.65c0-.45.45-.77.87-.61l51.1,18.46c1.75.63,3.67.61,5.41-.05L111.01.06c.43-.16.88.15.88.61v64.74c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
@@ -134,9 +142,8 @@
   align-items: center;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 161.54"><path fill="%23ff4f14" stroke="%23000000" stroke-width="2" d="M111.91,159.54H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V27.9S17.65,10.35,41.23,2.81c12.61-4.04,25.8-3.6,38.38.55,22.35,7.37,32.3,24.54,32.3,24.54v35.92c-.01,1.37-1.13,2.48-2.5,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
-  min-height: 150px !important;
   color: white;
-  margin-right: -9px;
+  margin-right: -10px;
 }
 
 .block-movement {
@@ -151,6 +158,10 @@
   align-items: center; /* Keskitys pystysuunnassa */
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.41"><path fill="%23003c9a" stroke="%23000000" stroke-width="2" d="M111.91,161.41H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.77L55.15,1.33c3.16-1.81,7.06-1.76,10.17.13l46.59,28.31v35.92c-.01,1.37-1.13,2.48-2.5,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
+}
+
+.block.block-movement .block-icon-container {
+  max-width: 40px;
 }
 
 .block.block-movement {
@@ -172,6 +183,10 @@
   min-height: 150px !important;
 }
 
+.block.block-combination .block-icon-container {
+  max-width: 40px;
+}
+
 .block.block-combination {
   margin-right: -10px;
 }
@@ -182,6 +197,7 @@
   background-position: center; /* Keskitetään tausta */
   position: relative; /* Salli lapsielementtien sijoittelu */
   margin-right: -10px;
+  margin-top: 1px !important;
   justify-content: center; /* Keskitys vaakasuunnassa */
   align-items: center; /* Keskitys pystysuunnassa */
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 162.57"><path fill="%23f71f66" stroke="%23000000" stroke-width="2" d="M111.91,160.57H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.68c0-.76.51-1.42,1.24-1.62L109.57.07c1.17-.32,2.32.56,2.32,1.77v63.01c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
@@ -279,7 +295,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 10px;
+  padding: 0px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.0);
@@ -397,3 +413,30 @@
 .block-container .child-blocks::-webkit-scrollbar-thumb:hover {
   background: rgba(255,255,255,0.4);
 }
+
+/* Mobile
+*/
+
+@media screen and (max-width: 768px) {
+
+  .blocks-container {
+    justify-content: left !important;
+  }
+
+  .zoomable-container {
+    border-top: 0px !important;
+    border-right: 0px !important;
+    border-left: 0px !important;
+  }
+
+  .programming-area {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .programming-area-blocks {
+    width: 100vw !important;
+  }
+
+}
+

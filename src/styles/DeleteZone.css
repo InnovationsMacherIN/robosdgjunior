@@ -9,8 +9,8 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: white;  /* Lisätty selkeä taustaväri */
-  border: 3px dashed var(--error-color);
+  background-color: #cc0000;
+  border: 3px solid #1d1d1b;
   opacity: 0;
   pointer-events: none;
   z-index: 9999;

@@ -26,6 +26,8 @@ import '../styles/ProgrammingInterface.css';
 import { useTranslation } from 'react-i18next';
 import { saveBlocks, loadBlocks, hasSavedBlocks, clearSavedBlocks } from '../utils/blockStorage';
 import ZoomableArea from '../utils/zoomableArea';
+import {CodeViewPopUp} from "../utils/CodeViewPopUp.jsx";
+import '../styles/CodeViewPopUp.css';
 
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
@@ -379,6 +381,13 @@ const ProgrammingInterface = () => {
 
   return (
     <div className="programming-container">
+      {!isBlocksView && (
+        <div className="code-view-popup">
+          <CodeViewPopUp
+            toggleView={toggleView}
+            blocks={droppedBlocks}/>
+        </div>
+      )}
       <TopNavigation
         onConnectClick={() => ble3Ref.current.connect()}
         onDisconnectClick={() => ble3Ref.current.disconnect()}
@@ -406,13 +415,7 @@ const ProgrammingInterface = () => {
           handleDragStart={handleDragStart}
           handleBlockInputChange={handleBlockInputChange}
           onDragOverPosition={handleDragOverPosition}
-        /> {!isBlocksView && (
-        <div className="popup">
-          <h2 >Code View</h2>
-          <p>This is the code view popup.</p>
-          <button onClick={toggleView}>Close</button>
-        </div>
-      )}
+        />
       </ZoomableArea>
 
       <BlocksPanel

@@ -29,6 +29,8 @@ import ZoomableArea from '../utils/zoomableArea';
 import {CodeViewPopUp} from "../utils/CodeViewPopUp.jsx";
 import '../styles/CodeViewPopUp.css';
 
+import PasswordModal from "./PasswordModal.jsx";
+
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
 
@@ -52,6 +54,12 @@ const ProgrammingInterface = () => {
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [isBlocksView, setIsBlocksView] = useState(true);
   const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
+
+  // Add this state near your other state declarations
+  const [isAuthorized, setIsAuthorized] = useState(() => {
+    // Check if already authorized in this session
+    return sessionStorage.getItem('r4e_authorized') === 'true';
+  });
 
 
   const toggleView = () => {
@@ -378,58 +386,63 @@ const ProgrammingInterface = () => {
     setDroppedBlocks(newBlocks);
   };
 
-
-  return (
-    <div className="programming-container">
-      {!isBlocksView && (
-        <div className="code-view-popup">
-          <CodeViewPopUp
-            toggleView={toggleView}
-            blocks={droppedBlocks}/>
-        </div>
-      )}
-      <TopNavigation
-        onConnectClick={() => ble3Ref.current.connect()}
-        onDisconnectClick={() => ble3Ref.current.disconnect()}
-        onStartClick={handleExecute}
-        connected={connected}
-        isExecuting={isExecuting}
-        onClearBlocks={handleClearBlocks}
-        droppedBlocks={droppedBlocks}
-        isBlocksView={isBlocksView}
-        toggleView={toggleView}
-      />
-
-      <ZoomableArea
-        onDeleteBlock={handleDeleteBlock}
-        onDragOverPosition={handleDragOverPosition}
-        isDraggingBlock={isDraggingBlock}
-      >
-        <ProgrammingArea
-          droppedBlocks={droppedBlocks}
+  if (!isAuthorized) {
+    return (
+    <PasswordModal onCorrectPassword={() => setIsAuthorized(true)} />
+    );
+  } else {
+    return (
+      <div className="programming-container">
+        {!isBlocksView && (
+          <div className="code-view-popup">
+            <CodeViewPopUp
+              toggleView={toggleView}
+              blocks={droppedBlocks}/>
+          </div>
+        )}
+        <TopNavigation
+          onConnectClick={() => ble3Ref.current.connect()}
+          onDisconnectClick={() => ble3Ref.current.disconnect()}
+          onStartClick={handleExecute}
+          connected={connected}
           isExecuting={isExecuting}
-          handleDragOver={handleDragOver}
-          handleDrop={handleDrop}
-
-          onUpdateBlock={handleUpdateBlock}
-          handleDragStart={handleDragStart}
-          handleBlockInputChange={handleBlockInputChange}
-          onDragOverPosition={handleDragOverPosition}
+          onClearBlocks={handleClearBlocks}
+          droppedBlocks={droppedBlocks}
+          isBlocksView={isBlocksView}
+          toggleView={toggleView}
         />
-      </ZoomableArea>
 
-      <BlocksPanel
-        categories={categories}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        blocksByCategory={blocksByCategory}
-        handleDragStart={handleDragStart}
-        handleDrop={handleDrop}
-      />
+        <ZoomableArea
+          onDeleteBlock={handleDeleteBlock}
+          onDragOverPosition={handleDragOverPosition}
+          isDraggingBlock={isDraggingBlock}
+        >
+          <ProgrammingArea
+            droppedBlocks={droppedBlocks}
+            isExecuting={isExecuting}
+            handleDragOver={handleDragOver}
+            handleDrop={handleDrop}
 
-      <Ble3 ref={ble3Ref} onConnected={handleConnected} />
-    </div>
-  );
+            onUpdateBlock={handleUpdateBlock}
+            handleDragStart={handleDragStart}
+            handleBlockInputChange={handleBlockInputChange}
+            onDragOverPosition={handleDragOverPosition}
+          />
+        </ZoomableArea>
+
+        <BlocksPanel
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          blocksByCategory={blocksByCategory}
+          handleDragStart={handleDragStart}
+          handleDrop={handleDrop}
+        />
+
+        <Ble3 ref={ble3Ref} onConnected={handleConnected} />
+      </div>
+    );
+  }
 };
 
 export default ProgrammingInterface;

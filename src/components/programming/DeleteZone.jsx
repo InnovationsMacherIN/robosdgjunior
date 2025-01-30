@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/DeleteZone.css';
+import RoboTrash from "../../assets/icons/RoboTrash.jsx";
 
 const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -40,8 +41,7 @@ const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
         }
       }}
     >
-      <Trash2 size={24} />
-      <span>{t('deleteBlock')}</span>
+      <RoboTrash style={{width: '45px', height: '45px'}}/>
     </div>
   );
 };

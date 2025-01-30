@@ -1,14 +1,14 @@
 .programming-area-blocks {
   position: relative;
   width: calc(100vw - 2rem); /* Huomioidaan marginaalit */
-  height: calc(100vh - 180px); /* Jätetään tilaa top-naville ja bottom-paneelille */
-  min-height: 400px;
+  height: calc(100vh - 20vh); /* Jätetään tilaa top-naville ja bottom-paneelille */
+  min-height: 40vh;
   background-color: white;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   padding: var(--spacing-4);
   overflow: auto;
-  margin: 1rem;
+  margin-top: -1rem !important;
   flex: 1;
 }
 

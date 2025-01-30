@@ -53,6 +53,9 @@
 .button-save { background-color: #0cbd0f; border: 3px solid #1D1D1B;}
 .button-menu { background-color: #2c2c2c; border: 3px solid #1D1D1B;}
 .button-connect { background-color: #993399; border: 3px solid #1D1D1B;}
+.button-code-view { background-color: #993399; border: 3px solid #1D1D1B;}
+.button-profile { border: 3px solid #1D1D1B;}
+.button-clear {background-color: #cc0000;}
 
 .button-start:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 .button-stop:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
@@ -60,15 +63,16 @@
 .button-menu:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 .button-connect:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 .button-clear:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-code-view:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
+.button-profile:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 
 .lucide.lucide-menu {
   margin: auto;
 }
 .programming-area {
   flex-grow: 1;
-  margin: 1rem;
   background-color: white;
-  border-radius: 0.5rem;
+  border-radius: 0rem;
   border: 2px solid #e5e7eb;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-height: 200px;
@@ -87,6 +91,7 @@
   padding: 0rem;
   width: 100%;
   box-sizing: border-box;
+  min-height: 40vh;
 }
 
 .category-buttons {
@@ -107,8 +112,8 @@
   cursor: pointer;
   transition: background-color 0.2s;
   white-space: nowrap;
-  min-height: 80px;
-  width: 80px;
+  min-height: 70px;
+  width: 70px;
   border-radius: 10px;
   border: 3px solid #1d1d1b;
   background: #00a302;
@@ -383,8 +388,14 @@
   width: 126.48px;
   height: 161.14px;
   margin: -2px;
-  margin-left: -23px;
+  margin-top:1px;
+  margin-left: -30px;
+  margin-right: -11px;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 128.48 163.14"><path fill="%2300983a" stroke="%23000000" stroke-width="2" d="M126.48,161.14H20.16C-5.64,113.13-6.73,55.64,17.21,6.68l2.95-6.03c0-.45.45-.77.87-.61l105.44,15.04v50.34c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
+}
+
+.block-start .block-icon-container {
+  max-width: 40px !important;
 }
 
 .block-start .block-icon-container {
@@ -395,6 +406,19 @@
 .block-end .block-icon-container {
   width: 42px;
   top: 53%;
+}
+
+
+.dropped-blocks .block-start {
+  margin-right: -3px !important;
+}
+
+.block-end .block-icon-container {
+  max-width: 40px !important;
+}
+
+.block-settings .block-icon-container {
+  max-width: 40px !important;
 }
 
 .block-end {
@@ -408,8 +432,13 @@
   width: 126.48px;
   height: 161.14px;
   margin-left: -15px;
-  margin-top: 2px;
+  margin-right: 10px;
+  margin-top: 0px;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 134.17 163.14"><path fill="%23be1622" stroke="%23000000" stroke-width="2" d="M112.01,0h0S5.58,15.43,5.58,15.56v52.55c0,1.37-1.11,2.49-2.49,2.49h-.61c-1.37,0-2.49,1.11-2.49,2.49v37.23c0,1.37,1.11,2.49,2.49,2.49h.61c1.37,0,2.49,1.11,2.49,2.49v45.86h106.33v-.31c.06-.1.11-.21.11-.34l2.95-6.03C138.9,105.5,137.81,48.01,112.01,0Z"/></svg>');
+}
+
+.programming-area {
+  border: none !important;
 }
 
 /* Responsiivisuus */
@@ -430,5 +459,22 @@
 
   .blocks-container {
     justify-content: center;
+  }
+
+
+
+  .categories {
+    background-color: white;
+    padding: 0rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 50vh;
+  }
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .categories {
+    min-height: 29vh !important;
   }
 }

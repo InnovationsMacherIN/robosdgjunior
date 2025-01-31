@@ -211,14 +211,7 @@ class Ble3 extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <button onClick={() => this.connect()}>
-          {this.state.connected ? 'Connected' : 'Connect'}
-        </button>
-        <button onClick={() => this.disconnect()}>Disconnect</button>
-      </div>
-    );
+    return null
   }
 }
 

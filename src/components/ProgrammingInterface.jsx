@@ -189,10 +189,19 @@ const ProgrammingInterface = () => {
 
       if (programmingArea) {
         const blockData = dropEvent.blockData;
-        if (blockData) {
+        let inputValueData;
+          if (blockData.options) {
+            inputValueData = blockData.options[0].value;
+            const newBlock = { ...blockData, inputValue: inputValueData };
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+          } else if (blockData.defaultValue) {
+            inputValueData = blockData.defaultValue;
+            const newBlock = { ...blockData, inputValue: inputValueData };
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+          } else {
           const newBlock = { ...blockData };
           setDroppedBlocks(blocks => [...blocks, newBlock]);
-        }
+          }
       }
     } else if (isInternalDrag(e)) {
       // Drag & drop sisäisen järjestelyn käsittely

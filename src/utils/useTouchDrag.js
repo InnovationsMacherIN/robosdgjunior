@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
  * Custom hook for handling touch drag operations on tablets
  * Provides touch-specific drag and drop functionality while preserving mouse events
  */
-export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
+export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({
     clone: null,
@@ -34,9 +34,11 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
 
   const handleTouchStart = (e) => {
     // Prevent default only if we're not touching an input
-    console.log("Block from blockspanel handleTouchStart");
+    console.log("handleTouchStart");
     if (!e.target.closest('input, select')) {
-      e.preventDefault();
+      if (createClone) {
+        e.preventDefault();
+      }
     }
 
     const touch = e.touches[0];
@@ -50,7 +52,8 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
       currentX: touch.clientX,
       currentY: touch.clientY,
       target: target,
-      clone: null,
+      createClone,
+      //clone: null,
       blockData: null
     };
 
@@ -65,9 +68,9 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
   const handleTouchMove = (e) => {
     if (!isDragging || !dragState.current.target) return;
 
-    console.log("Block from blockspanel handleTouchMove");
+    //console.log("Handle handleTouchMove");
 
-    e.preventDefault();
+    //e.preventDefault();
     const touch = e.touches[0];
 
     dragState.current.currentX = touch.clientX;
@@ -99,7 +102,7 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
     }
 
     if (onDragEnd) {
-      console.log("Block from blockspanel handleTouchEnd", dragState.current);
+      //console.log("Block from blockspanel handleTouchEnd", e, dragState.current);
       onDragEnd(e, dragState.current);
     }
 
@@ -114,18 +117,16 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd }) => {
   }, []);
 
   useEffect(() => {
-    const options = { passive: false }; // Estetään passiivisuus
+    const options = { passive: false };
 
-    // Lisää kuuntelijat dokumenttiin
     document.addEventListener('touchmove', handleTouchMove, options);
-    document.addEventListener('touchend', handleTouchEnd, options);
-    document.addEventListener('touchcancel', handleTouchEnd, options); // Kosketuksen peruuttaminen
+    document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('touchcancel', handleTouchEnd);
 
-    // Puhdistus unmount-vaiheessa
     return () => {
       document.removeEventListener('touchmove', handleTouchMove, options);
-      document.removeEventListener('touchend', handleTouchEnd, options);
-      document.removeEventListener('touchcancel', handleTouchEnd, options);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, [handleTouchMove, handleTouchEnd]);
 

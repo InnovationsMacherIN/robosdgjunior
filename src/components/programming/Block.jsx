@@ -21,8 +21,9 @@ import '../../styles/BlockVisualElements.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
+import { useTouchDrag } from "../../utils/useTouchDrag.js";
 
-const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition }) => {
+const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition, handleDrop }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
 
@@ -51,6 +52,137 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   };
 
   ///////////////
+
+  // Block.jsx:ssä
+  const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
+    createClone: false,
+    onDragStart: (dragData) => {
+      console.log('Touch drag start:', index, block);
+      const blockElement = dragData.target;
+      if (!blockElement) return;
+
+      // Tarkista onko start-block
+      const isStartBlock = block.id === 'start';
+      if (isStartBlock) return;
+
+
+      if (onDragStart) {
+
+        dragState.current.isInternalDrag = true;
+        dragState.current.fromIndex = index;
+        // Luodaan synteettinen event
+        const syntheticEvent = {
+          target: {
+            // Määritellään querySelector suoraan funktioksi joka käyttää alkuperäistä blockElementtiä
+            querySelector: (selector) => blockElement.querySelector(selector)
+          },
+          currentTarget: blockElement,
+          preventDefault: () => {},
+          stopPropagation: () => {},
+          dataTransfer: {
+            setData: (type, data) => {
+              dragState.current[type] = data;
+            },
+            getData: (type) => dragState.current[type],
+            types: ['application/json', 'application/internal']
+          }
+        };
+
+        dragState.current['application/internal'] = JSON.stringify({ fromIndex: index });
+
+        onDragStart(syntheticEvent, block);
+
+        blockElement.classList.add('dragging');
+      }
+    },
+    // Block.jsx
+    onDragMove: (moveData) => {
+      if (!isTouchDragging) return;
+
+      // Liikuta draggattavaa elementtiä
+      const block = dragState.current.target;
+      if (block) {
+        block.style.position = 'relative';
+        block.style.zIndex = '1000';
+        //block.style.transition = 'none';
+        block.style.transform = `translate(${moveData.dx}px, ${moveData.dy}px)`;
+      }
+
+      // Etsi kohde elementti
+      const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
+      const blockElement = dropTarget?.closest('.block');
+
+      if (blockElement && blockElement !== block) {
+        const rect = blockElement.getBoundingClientRect();
+        const relativeY = moveData.y - rect.top;
+        const height = rect.height;
+
+        // Poista vanhat indikaattorit
+        document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
+        document.querySelectorAll('.block.drop-target').forEach(el =>
+          el.classList.remove('drop-target'));
+        document.querySelectorAll('.block.shift-right').forEach(el =>
+          el.classList.remove('shift-right'));
+
+        // Lisää visuaaliset indikaattorit
+        blockElement.classList.add('drop-target');
+
+        // Lisää shift-right luokka seuraaville blokeille
+        let nextElement = blockElement.nextElementSibling;
+        while (nextElement) {// Varmista ettei draggattavaan elementtiin lisätä luokkaa
+            nextElement.classList.add('shift-right');
+          nextElement = nextElement.nextElementSibling;
+        }
+
+        // Päivitä drop positio
+        if (onDragOverPosition) {
+          const position = relativeY < height / 2 ? 'before' : 'after';
+          const toIndex = parseInt(blockElement.dataset.index || '0');
+          onDragOverPosition(position === 'before' ? toIndex : toIndex + 1);
+
+          //console.log('Drag over:', { index, position, toIndex });
+        }
+      }
+    },
+
+    onDragEnd: (e, endData) => {
+      const block = dragState.current.target;
+      if (block) {
+        // Poista kaikki draggaukseen liittyvät tyylit
+        block.style.transform = '';
+        block.style.position = '';
+        block.style.zIndex = '';
+        block.style.transition = '';
+        block.classList.remove('dragging');
+        block.classList.remove('drop-target');
+      }
+
+      // Poista kaikki visuaaliset indikaattorit kaikilta elementeiltä
+      document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
+      document.querySelectorAll('.block.drop-target').forEach(el => {
+        el.classList.remove('drop-target');
+        el.style.transform = '';
+        el.style.position = '';
+        el.style.zIndex = '';
+      });
+      document.querySelectorAll('.block.shift-right').forEach(el => {
+        el.classList.remove('shift-right');
+        el.style.transform = '';
+      });
+      document.querySelectorAll('.block.dragging').forEach(el => {
+        el.classList.remove('dragging');
+        el.style.transform = '';
+        el.style.position = '';
+        el.style.zIndex = '';
+      });
+
+      handleDrop(e, endData);
+
+      if (onDragEnd) {
+        onDragEnd(e);
+      }
+    }
+  });
 
   useEffect(() => {
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
@@ -446,6 +578,8 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         ref={blockRef}
         className={`block ${block.className || ''}`}
         draggable="true"
+        {...touchHandlers}
+        data-index={index}
         onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}

@@ -73,6 +73,7 @@ const BlocksPanel = ({
 
     // Add dragState to the destructured values
   const { handlers: touchHandlers, isDragging, dragState } = useTouchDrag({
+      createClone: true,
       onDragStart: (dragData) => {
         const blockElement = dragData.target;
         if (!blockElement) return;

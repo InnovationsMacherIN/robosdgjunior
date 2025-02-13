@@ -414,6 +414,27 @@
   background: rgba(255,255,255,0.4);
 }
 
+.block.dragging {
+  opacity: 0.5;
+  position: relative;
+  z-index: 1000;
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+.block.drop-target {
+  transform: translateX(20px);
+  transition: transform 0.2s;
+}
+
+.block-drop-indicator {
+  position: absolute;
+  height: 4px;
+  background-color: #2563eb;
+  width: 100%;
+  transition: all 0.2s;
+}
+
 /* Mobile
 */
 

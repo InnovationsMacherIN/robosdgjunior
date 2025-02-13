@@ -34,8 +34,6 @@ import PasswordModal from "./PasswordModal.jsx";
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
 
-
-
   /**
    * State declaratiions
    *
@@ -115,10 +113,13 @@ const ProgrammingInterface = () => {
     console.log('Drag start:', block);
     setIsDraggingBlock(true);
 
+    console.log('E:', e);
+
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
     };
+    console.log('Block to transfer:', blockToTransfer);
     if (block.hasSecondInput) {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
@@ -153,6 +154,7 @@ const ProgrammingInterface = () => {
    * handleDragOverPosition(-1)
    */
   const handleDragOverPosition = (toIndex) => {
+    //console.log('Drag over position:', toIndex);
     setCurrentDropPosition(toIndex);
   };
 
@@ -181,27 +183,37 @@ const ProgrammingInterface = () => {
     const isTouchEvent = e.type === 'touchend';
 
     if (isTouchEvent) {
-      // Kosketustapahtuman käsittely
-      const touch = e.changedTouches[0];
-      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-      const programmingArea = dropTarget?.closest('.programming-area');
-      console.log('Touch drop:', dropTarget, programmingArea);
+      if  (dropEvent.isInternalDrag === true) {
+        console.log('Internal touch drop, current position:', currentDropPosition);
+        let fromIndex = dropEvent.fromIndex;
+        if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+          handleReorder(fromIndex, currentDropPosition);
+        } else {
+          return;
+        }
+      } else {
+        // Kosketustapahtuman käsittely
+        const touch = e.changedTouches[0];
+        const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+        const programmingArea = dropTarget?.closest('.programming-area');
+        console.log('Touch drop:', dropTarget, programmingArea);
 
-      if (programmingArea) {
-        const blockData = dropEvent.blockData;
-        let inputValueData;
+        if (programmingArea) {
+          const blockData = dropEvent.blockData;
+          let inputValueData;
           if (blockData.options) {
             inputValueData = blockData.options[0].value;
-            const newBlock = { ...blockData, inputValue: inputValueData };
+            const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
           } else if (blockData.defaultValue) {
             inputValueData = blockData.defaultValue;
-            const newBlock = { ...blockData, inputValue: inputValueData };
+            const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
           } else {
-          const newBlock = { ...blockData };
-          setDroppedBlocks(blocks => [...blocks, newBlock]);
+            const newBlock = {...blockData};
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
           }
+        }
       }
     } else if (isInternalDrag(e)) {
       // Drag & drop sisäisen järjestelyn käsittely

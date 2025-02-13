@@ -259,6 +259,7 @@ const ProgrammingArea = ({
               block={block}
               index={index}
               onDragStart={handleBlockDragStart}
+              handleDrop={handleDrop}
               onInputChange={handleBlockInputChange}
               onDragOverPosition={onDragOverPosition}
             />

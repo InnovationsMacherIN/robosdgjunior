@@ -325,9 +325,6 @@ const BlocksPanel = ({
             onClick={() => setSelectedCategory(category)}
             data-category={category}
           >
-            {/*
-              {category}
-              */}
             {getCategoryImage(category)}
           </button>
         ))}
@@ -342,14 +339,7 @@ const BlocksPanel = ({
             onDragStart={(e) => handleDragStart(e, block)}
             {...touchHandlers}
             data-block-id={block.id}
-            //onMouseEnter={handleMouseEnter}
-            //onMouseMove={handleMouseMove}
-            //onMouseLeave={handleMouseLeave}
           >
-            {/*<div className="block-header">
-              <span className="block-title">{block.title}</span>
-            </div>
-            <p className="block-description">{block.description}</p>*/}
             <BlockIconConfig blockId={block.id} />
             < div className="block-input-container">
             {renderInput(block)}

@@ -357,8 +357,8 @@
 
 /* Lisätään uudet tyylit pystyviivoille */
 /* Pystyviivat repeat-blockin reunoilla */
-.block-container::before,
-.block-container::after {
+.programming-area .block-container::before,
+.programming-area .block-container::after {
   content: '';
   position: absolute;
   top: 60px;
@@ -370,20 +370,20 @@
 }
 
 /* Vasen pystyviiva */
-.block-container::before {
+.programming-area .block-container::before {
   left: 10px;
 }
 /* Oikea pystyviiva */
-.block-container::after {
+.programming-area .block-container::after {
   right: 10px;
 }
 
 /* Lisätään vaakaviiva */
-.block-container {
+.programming-area .block-container {
   position: relative;
 }
 
-.block-container > *:first-child::after {
+.programming-area .block-container > *:first-child::after {
   content: '';
   position: absolute;
   Top: 160px;
@@ -394,14 +394,8 @@
   z-index: 1;  /* Varmistetaan että viiva on päällimmäisenä */
 }
 
-/* Varmistetaan että viivat näkyvät myös kun blockissa on sisältöä */
-.block-container.has-children::before,
-.block-container.has-children::after {
-  height: 100%;
-}
-
 /* Container-lohkon pääsisältö (otsikko ja inputit) */
-.block-container .block-input-container {
+.programming-area .block-container .block-input-container {
   position: absolute;
   top: 160px; /* Asetetaan lähelle vaakaviivaa */
   left: 50%;

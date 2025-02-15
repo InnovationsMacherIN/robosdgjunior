@@ -441,16 +441,8 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
       );
     }
     return (
-      <select
-        defaultValue={block.secondInputDefault}
-        onChange={(e) => handleInputChange(e.target.value, true)}
-      >
-        {block.options.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <>
+      </>
     );
   };
 

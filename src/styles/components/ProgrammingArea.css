@@ -346,20 +346,67 @@
 /* Container-lohkon perustyylit */
 .block-container {
   position: relative;
-  min-height: 120px; /* Tilaa myös child-lohkoille */
+  min-height: 120px;
   min-width: 150px;
-
   transition: all 0.3s ease;
   display: flex;
-  flex-direction: column; /* Takaisin pystysuuntaiseen järjestykseen */
+  flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
 }
 
+/* Lisätään uudet tyylit pystyviivoille */
+/* Pystyviivat repeat-blockin reunoilla */
+.block-container::before,
+.block-container::after {
+  content: '';
+  position: absolute;
+  top: 60px;
+  /* Muutetaan bottom arvoa niin että viivat päättyvät väkäseen */
+  bottom: 40px; /* Tätä arvoa voi säätää vastaamaan väkäsen korkeutta */
+  width: 3px;
+  background-color: #1d1d1b;
+  min-height: 100px;
+}
+
+/* Vasen pystyviiva */
+.block-container::before {
+  left: 10px;
+}
+/* Oikea pystyviiva */
+.block-container::after {
+  right: 10px;
+}
+
+/* Lisätään vaakaviiva */
+.block-container {
+  position: relative;
+}
+
+.block-container > *:first-child::after {
+  content: '';
+  position: absolute;
+  Top: 160px;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background-color: #1d1d1b;
+  z-index: 1;  /* Varmistetaan että viiva on päällimmäisenä */
+}
+
+/* Varmistetaan että viivat näkyvät myös kun blockissa on sisältöä */
+.block-container.has-children::before,
+.block-container.has-children::after {
+  height: 100%;
+}
+
 /* Container-lohkon pääsisältö (otsikko ja inputit) */
-.block-container .block-header,
 .block-container .block-input-container {
-  flex-shrink: 0;
+  position: absolute;
+  top: 160px; /* Asetetaan lähelle vaakaviivaa */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2; /* Varmistetaan että on viivojen päällä */
 }
 
 /* Child-lohkojen container */
@@ -367,7 +414,7 @@
   display: flex;
   flex-direction: row; /* Child-lohkot vaakariviin */
   flex-wrap: nowrap; /* Ei rivinvaihtoa */
-  gap: 1rem;
+  gap: 3rem;
   padding: 0.5rem;
   margin-top: auto; /* Työntää child-lohkot alas */
   background: rgba(255,255,255,0.1);
@@ -387,6 +434,7 @@
 .block-container .child-blocks .block {
   flex-shrink: 0;
   margin: 0;
+  transform: scale(0.2);
 }
 
 /* Drag & drop tyylit */

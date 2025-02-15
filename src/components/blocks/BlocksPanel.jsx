@@ -18,7 +18,6 @@
 import React, {useState} from 'react';
 import '../../styles/components/BlocksPanel.css';
 import '../../styles/BlockVisualElements.css';
-import BlockVisual from '../../utils/BlockVisual';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 //import BlockTooltip from "../BlockTooltip.jsx";
@@ -347,14 +346,6 @@ const BlocksPanel = ({
             //onMouseMove={handleMouseMove}
             //onMouseLeave={handleMouseLeave}
           >
-            <BlockVisual blockId={block.id} />
-            {/*showTooltip && (
-              <BlockTooltip
-                title={block.title}
-                description={block.description}
-                mousePosition={mousePosition}
-              />
-            )*/}
             {/*<div className="block-header">
               <span className="block-title">{block.title}</span>
             </div>

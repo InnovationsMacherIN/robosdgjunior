@@ -169,6 +169,7 @@ const ProgrammingInterface = () => {
     e.preventDefault();
     setIsDraggingBlock(false);
 
+
     const cleanup = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
       document.querySelectorAll('.block.drop-target').forEach(el =>

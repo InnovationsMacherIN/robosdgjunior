@@ -141,7 +141,7 @@ const ProgrammingArea = ({
    */
   useEffect(() => {
     if (droppedBlocks.length > 0) {
-      console.log('Current blocks in programming area:', droppedBlocks);
+      //console.log('Current blocks in programming area:', droppedBlocks);
     }
   }, [droppedBlocks]);
 

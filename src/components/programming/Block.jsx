@@ -14,7 +14,6 @@
  */
 
 import React, {useRef, useState, useEffect} from 'react';
-import BlockVisual from "../../utils/BlockVisual.jsx";
 import '../../styles/BlockVisualElements.css';
 //import BlockTooltip from "../BlockTooltip.jsx";
 //import '../../styles/BlockTooltip.css';
@@ -216,7 +215,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         e.dataTransfer.setData('application/json', JSON.stringify(block));
         e.dataTransfer.setData('application/internal',
             JSON.stringify({ fromIndex: index }));
-        console.log('Drag start:', index, block);
+        //console.log('Drag start:', index, block);
         onDragStart(e, block);
       };
 
@@ -520,12 +519,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         >
           {/* Main block content */}
           <div className="block-content">
-            <BlockVisual blockId={block.id} />
             <div className="block-header">
-            <span className="block-title">
-              {block.title}
-              {block.inputValue && ` (${block.inputValue})`}
-            </span>
             </div>
             {block.hasInput && (
                 <div className="block-input-container">
@@ -566,14 +560,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
       >
-        <BlockVisual blockId={block.id} />
-        {/*<div className="block-header">
-          <span className="block-title">
-          {block.title}
-          {//renderBlockValue(block)}
-            block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
-        </span>
-        </div>*/}
         <BlockIconConfig blockId={block.id} />
         {block.hasInput && (
           <div className="block-input-container">

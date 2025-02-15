@@ -110,16 +110,13 @@ const ProgrammingInterface = () => {
    */
   const handleDragStart = (e, block) => {
     // Clone the block to avoid reference issues
-    console.log('Drag start:', block);
+    //console.log('Drag start:', block);
     setIsDraggingBlock(true);
-
-    console.log('E:', e);
-
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
     };
-    console.log('Block to transfer:', blockToTransfer);
+    //console.log('Block to transfer:', blockToTransfer);
     if (block.hasSecondInput) {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
@@ -168,7 +165,7 @@ const ProgrammingInterface = () => {
    * @returns {void}
    */
   const handleDrop = (e, dropEvent) => {
-    console.log('Handle drop:', e, dropEvent);
+    //console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
     setIsDraggingBlock(false);
 
@@ -184,7 +181,7 @@ const ProgrammingInterface = () => {
 
     if (isTouchEvent) {
       if  (dropEvent.isInternalDrag === true) {
-        console.log('Internal touch drop, current position:', currentDropPosition);
+        //console.log('Internal touch drop, current position:', currentDropPosition);
         let fromIndex = dropEvent.fromIndex;
         if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
           handleReorder(fromIndex, currentDropPosition);
@@ -196,7 +193,7 @@ const ProgrammingInterface = () => {
         const touch = e.changedTouches[0];
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
         const programmingArea = dropTarget?.closest('.programming-area');
-        console.log('Touch drop:', dropTarget, programmingArea);
+        //console.log('Touch drop:', dropTarget, programmingArea);
 
         if (programmingArea) {
           const blockData = dropEvent.blockData;

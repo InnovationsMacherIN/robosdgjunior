@@ -48,9 +48,82 @@ const convertBlocksToCommands = (blocks) => {
         }
         break;
 
-      case 'show-picture':
-        if (block.inputValue && block.secondInputValue) {
-          commands += `A${block.inputValue}${block.secondInputValue}${DELIMITER}`;
+      case 'show-picture_1':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+
+      case 'show-picture_2':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_3':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_4':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_5':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_6':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_7':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_8':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_9':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_10':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_11':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_12':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
+        }
+        break;
+
+      case 'show-picture_13':
+        if (block.options[0].value && block.inputValue) {
+          commands += `A${block.options[0].value}${block.inputValue}${DELIMITER}`;
         }
         break;
 
@@ -120,122 +193,122 @@ const convertBlocksToCommands = (blocks) => {
 
       // Melody/Sounds
       case 'melody_1':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_2':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_3':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_4':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_5':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_6':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_7':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_8':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_9':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'melody_10':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_1':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_2':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_3':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_4':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_5':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_6':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_7':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_8':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_9':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
       case 'sound_10':
-        if (block.inputValue) {
-          commands += `${block.inputValue}${DELIMITER}`;
+        if (block.options[0].value) {
+          commands += `${block.options[0].value}${DELIMITER}`;
         }
         break;
 
@@ -273,6 +346,8 @@ const convertBlocksToCommands = (blocks) => {
   //if (commands.endsWith(DELIMITER)) {
   //  commands = commands.slice(0, -1);
   //}
+
+  console.log('Converted commands:', commands);
 
   return commands;
 };

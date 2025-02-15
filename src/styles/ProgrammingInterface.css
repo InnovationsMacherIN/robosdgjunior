@@ -329,6 +329,14 @@
   display: none !important;
 }
 
+.block-end .block-input-container {
+  display: none !important;
+}
+
+.block-sound .block-input-container {
+  display: none !important;
+}
+
 /* End Block Styles
  * Creates a block with semicircle on the right side
  * Uses error color for visual distinction

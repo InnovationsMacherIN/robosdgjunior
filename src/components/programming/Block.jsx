@@ -375,36 +375,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
-        /*
-        return (
-          <input
-            type="number"
-            min={block.inputMin}
-            max={block.inputMax}
-            step={block.inputStep}
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          />
-        );
-        */
         return (
           <CustomNumberInput
             value={block.inputValue}
+            defaultValue={block.defaultValue}
             onChange={(value) => handleInputChange(value)}
           />
         );
       case 'select':
         return (
-          <select
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          >
-            {block.options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <>
+          </>
         );
       case 'text':
         return (
@@ -454,12 +435,9 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderSecondInput = (block) => {
     if (block.secondInputType === 'number') {
       return (
-        <input
-          type="number"
-          min={block.secondInputMin}
-          max={block.secondInputMax}
-          defaultValue={block.secondInputDefault}
-          onChange={(e) => handleInputChange(e.target.value, true)}
+        <CustomNumberInput
+          value={block.inputValue}
+          onChange={(value) => handleInputChange(value)}
         />
       );
     }

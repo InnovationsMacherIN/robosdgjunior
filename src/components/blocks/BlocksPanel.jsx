@@ -187,29 +187,46 @@ const BlocksPanel = ({
   const renderInput = (block) => {
     if (!block.hasInput) return null;
 
+    if (block.hasSecondInput) {
+      if (block.secondInputType === 'number') {
+        return (
+          <div className="input-group">
+            <CustomNumberInput
+              value={block.inputValue}
+              defaultValue={block.secondInputMin}
+              onChange={(value) => handleInputChange(value)}
+            />
+          </div>
+        );
+      } else if (block.secondInputType === 'range') {
+        return (
+          <div className="input-group">
+            <div className="range-container">
+              <input
+                id={`${block.id}-input`}
+                type="range"
+                min={block.inputMin}
+                max={block.inputMax}
+                defaultValue={block.defaultValue}
+                onChange={(e) => handleInputChange(e, block.id)}
+                onClick={(e) => e.stopPropagation()}
+                className="block-input-range"
+              />
+              <span className="range-value">{block.defaultValue}</span>
+            </div>
+          </div>
+        );
+      }
+    }
+
     switch (block.inputType) {
       case 'number':
         return (
           <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )
-            <input
-              id={`${block.id}-input`}
-              type="number"
-              min={block.inputMin}
-              max={block.inputMax}
-              step={block.inputStep || 1}
-              defaultValue={block.defaultValue}
-              onChange={(e) => handleInputChange(e, block.id)}
-              onClick={(e) => e.stopPropagation()}
-              className="block-input-number"
-            />*/}
             <CustomNumberInput
-              id={`${block.id}-input`}
               value={block.inputValue}
-              onChange={(value) => handleInputChange(value, block.id)}
-              className="block-input-number"
+              defaultValue={block.defaultValue}
+              onChange={(value) => handleInputChange(value)}
             />
           </div>
         );
@@ -217,9 +234,6 @@ const BlocksPanel = ({
       case 'range':
         return (
           <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
             <div className="range-container">
               <input
                 id={`${block.id}-input`}
@@ -237,34 +251,16 @@ const BlocksPanel = ({
         );
 
       case 'select':
+        //console.log('block, has select', block);
         return (
-          <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
-            <select
-              id={`${block.id}-input`}
-              defaultValue={block.defaultValue}
-              onChange={(e) => handleInputChange(e, block.id)}
-              onClick={(e) => e.stopPropagation()}
-              className="block-input-select"
-            >
-              {block.options.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <>
+            </>
         );
 
       case 'text':
       default:
         return (
           <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
             <input
               id={`${block.id}-input`}
               type="text"
@@ -374,18 +370,6 @@ const BlocksPanel = ({
                       <label htmlFor={`${block.id}-second-input`}>
                         {block.secondInputLabel}
                       </label>
-                      {/*
-                      <input
-                        id={`${block.id}-second-input`}
-                        type="number"
-                        min={block.secondInputMin}
-                        max={block.secondInputMax}
-                        defaultValue={block.secondInputDefault}
-                        onChange={(e) => handleInputChange(e, block.id, 'secondary')}
-                        onClick={(e) => e.stopPropagation()}
-                        className="block-input-number"
-                      />
-                      */}
                       <CustomNumberInput />
                     </div>
                   ) : (

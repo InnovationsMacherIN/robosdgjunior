@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/CustomNumberInput.css';
 
-const CustomNumberInput = ({ value, onChange }) => {
+const CustomNumberInput = ({ value, onChange, defaultValue }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const handleButtonClick = (number) => {
@@ -13,7 +13,7 @@ const CustomNumberInput = ({ value, onChange }) => {
     <div className="custom-number-input">
       <input
         type="text"
-        value={value}
+        value={value || defaultValue}
         readOnly
         onClick={() => setShowPopup(true)}
       />

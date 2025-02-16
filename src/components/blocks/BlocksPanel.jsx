@@ -342,40 +342,9 @@ const BlocksPanel = ({
           >
             <BlockIconConfig blockId={block.id} />
             < div className="block-input-container">
-            {renderInput(block)}
-              </div>
-            {block.hasSecondInput && (
-                <div className="second-input">
-                  {block.secondInputType === 'number' ? (
-                    <div className="input-group">
-                      <label htmlFor={`${block.id}-second-input`}>
-                        {block.secondInputLabel}
-                      </label>
-                      <CustomNumberInput />
-                    </div>
-                  ) : (
-                    <div className="input-group">
-                      <label htmlFor={`${block.id}-second-input`}>
-                        {block.secondInputLabel}
-                      </label>
-                      <select
-                        id={`${block.id}-second-input`}
-                        defaultValue={block.secondInputDefault}
-                        onChange={(e) => handleInputChange(e, block.id, 'secondary')}
-                        onClick={(e) => e.stopPropagation()}
-                        className="block-input-select"
-                      >
-                        {block.options.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-                )}
-              </div>
+            {/*renderInput(block)*/}
+            </div>
+          </div>
             ))}
           </div>
 

@@ -35,13 +35,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Isommat touch kohteet tabletilla */
+  /* Isommat touch kohteet tabletilla
   .block-input-container input,
   .block-input-container select {
     min-height: 44px;
     min-width: 44px;
     font-size: 16px;
-  }
+  }*/
 
   /* Selkeämpi visuaalinen palaute */
   .block-dragging {
@@ -68,7 +68,7 @@
     font-size: 16px; /* Prevent iOS zoom on focus */
   }
 }
-
+/*
 .block-input-container {
   position: absolute;
   bottom: -10px;
@@ -82,7 +82,7 @@
   border-left: 2px solid black;
   border-right: 2px solid black;
   border-bottom: 2px solid black;
-}
+}*/
 
 
 .blocks-container {

@@ -409,6 +409,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
       return (
         <CustomNumberInput
           value={block.inputValue}
+          defaultValue={block.secondInputMin}
           onChange={(value) => handleInputChange(value)}
         />
       );

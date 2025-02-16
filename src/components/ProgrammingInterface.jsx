@@ -100,6 +100,17 @@ const ProgrammingInterface = () => {
     }
   }, [droppedBlocks]);
 
+
+  /**
+   * handleUploadBlocks - handler
+   * Updates droppedBlocks state with new blocks uploaded from file
+   *
+   *@param {data} data - Uploaded block data
+   */
+  const handleUploadBlocks = (data) => {
+    setDroppedBlocks(data);
+  };
+
   /**
    * handleDragStart - handler
    * Handles the start of block dragging
@@ -429,6 +440,7 @@ const ProgrammingInterface = () => {
           droppedBlocks={droppedBlocks}
           isBlocksView={isBlocksView}
           toggleView={toggleView}
+          onUploadBlocks={handleUploadBlocks}
         />
 
         <ZoomableArea

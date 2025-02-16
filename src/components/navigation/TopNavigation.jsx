@@ -10,6 +10,7 @@ import RoboConnect from '../../assets/icons/RoboConnect.jsx';
 import RoboClose from '../../assets/icons/robo-close.jsx';
 import RoboCodeView from '../../assets/icons/RoboCodeView.jsx';
 import IconSelector from '../../utils/IconSelector.jsx';
+import SavePopup from "../../utils/SavePopup.jsx";
 
 const TopNavigation = ({
                          droppedBlocks,
@@ -20,10 +21,12 @@ const TopNavigation = ({
                          connected,
                          isExecuting,
                          isBlocksView,
-                         toggleView
+                         toggleView,
+                         onUploadBlocks,
                        }) => {
   const { t, i18n } = useTranslation();
   const [Icon, setIcon] = useState(Bird);
+  const [showSavePopup, setShowSavePopup] = useState(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -31,7 +34,18 @@ const TopNavigation = ({
 
   const changeIcon = (newIcon) => {
     setIcon(newIcon);
-  }
+  };
+
+  const handleDownload = () => {
+    const dataStr = JSON.stringify(droppedBlocks, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'blocks.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="top-nav">
@@ -65,7 +79,7 @@ const TopNavigation = ({
               onSelectIcon={changeIcon}
             />
           </button>
-        <button className="button button-save">
+        <button className="button button-save" onClick={() => setShowSavePopup(true)}>
           <RoboSave style={{width: '30px', height: '30px'}}/>
         </button>
         <div className="dropdown">
@@ -96,6 +110,12 @@ const TopNavigation = ({
           <RoboClose style={{width: '26px', height: '50px'}}/>
         </button>
       </div>
+      {showSavePopup && (
+        <SavePopup
+          onClose={() => setShowSavePopup(false)}
+          onDownload={handleDownload}
+          onUpload={onUploadBlocks}/>
+      )}
     </div>
   );
 };

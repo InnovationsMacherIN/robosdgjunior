@@ -1,18 +1,17 @@
-.custom-number-input {
+.icon-selector {
   position: relative;
   display: inline-block;
 }
 
-.custom-number-input input {
-  width: 30px;
-  text-align: center;
+.icon-trigger {
+  background: none;
+  border: none;
   cursor: pointer;
-  height: 20px !important;
-  padding: 2px !important;
-  border: none !important;
+  padding: 0;
 }
 
-.number-input-container {
+/* Container for the full-screen popup */
+.icon-selector-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -34,45 +33,58 @@
   background: rgba(255, 255, 255, 0.8);
 }
 
-/* Number pad popup */
-.popup {
+/* Icon grid popup */
+.icon-popup {
   position: relative;
   background: white;
   padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
   z-index: 10000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 160px;
+  width: 400px;
 }
 
-/* Number buttons */
-.number-button {
+/* Grid layout for icons */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  justify-items: center;
+}
+
+/* Icon buttons */
+.icon-button {
   background: white;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   border: 1px solid #ddd;
   border-radius: 4px;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
-.number-button:hover {
+.icon-button:hover {
   background-color: #f5f5f5;
 }
 
 /* Tablet-specific styles */
 @media (max-width: 1024px) {
-  .popup {
-    width: 200px;
+  .icon-popup {
+    width: 90%;
+    max-width: 400px;
   }
 
-  .number-button {
+  .icon-button {
     width: 50px;
     height: 50px;
-    font-size: 20px;
+  }
+
+  .icon-button svg {
+    width: 30px;
+    height: 30px;
   }
 }

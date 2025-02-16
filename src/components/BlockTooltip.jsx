@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/BlockTooltip.css';
 
 const BlockTooltip = ({ title, description, mousePosition }) => {
   const [isVisible, setIsVisible] = useState(false);

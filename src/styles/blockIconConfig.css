@@ -23,20 +23,6 @@
   width: 65px;
 }
 
-  /* Perusasetukset container-elementille */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Containerin koko */
-  width: 60px;
-  height: 60px;
-
-  /* Varmistetaan että ikoni ei häiritse muuta sisältöä */
-  pointer-events: none;
-  z-index: 1;
-}
-
 /* Base icon styles */
 .block-icon {
   /* Ikonin perusasetukset */

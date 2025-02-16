@@ -15,8 +15,6 @@
 
 import React, {useRef, useState, useEffect} from 'react';
 import '../../styles/BlockVisualElements.css';
-//import BlockTooltip from "../BlockTooltip.jsx";
-//import '../../styles/BlockTooltip.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
@@ -26,31 +24,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
 
   const [hasChildren, setHasChildren] = useState(false);
 
-  /**
-   * Tooltip state
-   * */
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [mousePosition, setMousePosition] = useState(null);
-
-  /**
-   * ToolTip functions
-   * */
-
-  const handleMouseEnter = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-    setShowTooltip(true);
-  };
-
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-    setMousePosition(null);
-  };
-
-  ///////////////
 
   // Block.jsx:ssä
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
@@ -496,8 +469,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
     return valueText ? ` (${valueText})` : '';
   };
 
-
-// Jos kyseessä on container-lohko
   if (block.isContainer) {
     return (
         <div
@@ -509,7 +480,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             onDragLeave={handleContainerDragLeave}
             onDrop={handleContainerDrop}
         >
-          {/* Main block content */}
           <div className="block-content">
             <div className="block-header">
             </div>
@@ -519,8 +489,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
                 </div>
             )}
           </div>
-
-          {/* Child blocks container */}
           <div className="child-blocks-container">
             {block.childBlocks?.map((childBlock, childIndex) => (
                 <DroppedBlock
@@ -544,9 +512,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         draggable="true"
         {...touchHandlers}
         data-index={index}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         onDragStart={handleDragStart}
         onDragEnd={onDragEnd}
         onDragLeave={handleDragLeave}
@@ -555,24 +520,14 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         <BlockIconConfig blockId={block.id} />
         {block.hasInput && (
           <div className="block-input-container">
-            {/*<label>{block.inputLabel}</label>*/}
             {renderBlockInput(block, index)}
           </div>
         )}
         {block.hasSecondInput && (
           <div className="block-input-container">
-            {/*<label>{block.secondInputLabel}</label>*/}
             {renderSecondInput(block)}
           </div>
         )}
-        {/*<p className="block-description">{block.description}</p>*/}
-        {/*showTooltip && (
-            <BlockTooltip
-                title={block.title}
-                description={block.description}
-                mousePosition={mousePosition}
-            />
-        )*/}
       </div>
     );
 };

@@ -64,7 +64,7 @@
 
   .block-input-container input,
   .block-input-container select {
-    min-height: 44px; /* Larger touch targets for inputs */
+    min-height: 24px; /* Larger touch targets for inputs */
     font-size: 16px; /* Prevent iOS zoom on focus */
   }
 }

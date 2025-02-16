@@ -36,35 +36,40 @@
 /* Icon grid popup */
 .icon-popup {
   position: relative;
-  background: white;
+  background: #003C9A;
   padding: 20px;
   z-index: 10000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 400px;
+  width: 80%; /* Popup vie 80% näytön leveydestä */
+  max-width: 800px; /* Estää popupia kasvamasta liian isoksi */
+  height: auto; /* Korkeus mukautuu sisältöön */
+  max-height: 90vh; /* Maksimikorkeus 90% näytöstä */
 }
 
 /* Grid layout for icons */
 .icon-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 30px;
   justify-items: center;
 }
 
 /* Icon buttons */
 .icon-button {
   background: white;
-  width: 44px;
-  height: 44px;
+  max-width: 80px;
+  max-height: 80px;
   cursor: pointer;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 5px solid black;
+  border-radius: 200px;
   transition: background-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  width: 10vh !important;
+  height: 10vh !important;
 }
 
 .icon-button:hover {
@@ -86,5 +91,12 @@
   .icon-button svg {
     width: 30px;
     height: 30px;
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
   }
 }

@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'CustomFont';
+  src: url('../assets/fonts/MoreSugar-Regular.otf') format('truetype');
+}
+
+.number-button {
+  font-family: 'CustomFont', sans-serif;
+}
+
 .custom-number-input {
   position: relative;
   display: inline-block;
@@ -6,6 +15,7 @@
 .custom-number-input input {
   width: 30px;
   text-align: center;
+  font-family: 'CustomFont', sans-serif;
   cursor: pointer;
   height: 20px !important;
   padding: 2px !important;
@@ -37,26 +47,28 @@
 /* Number pad popup */
 .popup {
   position: relative;
-  background: white;
+  background: #003C9A;
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 20px;
   z-index: 10000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 160px;
+  width: 80%;
+  max-width: 400px;
+  height: auto;
+  max-height: 90vh;
 }
 
 /* Number buttons */
 .number-button {
   background: white;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
+  width: 100px;
+  height: 100px;
+  font-size: 40px;
   cursor: pointer;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 5px solid black;
+  border-radius: 100px;
   transition: background-color 0.2s;
 }
 
@@ -67,7 +79,7 @@
 /* Tablet-specific styles */
 @media (max-width: 1024px) {
   .popup {
-    width: 200px;
+    width: 230px;
   }
 
   .number-button {

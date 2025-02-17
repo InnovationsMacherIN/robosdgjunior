@@ -424,11 +424,9 @@ const ProgrammingInterface = () => {
     return (
       <div className="programming-container">
         {!isBlocksView && (
-          <div className="code-view-popup">
             <CodeViewPopUp
               toggleView={toggleView}
               blocks={droppedBlocks}/>
-          </div>
         )}
         <TopNavigation
           onConnectClick={() => ble3Ref.current.connect()}

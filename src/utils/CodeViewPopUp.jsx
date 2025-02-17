@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
-import { X } from 'lucide-react';
+import RoboClose from "../assets/icons/robo-close.jsx";
+import '../styles/CodeViewPopUp.css'
 
 /**
  * CodeView Component
@@ -30,8 +31,10 @@ const CodeView = ({ blocks = [], onClose }) => {
    */
   const getOptionLabel = (block) => {
     if (block.options && block.options.length > 0) {
+      console.log(block.options);
       const option = block.options.find(opt => opt.value === block.inputValue);
-      return option ? option.label : block.inputValue;
+      //return option ? option.label : block.inputValue;
+      return block.options[0].label;
     }
     return block.inputValue;
   };
@@ -88,7 +91,8 @@ ${spacing}startProgram();\n`;
 
       case block.id.match(/^show-picture_\d+/)?.input:
         const picLabel = getOptionLabel(block);
-        return `${spacing}    await robot.showPicture("${picLabel}", ${secondInputValue}); // Show ${picLabel} for ${secondInputValue} seconds\n`;
+        console.log(block)
+        return `${spacing}    await robot.showPicture("${picLabel}", ${block.inputValue}); // Show ${picLabel} for ${inputValue} seconds\n`;
 
       case 'repeat':
         let repeatCode = `${spacing}    // Repeat ${inputValue} times\n`;
@@ -182,7 +186,7 @@ ${spacing}asyncio.run(start_program())\n`;
 
       case block.id.match(/^show-picture_\d+/)?.input:
         const picLabel = getOptionLabel(block);
-        return `${spacing}        await robot.show_picture("${picLabel}", ${secondInputValue})  # Show ${picLabel} for ${secondInputValue} seconds\n`;
+        return `${spacing}        await robot.show_picture("${picLabel}", ${inputValue})  # Show ${picLabel} for ${inputValue} seconds\n`;
 
       case 'repeat':
         let repeatCode = `${spacing}        # Repeat ${inputValue} times\n`;
@@ -303,48 +307,50 @@ ${spacing}asyncio.run(start_program())\n`;
   };
 
   return (
-    <div className="bg-black rounded-lg shadow-lg p-6 max-w-4xl w-full border border-green-500">
-      <div className="flex justify-between items-center mb-4 text-green-500">
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-mono font-bold color-green-500">
-            {language === 'javascript' ? 'ROBOT.JS' : 'ROBOT.PY'} - Code View
-          </h2>
-          <div className="flex gap-2">
-            <button
-              style={language === 'javascript' ? activeButtonStyle : buttonStyle}
-              onClick={() => setLanguage('javascript')}
-            >
-              JavaScript
-            </button>
-            <button
-              style={language === 'python' ? activeButtonStyle : buttonStyle}
-              onClick={() => setLanguage('python')}
-            >
-              Python
-            </button>
+    <div className="code-view-popup-container">
+      <div className="popup-overlay" onClick={onClose} />
+      <div className="code-view-popup">
+        <div className="flex justify-between items-center mb-4 text-green-500">
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-mono font-bold color-green-500">
+              {language === 'javascript' ? 'ROBOT.JS' : 'ROBOT.PY'} - Code View
+            </h2>
+            <div className="flex gap-2">
+              <button
+                style={language === 'javascript' ? activeButtonStyle : buttonStyle}
+                onClick={() => setLanguage('javascript')}
+              >
+                JavaScript
+              </button>
+              <button
+                style={language === 'python' ? activeButtonStyle : buttonStyle}
+                onClick={() => setLanguage('python')}
+              >
+                Python
+              </button>
+            </div>
           </div>
+          <button
+            onClick={onClose}
+            className="close-button"
+          >
+            <RoboClose style={{width: '26px', height: '50px'}}/>
+          </button>
         </div>
-        <button
-          onClick={onClose}
-          className="p-2 hover:bg-green-900 rounded-full text-green-500"
-          style={{ border: '1px solid #00ff00' }}
-        >
-          <X size={24} />
-        </button>
+        <style>
+          {`
+            @keyframes blink {
+              0%, 100% { border-color: transparent }
+              50% { border-color: #00ff00 }
+            }
+          `}
+        </style>
+        <pre style={codeStyle}>
+          <code className="text-sm">
+            <span style={cursorStyle}>{displayedCode}</span>
+          </code>
+        </pre>
       </div>
-      <style>
-        {`
-          @keyframes blink {
-            0%, 100% { border-color: transparent }
-            50% { border-color: #00ff00 }
-          }
-        `}
-      </style>
-      <pre style={codeStyle}>
-        <code className="text-sm">
-          <span style={cursorStyle}>{displayedCode}</span>
-        </code>
-      </pre>
     </div>
   );
 };

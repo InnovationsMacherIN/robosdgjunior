@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Bird, Egg, Laugh, Square } from 'lucide-react';
 import '../styles/components/IconSelector.css';
+import RoboClose from '../assets/icons/robo-close.jsx';
 
 /**
  * IconSelector Component
@@ -54,6 +55,9 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
       <div className="icon-selector-container">
         <div className="popup-overlay" />
         <div className="icon-popup">
+          <button onClick={() => setShowPopup(false)} className="close-button">
+            <RoboClose style={{ width: '26px', height: '50px' }} />
+          </button>
           <div className="icon-grid">
             {iconOptions.map((Icon, index) => (
               <button

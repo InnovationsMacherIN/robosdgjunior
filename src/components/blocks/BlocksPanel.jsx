@@ -20,8 +20,6 @@ import '../../styles/components/BlocksPanel.css';
 import '../../styles/BlockVisualElements.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
-//import BlockTooltip from "../BlockTooltip.jsx";
-//import '../../styles/BlockTooltip.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 import {useTouchDrag} from "../../utils/useTouchDrag";
 

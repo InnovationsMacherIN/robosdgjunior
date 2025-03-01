@@ -179,6 +179,7 @@ const ProgrammingInterface = () => {
     //console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
     setIsDraggingBlock(false);
+    console.log('Drop event:', dropEvent);
 
 
     const cleanup = () => {
@@ -210,7 +211,11 @@ const ProgrammingInterface = () => {
         if (programmingArea) {
           const blockData = dropEvent.blockData;
           let inputValueData;
-          if (blockData.options) {
+          if (blockData.secondInputMin) {
+            inputValueData = blockData.secondInputMin;
+            const newBlock = {...blockData, inputValue: inputValueData};
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+          } else if (blockData.options) {
             inputValueData = blockData.options[0].value;
             const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
@@ -424,11 +429,9 @@ const ProgrammingInterface = () => {
     return (
       <div className="programming-container">
         {!isBlocksView && (
-          <div className="code-view-popup">
             <CodeViewPopUp
               toggleView={toggleView}
               blocks={droppedBlocks}/>
-          </div>
         )}
         <TopNavigation
           onConnectClick={() => ble3Ref.current.connect()}

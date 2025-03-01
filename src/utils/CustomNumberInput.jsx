@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/CustomNumberInput.css';
+import RoboClose from "../assets/icons/robo-close.jsx";
 
 /**
  * CustomNumberInput Component
@@ -46,6 +47,9 @@ const CustomNumberInput = ({ value, onChange, defaultValue }) => {
       <div className="number-input-container">
         <div className="popup-overlay" />
         <div className="popup">
+          <button onClick={() => setShowPopup(false)} className="close-button">
+            <RoboClose style={{ width: '26px', height: '50px' }} />
+          </button>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
             <button
               key={number}

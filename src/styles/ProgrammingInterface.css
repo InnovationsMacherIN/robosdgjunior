@@ -91,7 +91,7 @@
   padding: 0rem;
   width: 100%;
   box-sizing: border-box;
-  min-height: 40vh;
+  min-height: 50vh;
 }
 
 .category-buttons {
@@ -140,6 +140,8 @@
   background-color: #22c55e;
   color: white;
 }
+
+
 
 /*.blocks-container {
   display: flex;
@@ -477,13 +479,13 @@
     padding: 0rem;
     width: 100%;
     box-sizing: border-box;
-    min-height: 50vh;
+    min-height: 50vh !important;
   }
 }
 
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   .categories {
-    min-height: 29vh !important;
+    min-height: 50vh !important;
   }
 }

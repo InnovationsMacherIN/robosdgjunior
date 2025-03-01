@@ -48,14 +48,14 @@
 .popup {
   position: relative;
   background: #003C9A;
-  padding: 20px;
+  padding: 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   z-index: 10000;
   border-radius: 8px;
   width: 80%;
-  max-width: 400px;
+  max-width: 450px;
   height: auto;
   max-height: 90vh;
 }

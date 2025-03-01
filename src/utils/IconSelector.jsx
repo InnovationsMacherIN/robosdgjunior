@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Bird, Egg, Laugh, Square } from 'lucide-react';
+import ArrowUp from "../assets/icons/robo-usericon-arrow-up.jsx";
+import Coin from "../assets/icons/robo-usericon-coin.jsx";
+import Book from "../assets/icons/robo-usericon-book.jsx";
+import Equality from "../assets/icons/robo-usericon-equality.jsx";
+import Water from "../assets/icons/robo-usericon-water.jsx";
+import Sun from "../assets/icons/robo-usericon-sun.jsx";
+import Heart from "../assets/icons/robo-usericon-heart.jsx";
+import House from "../assets/icons/robo-usericon-house.jsx";
+import Eight from "../assets/icons/robo-usericon-eight.jsx";
+import Transport from "../assets/icons/robo-usericon-transport.jsx";
+import Tree from "../assets/icons/robo-usericon-tree.jsx";
+import Soup from "../assets/icons/robo-usericon-soup.jsx";
+import Fish from "../assets/icons/robo-usericon-fish.jsx";
+import Peace from "../assets/icons/robo-usericon-peace.jsx";
 import '../styles/components/IconSelector.css';
 import RoboClose from '../assets/icons/robo-close.jsx';
 
@@ -19,10 +33,10 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
 
   // Available icons - currently using placeholders
   const iconOptions = [
-    Bird, Egg, Laugh, Bird,    // Row 1 first half
-    Egg, Laugh, Bird,          // Row 1 second half
-    Egg, Laugh, Bird,          // Row 2 first half
-    Egg, Laugh, Bird, Egg      // Row 2 second half
+    ArrowUp, Coin, Book, Equality,    // Row 1 first half
+    Water, Sun, Heart,          // Row 1 second half
+    House, Eight, Transport,          // Row 2 first half
+    Tree, Soup, Fish, Peace      // Row 2 second half
   ];
 
   // Close popup when clicking outside

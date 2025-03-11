@@ -98,7 +98,11 @@ const ProgrammingInterface = () => {
     if (droppedBlocks.length > 0) {
       saveBlocks(droppedBlocks);
     }
+    console.log(droppedBlocks)
   }, [droppedBlocks]);
+
+
+
 
 
   /**
@@ -179,8 +183,6 @@ const ProgrammingInterface = () => {
     //console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
     setIsDraggingBlock(false);
-    console.log('Drop event:', dropEvent);
-
 
     const cleanup = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
@@ -244,6 +246,26 @@ const ProgrammingInterface = () => {
       const blockData = e.dataTransfer.getData('application/json');
       if (blockData) {
         const block = JSON.parse(blockData);
+        console.log(block);
+        let inputValueData;
+        if (block.defaultValue) {
+          inputValueData = block.defaultValue;
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        } else if (block.secondInputMin) {
+          inputValueData = block.secondInputMin;
+          console.log(inputValueData)
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        } else if (block.options) {
+          inputValueData = block.options[0].value;
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        }
+
         if (currentDropPosition !== null) {
           setDroppedBlocks(blocks => {
             const newBlocks = [...blocks];
@@ -255,6 +277,7 @@ const ProgrammingInterface = () => {
         }
       }
     }
+
 
     cleanup();
     setCurrentDropPosition(null);
@@ -393,16 +416,31 @@ const ProgrammingInterface = () => {
    */
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setIsDraggingBlock(false);
+    //console.log(blockToDelete, blockToDeleteIndex);
     setDroppedBlocks(currentBlocks => {
       const newBlocks = currentBlocks.filter((block, index) => {
         if (!block) {
           return false;
         }
+        //console.log(block.id, blockToDelete.id, index, blockToDeleteIndex, block.inputValue, blockToDelete.inputValue);
         const shouldKeep = !(block.id === blockToDelete.id &&
-          block.inputValue === blockToDelete.inputValue &&
+          /*block.inputValue === blockToDelete.inputValue &&*/
         index === blockToDeleteIndex);
+        //console.log(block.id, shouldKeep);
         return shouldKeep;
       });
+
+      // Poista block myös repeat blockin sisältä
+      newBlocks.forEach(block => {
+        if (block.childBlocks) {
+          block.childBlocks = block.childBlocks.filter(childBlock =>
+            !(childBlock.id === blockToDelete.id &&
+              childBlock.inputValue === blockToDelete.inputValue)
+          );
+        }
+      });
+
+      console.log("set Dropped called", newBlocks);
       return newBlocks;
     });
   };
@@ -420,6 +458,7 @@ const ProgrammingInterface = () => {
     newBlocks[index] = updatedBlock;
     setDroppedBlocks(newBlocks);
   };
+
 
   if (!isAuthorized) {
     return (

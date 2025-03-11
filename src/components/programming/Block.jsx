@@ -157,8 +157,12 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   });
 
   useEffect(() => {
+    //console.log("child blocks use effect");
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
-      setHasChildren(true);
+      if (!hasChildren) {
+        setHasChildren(true);
+      }
+      //console.log('child blocks:', block.childBlocks);
     }
   }, [block.childBlocks]);
 
@@ -288,16 +292,36 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   };
 
   const handleContainerDrop = (e) => {
+    //console.log("handleContainerDrop");
     if (!block.isContainer) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat' ) return;
+    let inputValueData
+    if (droppedBlockData.defaultValue){
+      console.log("child block default value found");
+      let inputValueData = droppedBlockData.defaultValue;
+      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+    }
+    if (droppedBlockData.secondInputMin){
+      console.log("child block second input min found");
+      let inputValueData = droppedBlockData.secondInputMin;
+      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+    }
     block.childBlocks.push(droppedBlockData);
+    console.log(droppedBlockData);
+    inputValueData = null;
+    //console.log(block.childBlocks);
     setHasChildren(true);
 
+
     blockRef.current.classList.remove('drag-over');
+
+    //onInputChange is called to update the child blocks in the userinterface immediately
+    onInputChange();
   };
 
   const handleChildInputChange = (childIndex, value, isSecondInput = false) => {

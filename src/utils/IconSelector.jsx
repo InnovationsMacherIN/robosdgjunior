@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Bird, Egg, Laugh, Square } from 'lucide-react';
-import ArrowUp from "../assets/icons/robo-usericon-arrow-up.jsx";
-import Coin from "../assets/icons/robo-usericon-coin.jsx";
-import Book from "../assets/icons/robo-usericon-book.jsx";
-import Equality from "../assets/icons/robo-usericon-equality.jsx";
-import Water from "../assets/icons/robo-usericon-water.jsx";
-import Sun from "../assets/icons/robo-usericon-sun.jsx";
-import Heart from "../assets/icons/robo-usericon-heart.jsx";
-import House from "../assets/icons/robo-usericon-house.jsx";
-import Eight from "../assets/icons/robo-usericon-eight.jsx";
-import Transport from "../assets/icons/robo-usericon-transport.jsx";
-import Tree from "../assets/icons/robo-usericon-tree.jsx";
-import Soup from "../assets/icons/robo-usericon-soup.jsx";
-import Fish from "../assets/icons/robo-usericon-fish.jsx";
-import Peace from "../assets/icons/robo-usericon-peace.jsx";
+import ArrowUp from "../assets/icons/icon-emoji-checkmark.svg";
+import Coin from "../assets/icons/icon-emoji-checkmark.svg";
+import Book from "../assets/icons/icon-emoji-checkmark.svg";
+import Equality from "../assets/icons/icon-emoji-checkmark.svg";
+import Water from "../assets/icons/icon-emoji-checkmark.svg";
+import Sun from "../assets/icons/icon-emoji-checkmark.svg";
+import Heart from "../assets/icons/icon-emoji-checkmark.svg";
+import House from "../assets/icons/icon-emoji-happy.svg";
+import Eight from "../assets/icons/icon-emoji-happy.svg";
+import Transport from "../assets/icons/icon-emoji-happy.svg";
+import Tree from "../assets/icons/icon-emoji-happy.svg";
+import Soup from "../assets/icons/icon-emoji-happy.svg";
+import Fish from "../assets/icons/icon-emoji-happy.svg";
+import Peace from "../assets/icons/icon-emoji-happy.svg";
 import '../styles/components/IconSelector.css';
 import RoboClose from '../assets/icons/robo-close.jsx';
 
@@ -57,6 +57,7 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
   }, [showPopup]);
 
   const handleIconSelect = (Icon) => {
+    console.log(Icon)
     onSelectIcon(Icon);
     setShowPopup(false);
   };
@@ -74,13 +75,13 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
           </button>
           <div className="icon-grid">
             {iconOptions.map((Icon, index) => (
-              <button
+              <div
                 key={index}
                 onClick={() => handleIconSelect(Icon)}
                 className="icon-button"
               >
-                <Icon size={30} />
-              </button>
+                <img src={Icon} alt="Icon" width="30" height="30"  />
+              </div>
             ))}
           </div>
         </div>
@@ -97,7 +98,7 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
         className="icon-trigger"
         onClick={() => setShowPopup(true)}
       >
-        <IconComponent style={{width: '30px', height: '30px', color:'white'}} />
+        <img src={IconComponent} alt="Icon" width="30" height="30" />
       </button>
       {renderPopup()}
     </div>

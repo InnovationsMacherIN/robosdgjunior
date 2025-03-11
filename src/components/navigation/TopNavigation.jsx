@@ -11,6 +11,7 @@ import RoboClose from '../../assets/icons/robo-close.jsx';
 import RoboCodeView from '../../assets/icons/RoboCodeView.jsx';
 import IconSelector from '../../utils/IconSelector.jsx';
 import SavePopup from "../../utils/SavePopup.jsx";
+import defaultIcon from '../../assets/icons/icon-emoji-gift.svg';
 
 const TopNavigation = ({
                          droppedBlocks,
@@ -25,7 +26,7 @@ const TopNavigation = ({
                          onUploadBlocks,
                        }) => {
   const { t, i18n } = useTranslation();
-  const [Icon, setIcon] = useState(Bird);
+  const [Icon, setIcon] = useState(defaultIcon);
   const [showSavePopup, setShowSavePopup] = useState(false);
 
   const changeLanguage = (lng) => {
@@ -73,12 +74,12 @@ const TopNavigation = ({
       </div>
 
       <div className="control-buttons">
-          <button className="button button-profile">
+          <div className="button button-profile">
             <IconSelector
               currentIcon={Icon}
               onSelectIcon={changeIcon}
             />
-          </button>
+          </div>
         <button className="button button-save" onClick={() => setShowSavePopup(true)}>
           <RoboSave style={{width: '30px', height: '30px'}}/>
         </button>

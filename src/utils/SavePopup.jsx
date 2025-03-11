@@ -19,7 +19,7 @@ const SavePopup = ({ onClose, onDownload, onUpload }) => {
     <div className="save-popup-container">
       <div className="popup-overlay" onClick={onClose} />
       <div className="save-popup">
-        <button onClick={onDownload}>Download</button>
+        <button classname="save-popup-download-button" onClick={onDownload}>Download</button>
         <input type="file" accept=".json" onChange={handleFileChange} />
         <button onClick={onClose}>Close</button>
       </div>

@@ -527,6 +527,9 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
                 />
             ))}
           </div>
+          <div className="block-container-icon">
+          <BlockIconConfig blockId={block.id} />
+          </div>
         </div>
     );
   }

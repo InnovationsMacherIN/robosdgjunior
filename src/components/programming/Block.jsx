@@ -148,6 +148,8 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         el.style.zIndex = '';
       });
 
+      //console.log(e, endData);
+
       handleDrop(e, endData);
 
       if (onDragEnd) {

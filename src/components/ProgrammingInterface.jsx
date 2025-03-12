@@ -196,9 +196,18 @@ const ProgrammingInterface = () => {
 
     if (isTouchEvent) {
       if  (dropEvent.isInternalDrag === true) {
-        //console.log('Internal touch drop, current position:', currentDropPosition);
+        console.log('Internal touch drop, current position:', currentDropPosition);
+        const blockData = JSON.parse(dropEvent['application/json']);
+        const touch = e.changedTouches[0];
+        const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+        if(dropTarget?.closest('.delete-zone')) {
+          const blockToDelete = blockData;
+          const blockToDeleteIndex = dropEvent.fromIndex;
+          console.log('Drop target DELETE ZONE', blockToDelete, blockToDeleteIndex );
+          handleDeleteBlock(blockToDelete, blockToDeleteIndex);
+        }
         let fromIndex = dropEvent.fromIndex;
-        if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+        if (fromIndex !== currentDropPosition && currentDropPosition !== -1 && currentDropPosition !== null) {
           handleReorder(fromIndex, currentDropPosition);
         } else {
           return;
@@ -208,7 +217,9 @@ const ProgrammingInterface = () => {
         const touch = e.changedTouches[0];
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
         const programmingArea = dropTarget?.closest('.programming-area');
+
         //console.log('Touch drop:', dropTarget, programmingArea);
+        console.log("DATA: ",dropEvent.blockData)
 
         if (programmingArea) {
           const blockData = dropEvent.blockData;

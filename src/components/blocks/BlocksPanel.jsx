@@ -35,38 +35,12 @@ const BlocksPanel = ({
                        setSelectedCategory,
                        blocksByCategory,
                        handleDragStart,
-                       handleDrop
+                       handleDrop,
+                       onDragOverPosition,
                      }) => {
 
   const [blocks, setBlocks] = useState(blocksByCategory);
 
-  /**
-   * Tooltip state
-   * */
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [mousePosition, setMousePosition] = useState(null);
-
-  /**
-   * ToolTip functions
-   *
-
-  const handleMouseEnter = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-    setShowTooltip(true);
-  };
-
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-    setMousePosition(null);
-  };
-
-  ///////////////
-
-   */
 
     // Add dragState to the destructured values
   const { handlers: touchHandlers, isDragging, dragState } = useTouchDrag({
@@ -110,10 +84,12 @@ const BlocksPanel = ({
         if (programmingArea) {
           programmingArea.classList.add('drag-over');
         }
+
+
       },
 
       onDragEnd: (e, endData) => {
-        console.log('onDragEnd endData', endData);
+        console.log('onDragEnd endData', e,  endData);
 
         handleDrop(e, endData);
 
@@ -248,7 +224,6 @@ const BlocksPanel = ({
         );
 
       case 'select':
-        //console.log('block, has select', block);
         return (
           <>
             </>

@@ -218,7 +218,27 @@ const ProgrammingInterface = () => {
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
         const programmingArea = dropTarget?.closest('.programming-area');
 
-        //console.log('Touch drop:', dropTarget, programmingArea);
+        if (dropTarget?.closest('.child-blocks-container')) {
+          console.log('Drop target drop, current drop position', e, dropTarget);
+          e.preventDefault();
+          e.stopPropagation();
+          let droppedBlockData = dropEvent.blockData;
+          if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat') return;
+          console.log('Drop target drop zone', droppedBlockData);
+
+          const repeatBlockIndex = droppedBlocks.findIndex(block => block.id === 'repeat');
+          if (repeatBlockIndex !== -1) {
+            const newBlock = { ...droppedBlockData };
+            setDroppedBlocks(blocks => {
+              const newBlocks = [...blocks];
+              newBlocks[repeatBlockIndex].childBlocks.push(newBlock);
+              return newBlocks;
+            });
+          }
+          return;
+        }
+
+        console.log('Touch drop:', dropTarget);
         console.log("DATA: ",dropEvent.blockData)
 
         if (programmingArea) {
@@ -521,6 +541,7 @@ const ProgrammingInterface = () => {
           blocksByCategory={blocksByCategory}
           handleDragStart={handleDragStart}
           handleDrop={handleDrop}
+          onDragOverPosition={handleDragOverPosition}
         />
 
         <Ble3 ref={ble3Ref} onConnected={handleConnected} />

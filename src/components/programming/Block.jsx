@@ -148,7 +148,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         el.style.zIndex = '';
       });
 
-      //console.log(e, endData);
+      console.log(e, endData);
 
       handleDrop(e, endData);
 
@@ -506,6 +506,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
             onDrop={handleContainerDrop}
+            onTouchEnd={handleContainerDrop}
         >
           <div className="block-content">
             <div className="block-header">

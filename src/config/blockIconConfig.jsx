@@ -1,12 +1,9 @@
-// src/config/blockIconConfig.jsx
-
 import React from 'react';
 import '../styles/blockIconConfig.css';
 import icon_nuoli from "../assets/icons/robo-arrow-ahead.svg";
 import icon_nuoli_taakse from "../assets/icons/robo-arrow-backwards.svg";
 import icon_arrow_left from "../assets/icons/robo-arrow-left.svg";
 import icon_arrow_right from "../assets/icons/robo-arrow-right.svg";
-import icon_puoli from "../assets/icons/puoli-pallo.svg";
 import icon_rengas_vasen from "../assets/icons/robo-tyre-left.svg";
 import icon_rengas_oikea from "../assets/icons/robo-tyre-right.svg";
 import icon_start from "../assets/icons/robo-play-category.svg";

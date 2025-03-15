@@ -180,7 +180,7 @@
   /* Fixed dimensions */
   --container-height: 120px;
   height: var(--container-height);
-  min-width: var(--block-width);
+  /*min-width: var(--block-width);*/
 
   /* Flex layout */
   display: flex;
@@ -203,12 +203,16 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  padding: 0.5rem;
-  margin-top: auto;
-  min-height: 160px;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 3.5rem;
   padding-bottom: 100px;
+  min-height: 160px;
+  /*padding-bottom: 100px;*/
   width: 100%;
-  overflow-x: auto;
+  /*overflow-x: auto;
+  overflow-y: auto;*/
   background: rgba(255,255,255,0.1);
   border-radius: var(--radius-sm);
   align-items: center;
@@ -225,7 +229,7 @@
 /* Container State Styles */
 .block-container.has-children {
   min-width: max-content;
-}
+  }
 
 .block-container.drag-over {
   border-color: white;

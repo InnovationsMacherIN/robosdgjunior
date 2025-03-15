@@ -15,14 +15,7 @@
   z-index: 1;
 }
 
-.child-blocks-container {
-  padding-bottom: 70px !important;
-  min-height: 180px !important;
-}
 
-.child-blocks-container .programming-area .block-container .block-input-container {
-  top: 90px !important;
-}
 
   .child-blocks-container .block {
   min-height: 110px !important;

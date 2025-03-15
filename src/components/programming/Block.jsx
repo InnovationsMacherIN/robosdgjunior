@@ -500,7 +500,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
     return (
         <div
             ref={blockRef}
-            className={`block block-container ${hasChildren ? 'has-children' : ''}`}
+            className={`block-container ${hasChildren ? 'has-children' : ''}`}
             draggable="true"
             onDragStart={handleDragStart}
             onDragOver={handleContainerDragOver}
@@ -528,9 +528,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
                     onDragOverPosition={onDragOverPosition}
                 />
             ))}
-          </div>
-          <div className="block-container-icon">
-          <BlockIconConfig blockId={block.id} />
           </div>
         </div>
     );

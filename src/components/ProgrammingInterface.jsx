@@ -228,37 +228,49 @@ const ProgrammingInterface = () => {
 
           const repeatBlockIndex = droppedBlocks.findIndex(block => block.id === 'repeat');
           if (repeatBlockIndex !== -1) {
+            let inputValueData
+            if (droppedBlockData.defaultValue){
+              console.log("child block default value found");
+              inputValueData = droppedBlockData.defaultValue;
+              droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+            }
+            if (droppedBlockData.secondInputMin){
+              console.log("child block second input min found");
+              inputValueData = droppedBlockData.secondInputMin;
+              droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+            }
             const newBlock = { ...droppedBlockData };
             setDroppedBlocks(blocks => {
               const newBlocks = [...blocks];
+
               newBlocks[repeatBlockIndex].childBlocks.push(newBlock);
               return newBlocks;
             });
           }
           return;
         }
-
-        console.log('Touch drop:', dropTarget);
-        console.log("DATA: ",dropEvent.blockData)
-
         if (programmingArea) {
           const blockData = dropEvent.blockData;
           let inputValueData;
-          if (blockData.secondInputMin) {
+          if (blockData.defaultValue) {
+            inputValueData = blockData.defaultValue;
+            const newBlock = {...blockData, inputValue: inputValueData};
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
+          } else if (blockData.secondInputMin) {
             inputValueData = blockData.secondInputMin;
             const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
           } else if (blockData.options) {
             inputValueData = blockData.options[0].value;
             const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
-          } else if (blockData.defaultValue) {
-            inputValueData = blockData.defaultValue;
-            const newBlock = {...blockData, inputValue: inputValueData};
-            setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
           } else {
             const newBlock = {...blockData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
           }
         }
       }
@@ -377,6 +389,15 @@ const ProgrammingInterface = () => {
    */
   const handleClearBlocks = () => {
     if (window.confirm(t('confirms.clearAllBlocks'))) {
+      console.log('clear blocks', droppedBlocks);
+      for (let block of droppedBlocks) {
+        console.log("deleting: ",block);
+        if (block.childBlocks) {
+          console.log("child blocks found", block.childBlocks);
+          block.childBlocks = [];
+          console.log("child blocks found 2", block.childBlocks);
+        }
+      }
       setDroppedBlocks([]);
       clearSavedBlocks();
     }

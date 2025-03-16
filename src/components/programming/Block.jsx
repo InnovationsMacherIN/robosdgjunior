@@ -506,7 +506,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
             onDrop={handleContainerDrop}
-            onTouchEnd={handleContainerDrop}
         >
           <div className="block-content">
             <div className="block-header">

@@ -459,7 +459,7 @@
 /* Responsiivisuus */
 @media (max-width: 768px) {
   .top-nav {
-    flex-direction: column;
+    /*flex-direction: column;*/
     gap: 1rem;
   }
 
@@ -469,7 +469,7 @@
   }
 
   .category-buttons {
-    justify-content: center;
+    justify-content: left;
   }
 
   .blocks-container {

@@ -1,0 +1,107 @@
+.icon-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-button svg {
+  max-height: 34px !important;
+}
+
+.icon-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Container for the full-screen popup */
+.icon-selector-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Semi-transparent overlay */
+.popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Icon grid popup */
+.icon-popup {
+  position: relative;
+  background: #003C9A;
+  padding: 40px;
+  z-index: 10000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 80%; /* Popup vie 80% näytön leveydestä */
+  max-width: 900px; /* Estää popupia kasvamasta liian isoksi */
+  height: auto; /* Korkeus mukautuu sisältöön */
+  max-height: 90vh; /* Maksimikorkeus 90% näytöstä */
+}
+
+/* Grid layout for icons */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 30px;
+  justify-items: center;
+}
+
+/* Icon buttons */
+.icon-button {
+  background: white;
+  min-width: 70px !important;
+  min-height: 70px !important;
+  max-height: 90px !important;
+  max-width: 90px !important;
+  padding: 10px !important;
+  cursor: pointer;
+  border: 5px solid black;
+  border-radius: 200px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.icon-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Tablet-specific styles */
+@media (max-width: 1024px) {
+  .icon-popup {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .icon-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon-button svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
+  }
+}

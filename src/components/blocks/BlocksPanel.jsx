@@ -12,24 +12,23 @@
  * @param {function} props.setSelectedCategory - Handler to update selected category
  * @param {Object} props.blocksByCategory - Mapping of blocks organized by category
  * @param {function} props.handleDragStart - Handler for block drag start events
+ * @param {function} props.handleDrop - Handler for block drop
+ *
  * @returns {React.ReactElement} Panel containing categorized programming blocks
  */
 
 import React, {useState} from 'react';
 import '../../styles/components/BlocksPanel.css';
 import '../../styles/BlockVisualElements.css';
-import BlockVisual from '../../utils/BlockVisual';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
-//import BlockTooltip from "../BlockTooltip.jsx";
-//import '../../styles/BlockTooltip.css';
-import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 import {useTouchDrag} from "../../utils/useTouchDrag";
 
 import icon_control from "../../assets/icons/robo-trafficlight.svg";
 import icon_visual from "../../assets/icons/robo-screen.svg";
 import icon_sounds from "../../assets/icons/robo-sound.svg";
 import icon_movement from "../../assets/icons/robo-movement.svg";
+import icon_robo_illustration from "../../assets/icons/robo-illustration.svg";
 
 
 const BlocksPanel = ({
@@ -38,40 +37,23 @@ const BlocksPanel = ({
                        setSelectedCategory,
                        blocksByCategory,
                        handleDragStart,
-                       handleDrop
+                       handleDrop,
                      }) => {
 
   const [blocks, setBlocks] = useState(blocksByCategory);
 
-  /**
-   * Tooltip state
-   * */
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [mousePosition, setMousePosition] = useState(null);
 
   /**
-   * ToolTip functions
+   * useTouchDrag -hook
    *
-
-  const handleMouseEnter = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-    setShowTooltip(true);
-  };
-
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-    setMousePosition(null);
-  };
-
-  ///////////////
-
+   * Custom hook for handling touch-based drag events
+   *
+   * onDragStart: Callback function for drag start events
+   * onDragMove: Callback function for drag move events
+   * onDragEnd: Callback function for drag end events
+   *
+   * @returns {Object} touchHandlers - Event handlers for touch-based drag events
    */
-
-    // Add dragState to the destructured values
   const { handlers: touchHandlers, isDragging, dragState } = useTouchDrag({
       createClone: true,
       onDragStart: (dragData) => {
@@ -113,10 +95,12 @@ const BlocksPanel = ({
         if (programmingArea) {
           programmingArea.classList.add('drag-over');
         }
+
+
       },
 
       onDragEnd: (e, endData) => {
-        console.log('onDragEnd endData', endData);
+        console.log('onDragEnd endData', e,  endData);
 
         handleDrop(e, endData);
 
@@ -128,158 +112,17 @@ const BlocksPanel = ({
       }
     });
 
-      /**
-   * handleInputChange - handler (function)
-   * Updates block input values during configuration
-   * Handles both primary and secondary inputs for blocks
-   *
-   * @param {Event|string|number} valueOrEvent - Input change event or direct value
-   * @param {string} blockId - Unique identifier for the block
-   * @param {string} [inputType='primary'] - Type of input being updated
-   *
-   * @returns {void}
-   */
-  const handleInputChange = (valueOrEvent, blockId, inputType = 'primary') => {
-    const value = valueOrEvent.target ? valueOrEvent.target.value : valueOrEvent;
-    console.log('handleInputChange', value, blockId, inputType);
-    console.log('blocks', blocks);
-    console.log('selectedCategory', selectedCategory);
-    const block = blocks[selectedCategory].find(b => b.id === blockId);
-    if (!block) return;
 
-    const updatedBlock = { ...block };
 
-    if (inputType === 'primary') {
-      updatedBlock.inputValue = value;
-      console.log('updatedBlock', updatedBlock);
-    } else {
-      updatedBlock.secondInputValue = value;
-    }
-
-    const updatedBlocks = blocks[selectedCategory].map(b =>
-      b.id === blockId ? updatedBlock : b
-    );
-
-    setBlocks({
-      ...blocks,
-      [selectedCategory]: updatedBlocks
-    });
-
-    const blockElement = document.querySelector(`[data-block-id="${blockId}"]`);
-    if (blockElement) {
-      const originalDragStart = (e) => handleDragStart(e, updatedBlock);
-      blockElement.ondragstart = originalDragStart;
-    }
-  };
 
   /**
-   * renderInput - funktio
+   * getCategoryImage -function
    *
-   * Renders appropriate input element based on block configuration
-   * Supports number, range, select, and text inputs
+   * Returns an image element based on the category name
    *
-   * @param {Object} block - Block configuration object
-   * @param {string} block.inputType - Type of input to render
-   * @param {Object} block.config - Input-specific configuration
-   *
-   * @returns {React.ReactElement|null} Rendered input element or null
+   * @param category
+   * @returns {*}
    */
-  const renderInput = (block) => {
-    if (!block.hasInput) return null;
-
-    switch (block.inputType) {
-      case 'number':
-        return (
-          <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )
-            <input
-              id={`${block.id}-input`}
-              type="number"
-              min={block.inputMin}
-              max={block.inputMax}
-              step={block.inputStep || 1}
-              defaultValue={block.defaultValue}
-              onChange={(e) => handleInputChange(e, block.id)}
-              onClick={(e) => e.stopPropagation()}
-              className="block-input-number"
-            />*/}
-            <CustomNumberInput
-              id={`${block.id}-input`}
-              value={block.inputValue}
-              onChange={(value) => handleInputChange(value, block.id)}
-              className="block-input-number"
-            />
-          </div>
-        );
-
-      case 'range':
-        return (
-          <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
-            <div className="range-container">
-              <input
-                id={`${block.id}-input`}
-                type="range"
-                min={block.inputMin}
-                max={block.inputMax}
-                defaultValue={block.defaultValue}
-                onChange={(e) => handleInputChange(e, block.id)}
-                onClick={(e) => e.stopPropagation()}
-                className="block-input-range"
-              />
-              <span className="range-value">{block.defaultValue}</span>
-            </div>
-          </div>
-        );
-
-      case 'select':
-        return (
-          <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
-            <select
-              id={`${block.id}-input`}
-              defaultValue={block.defaultValue}
-              onChange={(e) => handleInputChange(e, block.id)}
-              onClick={(e) => e.stopPropagation()}
-              className="block-input-select"
-            >
-              {block.options.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        );
-
-      case 'text':
-      default:
-        return (
-          <div className="input-group">
-            {/*block.inputLabel && (
-              <label htmlFor={`${block.id}-input`}>{block.inputLabel}</label>
-            )*/}
-            <input
-              id={`${block.id}-input`}
-              type="text"
-              maxLength={block.maxLength}
-              defaultValue={block.defaultValue}
-              onChange={(e) => handleInputChange(e, block.id)}
-              onClick={(e) => e.stopPropagation()}
-              className="block-input-text"
-            />
-          </div>
-        );
-    }
-  };
-
-
   const getCategoryImage = (category) => {
 
     const getIconSrc = (category) => {
@@ -307,9 +150,11 @@ const BlocksPanel = ({
 
 
   /**
-   * BlocksPanel -komponentti
+   * BlocksPanel -component
    *
    * CSS Class Names
+   * blocks-container: Container for block elements
+   * block-input-container: Container for block input elements
    * block-input-number: Number input styling
    * block-input-range: Range slider styling
    * block-input-select: Dropdown select styling
@@ -320,6 +165,9 @@ const BlocksPanel = ({
    */
   return (
     <div className="categories">
+      <div className="robo-illustration-container">
+        <img src={icon_robo_illustration} alt="Robo Illustration" className="robo-illustration" />
+      </div>
       <div className="category-buttons">
         {categories.map((category) => (
           <button
@@ -330,9 +178,6 @@ const BlocksPanel = ({
             onClick={() => setSelectedCategory(category)}
             data-category={category}
           >
-            {/*
-              {category}
-              */}
             {getCategoryImage(category)}
           </button>
         ))}
@@ -347,70 +192,12 @@ const BlocksPanel = ({
             onDragStart={(e) => handleDragStart(e, block)}
             {...touchHandlers}
             data-block-id={block.id}
-            //onMouseEnter={handleMouseEnter}
-            //onMouseMove={handleMouseMove}
-            //onMouseLeave={handleMouseLeave}
           >
-            <BlockVisual blockId={block.id} />
-            {/*showTooltip && (
-              <BlockTooltip
-                title={block.title}
-                description={block.description}
-                mousePosition={mousePosition}
-              />
-            )*/}
-            {/*<div className="block-header">
-              <span className="block-title">{block.title}</span>
-            </div>
-            <p className="block-description">{block.description}</p>*/}
             <BlockIconConfig blockId={block.id} />
             < div className="block-input-container">
-            {renderInput(block)}
-              </div>
-            {block.hasSecondInput && (
-                <div className="second-input">
-                  {block.secondInputType === 'number' ? (
-                    <div className="input-group">
-                      <label htmlFor={`${block.id}-second-input`}>
-                        {block.secondInputLabel}
-                      </label>
-                      {/*
-                      <input
-                        id={`${block.id}-second-input`}
-                        type="number"
-                        min={block.secondInputMin}
-                        max={block.secondInputMax}
-                        defaultValue={block.secondInputDefault}
-                        onChange={(e) => handleInputChange(e, block.id, 'secondary')}
-                        onClick={(e) => e.stopPropagation()}
-                        className="block-input-number"
-                      />
-                      */}
-                      <CustomNumberInput />
-                    </div>
-                  ) : (
-                    <div className="input-group">
-                      <label htmlFor={`${block.id}-second-input`}>
-                        {block.secondInputLabel}
-                      </label>
-                      <select
-                        id={`${block.id}-second-input`}
-                        defaultValue={block.secondInputDefault}
-                        onChange={(e) => handleInputChange(e, block.id, 'secondary')}
-                        onClick={(e) => e.stopPropagation()}
-                        className="block-input-select"
-                      >
-                        {block.options.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-                )}
-              </div>
+            {/*renderInput(block)*/}
+            </div>
+          </div>
             ))}
           </div>
 

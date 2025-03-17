@@ -1,10 +1,15 @@
-// src/config/blockIconConfig.jsx
+/**
+ * This component is used to display an icon for a block based on the block ID.
+ * The block ID is passed as a prop to the component, and the component returns
+ * the corresponding icon based on the block ID.
+ */
 
 import React from 'react';
 import '../styles/blockIconConfig.css';
 import icon_nuoli from "../assets/icons/robo-arrow-ahead.svg";
 import icon_nuoli_taakse from "../assets/icons/robo-arrow-backwards.svg";
-import icon_puoli from "../assets/icons/puoli-pallo.svg";
+import icon_arrow_left from "../assets/icons/robo-arrow-left.svg";
+import icon_arrow_right from "../assets/icons/robo-arrow-right.svg";
 import icon_rengas_vasen from "../assets/icons/robo-tyre-left.svg";
 import icon_rengas_oikea from "../assets/icons/robo-tyre-right.svg";
 import icon_start from "../assets/icons/robo-play-category.svg";
@@ -17,6 +22,7 @@ import icon_picture from "../assets/icons/robo-emoji-love.svg";
 import icon_wait from "../assets/icons/robo-wait.svg";
 import icon_repeat from "../assets/icons/robo-repeat-v2.svg";
 import icon_stop from "../assets/icons/robo-stop-block.svg";
+import icon_pirouette from "../assets/icons/robo-pirouette.svg";
 
 const BlockIconConfig = ({ blockId }) => {
 
@@ -75,6 +81,10 @@ const BlockIconConfig = ({ blockId }) => {
         return icon_rengas_vasen;
       case 'turn-right':
         return icon_rengas_oikea;
+      case 'left':
+        return icon_arrow_left;
+      case 'right':
+        return icon_arrow_right;
       case 'leds-off':
         return icon_displayoff;
       case 'dance':
@@ -83,6 +93,8 @@ const BlockIconConfig = ({ blockId }) => {
         return icon_zigzag
       case 'shake':
         return icon_shake
+      case 'pirouette':
+        return icon_pirouette
       case 'show-picture_1':
         return icon_picture
       case 'show-picture_2':

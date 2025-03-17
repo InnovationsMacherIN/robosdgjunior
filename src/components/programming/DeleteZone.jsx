@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/DeleteZone.css';
 import RoboTrash from "../../assets/icons/RoboTrash.jsx";
@@ -10,13 +9,13 @@ const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
 
   useEffect(() => {
     if (isDraggingBlock) {
-      console.log('Block is being dragged');
+      //console.log('Block is being dragged');
     }
   }, [isDraggingBlock]);
 
   useEffect(() => {
     if (isHovered) {
-      console.log('Block is being hovered');
+      //console.log('Block is being hovered');
     }
   }, [isHovered]);
 

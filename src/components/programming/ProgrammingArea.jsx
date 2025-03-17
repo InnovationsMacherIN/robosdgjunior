@@ -26,6 +26,7 @@ import DeleteZone from './DeleteZone';
 import '../../styles/components/ProgrammingArea.css';
 import '../../styles/draggableBlocks.css';
 import DroppedBlock from './Block'
+import block from "./Block";
 
 const ProgrammingArea = ({
                            droppedBlocks,
@@ -47,6 +48,7 @@ const ProgrammingArea = ({
   const [chainPositions, setChainPositions] = useState({});
   const areaRef = useRef(null);
   ////////////////////////
+
 
   // Lisää nämä handlerit ennen returnia
   const handleChainDragStart = useCallback((e, chainId) => {
@@ -141,7 +143,7 @@ const ProgrammingArea = ({
    */
   useEffect(() => {
     if (droppedBlocks.length > 0) {
-      console.log('Current blocks in programming area:', droppedBlocks);
+      //console.log('Current blocks in programming area:', droppedBlocks);
     }
   }, [droppedBlocks]);
 
@@ -182,6 +184,7 @@ const ProgrammingArea = ({
    *   ]
    * }, 1);
    */
+
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'text':
@@ -224,6 +227,7 @@ const ProgrammingArea = ({
         return null;
     }
   };
+
 
   /**
    * Renders the programming area interface

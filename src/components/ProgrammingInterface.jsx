@@ -10,6 +10,12 @@
  * for block handling and program execution.
  *
  * Structure:
+ * - TopNavigation: Top navigation bar with buttons for connecting, executing and clearing blocks.
+ * - ZoomableArea: Wrapper for programming area with zoom and drag functionality.
+ *    -> ProgrammingArea: Main area for dropping and managing blocks. LOCATED INSIDE ZOOMABLE AREA
+ * - BlocksPanel: Block selection panel with categories and blocks.
+ * - Ble3: Bluetooth connection component.
+ *
  *
  *
  * @component
@@ -22,14 +28,15 @@ import BlocksPanel from './blocks/BlocksPanel';
 import Ble3 from './bluetooth/Ble3';
 import { categories, blocksByCategory } from '../config/blocksConfig';
 import { convertBlocksToCommands } from '../utils/blocksConverter';
-import '../styles/ProgrammingInterface.css';
 import { useTranslation } from 'react-i18next';
 import { saveBlocks, loadBlocks, hasSavedBlocks, clearSavedBlocks } from '../utils/blockStorage';
 import ZoomableArea from '../utils/zoomableArea';
 import {CodeViewPopUp} from "../utils/CodeViewPopUp.jsx";
+
+import '../styles/ProgrammingInterface.css';
 import '../styles/CodeViewPopUp.css';
 
-import PasswordModal from "./PasswordModal.jsx";
+//import PasswordModal from "./PasswordModal.jsx";
 
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
@@ -42,6 +49,8 @@ const ProgrammingInterface = () => {
    * @state {boolean} isExecuting - Flag for program execution status.
    * @state {boolean} connected - Bluetooth connection status.
    * @state {number} currentDropPosition - Current drop position for block reordering
+   * @state {boolean} isDraggingBlock - Flag for block dragging status
+   * @state {boolean} isBlocksView - Flag for block view status
    *
    */
   const [selectedCategory, setSelectedCategory] = useState('Steering');
@@ -51,15 +60,17 @@ const ProgrammingInterface = () => {
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [isBlocksView, setIsBlocksView] = useState(true);
-  const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
 
-  // Add this state near your other state declarations
-  const [isAuthorized, setIsAuthorized] = useState(() => {
-    // Check if already authorized in this session
-    return sessionStorage.getItem('r4e_authorized') === 'true';
-  });
+  //const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
 
 
+  /**
+   * toggleView - handler
+   *
+   * Toggles between block and code view
+   *
+   * @returns {void}
+   */
   const toggleView = () => {
     setIsBlocksView(!isBlocksView)
   }
@@ -83,7 +94,15 @@ const ProgrammingInterface = () => {
     setConnected(isConnected);
   };
 
-  // Ladataan tallennetut lohkot kun komponentti mountataan
+  /**
+   * saveBlocks - effect
+   *
+   * Loads saved blocks from local storage when component mounts
+   *
+   * @returns {void}
+   *
+   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
+  */
   useEffect(() => {
     if (hasSavedBlocks()) {
       const savedBlocks = loadBlocks();
@@ -93,12 +112,30 @@ const ProgrammingInterface = () => {
     }
   }, []);
 
-  // Tallennetaan lohkot kun ne muuttuvat
+  /**
+   * saveBlocks - effect
+   *
+   * Saves blocks to local storage when droppedBlocks state changes
+   *
+   * @returns {void}
+   */
   useEffect(() => {
     if (droppedBlocks.length > 0) {
       saveBlocks(droppedBlocks);
     }
+    console.log(droppedBlocks)
   }, [droppedBlocks]);
+
+
+  /**
+   * handleUploadBlocks - handler
+   * Updates droppedBlocks state with new blocks uploaded from file
+   *
+   *@param {data} data - Uploaded block data
+   */
+  const handleUploadBlocks = (data) => {
+    setDroppedBlocks(data);
+  };
 
   /**
    * handleDragStart - handler
@@ -110,16 +147,13 @@ const ProgrammingInterface = () => {
    */
   const handleDragStart = (e, block) => {
     // Clone the block to avoid reference issues
-    console.log('Drag start:', block);
+    //console.log('Drag start:', block);
     setIsDraggingBlock(true);
-
-    console.log('E:', e);
-
     const blockToTransfer = {
       ...block,
       inputValue: e.target.querySelector('input, select')?.value,
     };
-    console.log('Block to transfer:', blockToTransfer);
+    //console.log('Block to transfer:', blockToTransfer);
     if (block.hasSecondInput) {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
@@ -166,9 +200,11 @@ const ProgrammingInterface = () => {
    * @param {DragEvent} e - Drop event
    * @param {Object} dropEvent - Drop event data
    * @returns {void}
+   *
+   * TODO: A LOT OF REPETITIVE AND UNNECESSARY CODE AND HARD TO UNDERSTAND, CLEAN UP!!
    */
   const handleDrop = (e, dropEvent) => {
-    console.log('Handle drop:', e, dropEvent);
+    //console.log('Handle drop:', e, dropEvent);
     e.preventDefault();
     setIsDraggingBlock(false);
 
@@ -185,8 +221,17 @@ const ProgrammingInterface = () => {
     if (isTouchEvent) {
       if  (dropEvent.isInternalDrag === true) {
         console.log('Internal touch drop, current position:', currentDropPosition);
+        const blockData = JSON.parse(dropEvent['application/json']);
+        const touch = e.changedTouches[0];
+        const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+        if(dropTarget?.closest('.delete-zone')) {
+          const blockToDelete = blockData;
+          const blockToDeleteIndex = dropEvent.fromIndex;
+          console.log('Drop target DELETE ZONE', blockToDelete, blockToDeleteIndex );
+          handleDeleteBlock(blockToDelete, blockToDeleteIndex);
+        }
         let fromIndex = dropEvent.fromIndex;
-        if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
+        if (fromIndex !== currentDropPosition && currentDropPosition !== -1 && currentDropPosition !== null) {
           handleReorder(fromIndex, currentDropPosition);
         } else {
           return;
@@ -196,22 +241,60 @@ const ProgrammingInterface = () => {
         const touch = e.changedTouches[0];
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
         const programmingArea = dropTarget?.closest('.programming-area');
-        console.log('Touch drop:', dropTarget, programmingArea);
 
+        if (dropTarget?.closest('.child-blocks-container')) {
+          console.log('Drop target drop, current drop position', e, dropTarget);
+          e.preventDefault();
+          e.stopPropagation();
+          let droppedBlockData = dropEvent.blockData;
+          if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat') return;
+          console.log('Drop target drop zone', droppedBlockData);
+
+          const repeatBlockIndex = droppedBlocks.findIndex(block => block.id === 'repeat');
+          if (repeatBlockIndex !== -1) {
+            let inputValueData
+            if (droppedBlockData.defaultValue){
+              console.log("child block default value found");
+              inputValueData = droppedBlockData.defaultValue;
+              droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+            }
+            if (droppedBlockData.secondInputMin){
+              console.log("child block second input min found");
+              inputValueData = droppedBlockData.secondInputMin;
+              droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+            }
+            const newBlock = { ...droppedBlockData };
+            setDroppedBlocks(blocks => {
+              const newBlocks = [...blocks];
+
+              newBlocks[repeatBlockIndex].childBlocks.push(newBlock);
+              return newBlocks;
+            });
+          }
+          return;
+        }
         if (programmingArea) {
           const blockData = dropEvent.blockData;
           let inputValueData;
-          if (blockData.options) {
-            inputValueData = blockData.options[0].value;
-            const newBlock = {...blockData, inputValue: inputValueData};
-            setDroppedBlocks(blocks => [...blocks, newBlock]);
-          } else if (blockData.defaultValue) {
+          if (blockData.defaultValue) {
             inputValueData = blockData.defaultValue;
             const newBlock = {...blockData, inputValue: inputValueData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
+          } else if (blockData.secondInputMin) {
+            inputValueData = blockData.secondInputMin;
+            const newBlock = {...blockData, inputValue: inputValueData};
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
+          } else if (blockData.options) {
+            inputValueData = blockData.options[0].value;
+            const newBlock = {...blockData, inputValue: inputValueData};
+            setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
           } else {
             const newBlock = {...blockData};
             setDroppedBlocks(blocks => [...blocks, newBlock]);
+            return;
           }
         }
       }
@@ -230,6 +313,26 @@ const ProgrammingInterface = () => {
       const blockData = e.dataTransfer.getData('application/json');
       if (blockData) {
         const block = JSON.parse(blockData);
+        console.log(block);
+        let inputValueData;
+        if (block.defaultValue) {
+          inputValueData = block.defaultValue;
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        } else if (block.secondInputMin) {
+          inputValueData = block.secondInputMin;
+          console.log(inputValueData)
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        } else if (block.options) {
+          inputValueData = block.options[0].value;
+          const newBlock = {...block, inputValue: inputValueData};
+          setDroppedBlocks(blocks => [...blocks, newBlock]);
+          return;
+        }
+
         if (currentDropPosition !== null) {
           setDroppedBlocks(blocks => {
             const newBlocks = [...blocks];
@@ -241,6 +344,7 @@ const ProgrammingInterface = () => {
         }
       }
     }
+
 
     cleanup();
     setCurrentDropPosition(null);
@@ -306,9 +410,20 @@ const ProgrammingInterface = () => {
    *
    * @returns {boolean} - true if user confirms
    * @function
+   *
+   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
    */
   const handleClearBlocks = () => {
     if (window.confirm(t('confirms.clearAllBlocks'))) {
+      console.log('clear blocks', droppedBlocks);
+      for (let block of droppedBlocks) {
+        console.log("deleting: ",block);
+        if (block.childBlocks) {
+          console.log("child blocks found", block.childBlocks);
+          block.childBlocks = [];
+          console.log("child blocks found 2", block.childBlocks);
+        }
+      }
       setDroppedBlocks([]);
       clearSavedBlocks();
     }
@@ -379,16 +494,31 @@ const ProgrammingInterface = () => {
    */
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setIsDraggingBlock(false);
+    //console.log(blockToDelete, blockToDeleteIndex);
     setDroppedBlocks(currentBlocks => {
       const newBlocks = currentBlocks.filter((block, index) => {
         if (!block) {
           return false;
         }
+        //console.log(block.id, blockToDelete.id, index, blockToDeleteIndex, block.inputValue, blockToDelete.inputValue);
         const shouldKeep = !(block.id === blockToDelete.id &&
-          block.inputValue === blockToDelete.inputValue &&
+          /*block.inputValue === blockToDelete.inputValue &&*/
         index === blockToDeleteIndex);
+        //console.log(block.id, shouldKeep);
         return shouldKeep;
       });
+
+      // Poista block myös repeat blockin sisältä
+      newBlocks.forEach(block => {
+        if (block.childBlocks) {
+          block.childBlocks = block.childBlocks.filter(childBlock =>
+            !(childBlock.id === blockToDelete.id &&
+              childBlock.inputValue === blockToDelete.inputValue)
+          );
+        }
+      });
+
+      console.log("set Dropped called", newBlocks);
       return newBlocks;
     });
   };
@@ -407,19 +537,12 @@ const ProgrammingInterface = () => {
     setDroppedBlocks(newBlocks);
   };
 
-  if (!isAuthorized) {
-    return (
-    <PasswordModal onCorrectPassword={() => setIsAuthorized(true)} />
-    );
-  } else {
     return (
       <div className="programming-container">
         {!isBlocksView && (
-          <div className="code-view-popup">
             <CodeViewPopUp
               toggleView={toggleView}
               blocks={droppedBlocks}/>
-          </div>
         )}
         <TopNavigation
           onConnectClick={() => ble3Ref.current.connect()}
@@ -431,6 +554,7 @@ const ProgrammingInterface = () => {
           droppedBlocks={droppedBlocks}
           isBlocksView={isBlocksView}
           toggleView={toggleView}
+          onUploadBlocks={handleUploadBlocks}
         />
 
         <ZoomableArea
@@ -458,12 +582,12 @@ const ProgrammingInterface = () => {
           blocksByCategory={blocksByCategory}
           handleDragStart={handleDragStart}
           handleDrop={handleDrop}
+          onDragOverPosition={handleDragOverPosition}
         />
 
         <Ble3 ref={ble3Ref} onConnected={handleConnected} />
       </div>
     );
-  }
-};
+  };
 
 export default ProgrammingInterface;

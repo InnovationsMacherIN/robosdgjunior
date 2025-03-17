@@ -37,14 +37,6 @@ export const blocksByCategory = {
       }
     },
     {
-      id: 'end',
-      title: 'Loppu',
-      description: 'Ohjelman tulee päättyä tähän lohkoon',
-      className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
-      action: 'END',
-      command: 'end:'
-    },
-    {
       id: 'wait',
       title: 'Odota',
       description: 'Odota määrätty aika',
@@ -57,6 +49,14 @@ export const blocksByCategory = {
       inputStep: 0.1,
       defaultValue: 1,
       command: (duration) => `W${duration}${duration % 1 === 0 ? '.0:' : ':'}`
+    },
+    {
+      id: 'end',
+      title: 'Loppu',
+      description: 'Ohjelman tulee päättyä tähän lohkoon',
+      className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
+      action: 'END',
+      command: 'end:'
     }
   ],
   'LED Display': [

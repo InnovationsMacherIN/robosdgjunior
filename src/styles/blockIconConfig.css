@@ -15,26 +15,20 @@
   z-index: 1;
 }
 
+
+
+  .child-blocks-container .block {
+  min-height: 110px !important;
+  margin-right: -25px;
+  transform: translateY(-0px) !important;
+}
+
 .category-image {
   max-height: 40px;
 }
 
 .block-display .block-icon-container {
   width: 65px;
-}
-
-  /* Perusasetukset container-elementille */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Containerin koko */
-  width: 60px;
-  height: 60px;
-
-  /* Varmistetaan että ikoni ei häiritse muuta sisältöä */
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* Base icon styles */

@@ -14,10 +14,7 @@
  */
 
 import React, {useRef, useState, useEffect} from 'react';
-import BlockVisual from "../../utils/BlockVisual.jsx";
 import '../../styles/BlockVisualElements.css';
-//import BlockTooltip from "../BlockTooltip.jsx";
-//import '../../styles/BlockTooltip.css';
 import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
@@ -27,31 +24,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
 
   const [hasChildren, setHasChildren] = useState(false);
 
-  /**
-   * Tooltip state
-   * */
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [mousePosition, setMousePosition] = useState(null);
-
-  /**
-   * ToolTip functions
-   * */
-
-  const handleMouseEnter = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-    setShowTooltip(true);
-  };
-
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-    setMousePosition(null);
-  };
-
-  ///////////////
 
   // Block.jsx:ssä
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
@@ -176,6 +148,8 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         el.style.zIndex = '';
       });
 
+      console.log(e, endData);
+
       handleDrop(e, endData);
 
       if (onDragEnd) {
@@ -185,8 +159,12 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   });
 
   useEffect(() => {
+    //console.log("child blocks use effect");
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
-      setHasChildren(true);
+      if (!hasChildren) {
+        setHasChildren(true);
+      }
+      //console.log('child blocks:', block.childBlocks);
     }
   }, [block.childBlocks]);
 
@@ -216,7 +194,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         e.dataTransfer.setData('application/json', JSON.stringify(block));
         e.dataTransfer.setData('application/internal',
             JSON.stringify({ fromIndex: index }));
-        console.log('Drag start:', index, block);
+        //console.log('Drag start:', index, block);
         onDragStart(e, block);
       };
 
@@ -316,16 +294,36 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   };
 
   const handleContainerDrop = (e) => {
+    //console.log("handleContainerDrop");
     if (!block.isContainer) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat' ) return;
+    let inputValueData
+    if (droppedBlockData.defaultValue){
+      console.log("child block default value found");
+      let inputValueData = droppedBlockData.defaultValue;
+      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+    }
+    if (droppedBlockData.secondInputMin){
+      console.log("child block second input min found");
+      let inputValueData = droppedBlockData.secondInputMin;
+      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+    }
     block.childBlocks.push(droppedBlockData);
+    console.log(droppedBlockData);
+    inputValueData = null;
+    //console.log(block.childBlocks);
     setHasChildren(true);
 
+
     blockRef.current.classList.remove('drag-over');
+
+    //onInputChange is called to update the child blocks in the userinterface immediately
+    onInputChange();
   };
 
   const handleChildInputChange = (childIndex, value, isSecondInput = false) => {
@@ -375,36 +373,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
-        /*
-        return (
-          <input
-            type="number"
-            min={block.inputMin}
-            max={block.inputMax}
-            step={block.inputStep}
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          />
-        );
-        */
         return (
           <CustomNumberInput
             value={block.inputValue}
+            defaultValue={block.defaultValue}
             onChange={(value) => handleInputChange(value)}
           />
         );
       case 'select':
         return (
-          <select
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          >
-            {block.options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <>
+          </>
         );
       case 'text':
         return (
@@ -454,26 +433,16 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderSecondInput = (block) => {
     if (block.secondInputType === 'number') {
       return (
-        <input
-          type="number"
-          min={block.secondInputMin}
-          max={block.secondInputMax}
-          defaultValue={block.secondInputDefault}
-          onChange={(e) => handleInputChange(e.target.value, true)}
+        <CustomNumberInput
+          value={block.inputValue}
+          defaultValue={block.secondInputMin}
+          onChange={(value) => handleInputChange(value)}
         />
       );
     }
     return (
-      <select
-        defaultValue={block.secondInputDefault}
-        onChange={(e) => handleInputChange(e.target.value, true)}
-      >
-        {block.options.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <>
+      </>
     );
   };
 
@@ -527,27 +496,19 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
     return valueText ? ` (${valueText})` : '';
   };
 
-
-// Jos kyseessä on container-lohko
   if (block.isContainer) {
     return (
         <div
             ref={blockRef}
-            className={`block block-container ${hasChildren ? 'has-children' : ''}`}
+            className={`block-container ${hasChildren ? 'has-children' : ''}`}
             draggable="true"
             onDragStart={handleDragStart}
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
             onDrop={handleContainerDrop}
         >
-          {/* Main block content */}
           <div className="block-content">
-            <BlockVisual blockId={block.id} />
             <div className="block-header">
-            <span className="block-title">
-              {block.title}
-              {block.inputValue && ` (${block.inputValue})`}
-            </span>
             </div>
             {block.hasInput && (
                 <div className="block-input-container">
@@ -555,8 +516,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
                 </div>
             )}
           </div>
-
-          {/* Child blocks container */}
           <div className="child-blocks-container">
             {block.childBlocks?.map((childBlock, childIndex) => (
                 <DroppedBlock
@@ -580,43 +539,22 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         draggable="true"
         {...touchHandlers}
         data-index={index}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         onDragStart={handleDragStart}
         onDragEnd={onDragEnd}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
       >
-        <BlockVisual blockId={block.id} />
-        {/*<div className="block-header">
-          <span className="block-title">
-          {block.title}
-          {//renderBlockValue(block)}
-            block.inputValue && ` (${block.inputValue}${block.secondInputValue ? `, ${block.secondInputValue}` : ''})`}
-        </span>
-        </div>*/}
         <BlockIconConfig blockId={block.id} />
         {block.hasInput && (
           <div className="block-input-container">
-            {/*<label>{block.inputLabel}</label>*/}
             {renderBlockInput(block, index)}
           </div>
         )}
         {block.hasSecondInput && (
           <div className="block-input-container">
-            {/*<label>{block.secondInputLabel}</label>*/}
             {renderSecondInput(block)}
           </div>
         )}
-        {/*<p className="block-description">{block.description}</p>*/}
-        {/*showTooltip && (
-            <BlockTooltip
-                title={block.title}
-                description={block.description}
-                mousePosition={mousePosition}
-            />
-        )*/}
       </div>
     );
 };

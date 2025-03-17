@@ -193,3 +193,26 @@
 .category-button[data-category="Sounds"] {
   background-color: #F71F66;
 }
+
+
+/* categories section. Some of these settings are alo in programmingInterface */
+.categories {
+  position: relative; /* Ensure the container is the reference point for absolute positioning */
+  overflow-y: auto;
+}
+
+
+/* Robo Illustration Container for the image of the robot*/
+.robo-illustration-container {
+  position: absolute; /* Position relative to the .categories container */
+  top: 20px;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 100; /* Ensure it stays on top of other content */
+}
+
+.robo-illustration {
+  width: 100%;
+  height: auto;
+}

@@ -1,3 +1,9 @@
+/**
+ * This component is used to display an icon for a block based on the block ID.
+ * The block ID is passed as a prop to the component, and the component returns
+ * the corresponding icon based on the block ID.
+ */
+
 import React from 'react';
 import '../styles/blockIconConfig.css';
 import icon_nuoli from "../assets/icons/robo-arrow-ahead.svg";

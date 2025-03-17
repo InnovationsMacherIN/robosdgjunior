@@ -1,5 +1,29 @@
-import React, { useState } from 'react';
-import { Square, Menu, Circle, Bird, Egg, Laugh } from 'lucide-react';
+/**
+ * TopNavigation component
+ *
+ * This component is responsible for rendering the top navigation bar of the application.
+ * It contains buttons for starting and stopping the program, saving and loading blocks,
+ * connecting and disconnecting from the robot, changing the language of the application,
+ * and toggling between the block view and the code view.
+ *
+ * @param {object} props
+ * @param {array} props.droppedBlocks
+ * @param {function} props.onClearBlocks
+ * @param {function} props.onConnectClick
+ * @param {function} props.onDisconnectClick
+ * @param {function} props.onStartClick
+ * @param {boolean} props.connected
+ * @param {boolean} props.isExecuting
+ * @param {boolean} props.isBlocksView
+ * @param {function} props.toggleView
+ * @param {function} props.onUploadBlocks
+ *
+ * @returns {JSX.Element} Which is the TopNavigation component
+ */
+
+
+import React, { useState, useEffect } from 'react';
+import { Menu,} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/components/TopNavigation.css';
 import RoboStop from '../../assets/icons/StopIcon.jsx';
@@ -28,6 +52,16 @@ const TopNavigation = ({
   const { t, i18n } = useTranslation();
   const [Icon, setIcon] = useState(defaultIcon);
   const [showSavePopup, setShowSavePopup] = useState(false);
+
+  const [isPulsing, setIsPulsing] = useState(false);
+
+  useEffect(() => {
+    if (connected) {
+      setIsPulsing(true);
+      const timer = setTimeout(() => setIsPulsing(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [connected]);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -98,10 +132,11 @@ const TopNavigation = ({
           </div>
         </div>
         <button
-          className={`button button-connect ${connected ? 'connected' : ''}`}
+          className={`button button-connect ${connected ? 'connected' : ''} ${isPulsing ? 'pulse' : ''}`}
           onClick={connected ? onDisconnectClick : onConnectClick}
+          style={{ backgroundColor: connected ? 'green' : '#993399' }}
         >
-          <RoboConnect style={{width: '30px', height: '30px'}}/>
+          <RoboConnect style={{ width: '30px', height: '30px' }} />
         </button>
         <button
           className="button button-clear"

@@ -10,6 +10,12 @@
  * for block handling and program execution.
  *
  * Structure:
+ * - TopNavigation: Top navigation bar with buttons for connecting, executing and clearing blocks.
+ * - ZoomableArea: Wrapper for programming area with zoom and drag functionality.
+ *    -> ProgrammingArea: Main area for dropping and managing blocks. LOCATED INSIDE ZOOMABLE AREA
+ * - BlocksPanel: Block selection panel with categories and blocks.
+ * - Ble3: Bluetooth connection component.
+ *
  *
  *
  * @component
@@ -22,14 +28,15 @@ import BlocksPanel from './blocks/BlocksPanel';
 import Ble3 from './bluetooth/Ble3';
 import { categories, blocksByCategory } from '../config/blocksConfig';
 import { convertBlocksToCommands } from '../utils/blocksConverter';
-import '../styles/ProgrammingInterface.css';
 import { useTranslation } from 'react-i18next';
 import { saveBlocks, loadBlocks, hasSavedBlocks, clearSavedBlocks } from '../utils/blockStorage';
 import ZoomableArea from '../utils/zoomableArea';
 import {CodeViewPopUp} from "../utils/CodeViewPopUp.jsx";
+
+import '../styles/ProgrammingInterface.css';
 import '../styles/CodeViewPopUp.css';
 
-import PasswordModal from "./PasswordModal.jsx";
+//import PasswordModal from "./PasswordModal.jsx";
 
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
@@ -42,6 +49,8 @@ const ProgrammingInterface = () => {
    * @state {boolean} isExecuting - Flag for program execution status.
    * @state {boolean} connected - Bluetooth connection status.
    * @state {number} currentDropPosition - Current drop position for block reordering
+   * @state {boolean} isDraggingBlock - Flag for block dragging status
+   * @state {boolean} isBlocksView - Flag for block view status
    *
    */
   const [selectedCategory, setSelectedCategory] = useState('Steering');
@@ -51,15 +60,17 @@ const ProgrammingInterface = () => {
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [isBlocksView, setIsBlocksView] = useState(true);
-  const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
 
-  // Add this state near your other state declarations
-  const [isAuthorized, setIsAuthorized] = useState(() => {
-    // Check if already authorized in this session
-    return sessionStorage.getItem('r4e_authorized') === 'true';
-  });
+  //const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
 
 
+  /**
+   * toggleView - handler
+   *
+   * Toggles between block and code view
+   *
+   * @returns {void}
+   */
   const toggleView = () => {
     setIsBlocksView(!isBlocksView)
   }
@@ -83,7 +94,15 @@ const ProgrammingInterface = () => {
     setConnected(isConnected);
   };
 
-  // Ladataan tallennetut lohkot kun komponentti mountataan
+  /**
+   * saveBlocks - effect
+   *
+   * Loads saved blocks from local storage when component mounts
+   *
+   * @returns {void}
+   *
+   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
+  */
   useEffect(() => {
     if (hasSavedBlocks()) {
       const savedBlocks = loadBlocks();
@@ -93,16 +112,19 @@ const ProgrammingInterface = () => {
     }
   }, []);
 
-  // Tallennetaan lohkot kun ne muuttuvat
+  /**
+   * saveBlocks - effect
+   *
+   * Saves blocks to local storage when droppedBlocks state changes
+   *
+   * @returns {void}
+   */
   useEffect(() => {
     if (droppedBlocks.length > 0) {
       saveBlocks(droppedBlocks);
     }
     console.log(droppedBlocks)
   }, [droppedBlocks]);
-
-
-
 
 
   /**
@@ -178,6 +200,8 @@ const ProgrammingInterface = () => {
    * @param {DragEvent} e - Drop event
    * @param {Object} dropEvent - Drop event data
    * @returns {void}
+   *
+   * TODO: A LOT OF REPETITIVE AND UNNECESSARY CODE AND HARD TO UNDERSTAND, CLEAN UP!!
    */
   const handleDrop = (e, dropEvent) => {
     //console.log('Handle drop:', e, dropEvent);
@@ -386,6 +410,8 @@ const ProgrammingInterface = () => {
    *
    * @returns {boolean} - true if user confirms
    * @function
+   *
+   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
    */
   const handleClearBlocks = () => {
     if (window.confirm(t('confirms.clearAllBlocks'))) {
@@ -511,12 +537,6 @@ const ProgrammingInterface = () => {
     setDroppedBlocks(newBlocks);
   };
 
-
-  if (!isAuthorized) {
-    return (
-    <PasswordModal onCorrectPassword={() => setIsAuthorized(true)} />
-    );
-  } else {
     return (
       <div className="programming-container">
         {!isBlocksView && (
@@ -568,7 +588,6 @@ const ProgrammingInterface = () => {
         <Ble3 ref={ble3Ref} onConnected={handleConnected} />
       </div>
     );
-  }
-};
+  };
 
 export default ProgrammingInterface;

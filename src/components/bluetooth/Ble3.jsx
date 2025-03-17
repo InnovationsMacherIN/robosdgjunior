@@ -1,5 +1,5 @@
 // Ble3.jsx
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 class Ble3 extends Component {
   constructor(props) {

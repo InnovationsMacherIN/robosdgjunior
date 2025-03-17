@@ -159,6 +159,23 @@
   background-color: var(--background-light);
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button-connect.pulse {
+  animation: pulse 1s infinite;
+  transform-origin: center;
+}
+
 /* Mobile
 */
 @media screen and (max-width: 768px) {

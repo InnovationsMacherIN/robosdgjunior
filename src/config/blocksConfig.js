@@ -7,7 +7,7 @@ export const categories = ['Control', 'LED Display', 'Movement', 'Sounds'];
 export const blocksByCategory = {
   'Control': [
     {
-      id: 'start',
+      type: 'start',
       title: 'Kun Start painettu',
       description: 'Ohjelman tulee alkaa tällä lohkolla',
       className: 'block-steering block-start', // lisätty start-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
@@ -15,7 +15,7 @@ export const blocksByCategory = {
       command: 'start:'
     },
     {
-      id: 'repeat',
+      type: 'repeat',
       title: 'Toista',
       description: 'Toista sisällä olevat lohkot määrätyn kerran',
       className: 'block-steering block-container', // lisätty container-luokka
@@ -37,7 +37,7 @@ export const blocksByCategory = {
       }
     },
     {
-      id: 'wait',
+      type: 'wait',
       title: 'Odota',
       description: 'Odota määrätty aika',
       className: 'block-settings',
@@ -51,7 +51,7 @@ export const blocksByCategory = {
       command: (duration) => `W${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'end',
+      type: 'end',
       title: 'Loppu',
       description: 'Ohjelman tulee päättyä tähän lohkoon',
       className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
@@ -61,7 +61,7 @@ export const blocksByCategory = {
   ],
   'LED Display': [
     /*{
-      id: 'show-text',
+      type: 'show-text',
       title: 'Kirjoita',
       description: 'Näytä teksti LED-näytöllä (max 8 merkkiä)',
       className: 'block-display',
@@ -73,7 +73,7 @@ export const blocksByCategory = {
       command: (text) => `${text}:`
     },*/
     {
-      id: 'show-picture_1',
+      type: 'show-picture_1',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -92,7 +92,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_2',
+      type: 'show-picture_2',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -111,7 +111,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_3',
+      type: 'show-picture_3',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -130,7 +130,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_4',
+      type: 'show-picture_4',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -149,7 +149,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_5',
+      type: 'show-picture_5',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -168,7 +168,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_6',
+      type: 'show-picture_6',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -187,7 +187,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_7',
+      type: 'show-picture_7',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -206,7 +206,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_8',
+      type: 'show-picture_8',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -225,7 +225,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_9',
+      type: 'show-picture_9',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -244,7 +244,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_10',
+      type: 'show-picture_10',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -263,7 +263,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_11',
+      type: 'show-picture_11',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -282,7 +282,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_12',
+      type: 'show-picture_12',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -301,7 +301,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'show-picture_13',
+      type: 'show-picture_13',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
       className: 'block-display',
@@ -320,7 +320,7 @@ export const blocksByCategory = {
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
-      id: 'leds-off',
+      type: 'leds-off',
       title: 'Sammuta näyttö',
       description: 'Sammuttaa LED-näytön',
       className: 'block-display',
@@ -330,7 +330,7 @@ export const blocksByCategory = {
   ],
   'Movement': [
     {
-      id: 'forward',
+      type: 'forward',
       title: 'Eteenpäin',
       description: 'Liiku eteenpäin',
       className: 'block-movement',
@@ -344,7 +344,7 @@ export const blocksByCategory = {
       command: (duration) => `Bv${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'backward',
+      type: 'backward',
       title: 'Taaksepäin',
       description: 'Liiku taaksepäin',
       className: 'block-movement',
@@ -358,7 +358,7 @@ export const blocksByCategory = {
       command: (duration) => `Bz${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'left',
+      type: 'left',
       title: 'Vasemmalle',
       description: 'Käänny vasemmalle',
       className: 'block-movement',
@@ -372,7 +372,7 @@ export const blocksByCategory = {
       command: (duration) => `Bl${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'right',
+      type: 'right',
       title: 'Oikealle',
       description: 'Käänny oikealle',
       className: 'block-movement',
@@ -386,7 +386,7 @@ export const blocksByCategory = {
       command: (duration) => `Br${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'turn-left',
+      type: 'turn-left',
       title: 'Käänny paikallaan vasemmalle',
       description: 'Käänny vasemmalle paikallasi',
       className: 'block-movement',
@@ -400,7 +400,7 @@ export const blocksByCategory = {
       command: (duration) => `BL${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'turn-right',
+      type: 'turn-right',
       title: 'Käänny paikallaan oikealle',
       description: 'Käänny oikealle paikallasi',
       className: 'block-movement',
@@ -414,7 +414,7 @@ export const blocksByCategory = {
       command: (duration) => `BR${duration}${duration % 1 === 0 ? '.0:' : ':'}`
     },
     {
-      id: 'dance',
+      type: 'dance',
       title: 'Tanssi',
       description: 'Suorita tanssiliike',
       className: 'block-combination',
@@ -435,7 +435,7 @@ export const blocksByCategory = {
       command: 'DANCE'
     },
     {
-      id: 'zigzag',
+      type: 'zigzag',
       title: 'Siksak',
       description: 'Liiku siksakilla',
       className: 'block-combination',
@@ -456,7 +456,7 @@ export const blocksByCategory = {
       command: 'ZIGZAG'
     },
     {
-      id: 'shake',
+      type: 'shake',
       title: 'Ravista',
       description: 'Ravistele robottia',
       className: 'block-combination',
@@ -477,7 +477,7 @@ export const blocksByCategory = {
       command: 'SHAKE'
     },
     {
-      id: 'pirouette',
+      type: 'pirouette',
       title: 'Piruetti',
       description: 'Pyörähdä ympäri',
       className: 'block-combination',
@@ -493,7 +493,7 @@ export const blocksByCategory = {
   /*
   'Combinations': [
     {
-      id: 'dance',
+      type: 'dance',
       title: 'Tanssi',
       description: 'Suorita tanssiliike',
       className: 'block-combination',
@@ -514,7 +514,7 @@ export const blocksByCategory = {
       command: 'DANCE'
     },
     {
-      id: 'zigzag',
+      type: 'zigzag',
       title: 'Siksak',
       description: 'Liiku siksakilla',
       className: 'block-combination',
@@ -535,7 +535,7 @@ export const blocksByCategory = {
       command: 'ZIGZAG'
     },
     {
-      id: 'shake',
+      type: 'shake',
       title: 'Ravista',
       description: 'Ravistele robottia',
       className: 'block-combination',
@@ -556,7 +556,7 @@ export const blocksByCategory = {
       command: 'SHAKE'
     },
     {
-      id: 'pirouette',
+      type: 'pirouette',
       title: 'Piruetti',
       description: 'Pyörähdä ympäri',
       className: 'block-combination',
@@ -571,7 +571,7 @@ export const blocksByCategory = {
   ],*/
   'Sounds': [
     {
-      id: 'melody_1',
+      type: 'melody_1',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -584,7 +584,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_2',
+      type: 'melody_2',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -597,7 +597,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_3',
+      type: 'melody_3',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -610,7 +610,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_4',
+      type: 'melody_4',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -623,7 +623,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_5',
+      type: 'melody_5',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -636,7 +636,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_6',
+      type: 'melody_6',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -649,7 +649,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_7',
+      type: 'melody_7',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -662,7 +662,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_8',
+      type: 'melody_8',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -675,7 +675,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_9',
+      type: 'melody_9',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -688,7 +688,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'melody_10',
+      type: 'melody_10',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
       className: 'block-sound',
@@ -701,7 +701,7 @@ export const blocksByCategory = {
       command: (melodyId) => `${melodyId}:`
     },
     {
-      id: 'sound_1',
+      type: 'sound_1',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -714,7 +714,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_2',
+      type: 'sound_2',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -727,7 +727,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_3',
+      type: 'sound_3',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -740,7 +740,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_4',
+      type: 'sound_4',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -753,7 +753,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_5',
+      type: 'sound_5',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -766,7 +766,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_6',
+      type: 'sound_6',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -779,7 +779,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_7',
+      type: 'sound_7',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -792,7 +792,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_8',
+      type: 'sound_8',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -805,7 +805,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_9',
+      type: 'sound_9',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -818,7 +818,7 @@ export const blocksByCategory = {
       command: (soundId) => `${soundId}:`
     },
     {
-      id: 'sound_10',
+      type: 'sound_10',
       title: 'Soita ääni',
       description: 'Soita valittu ääni (vain micro:bit V2)',
       className: 'block-sound',
@@ -834,7 +834,7 @@ export const blocksByCategory = {
   /*
   'Settings': [
     {
-      id: 'motor',
+      type: 'motor',
       title: 'Moottorin nopeus',
       description: 'Säädä moottorin nopeutta',
       className: 'block-settings',

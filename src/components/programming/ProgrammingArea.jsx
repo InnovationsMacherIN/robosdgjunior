@@ -54,7 +54,7 @@ const ProgrammingArea = ({
   const handleChainDragStart = useCallback((e, chainId) => {
     // Jos käyttäjä raahaa mitä tahansa muuta kuin start-blockia, ei siirretä koko ketjua
     const draggingBlock = e.target.closest('.block');
-    if (draggingBlock && draggingBlock.querySelector('[data-block-id]')?.dataset.blockId !== 'start') {
+    if (draggingBlock && draggingBlock.querySelector('[data-block-id]')?.dataset.typeId !== 'start') {
       return;
     }
 

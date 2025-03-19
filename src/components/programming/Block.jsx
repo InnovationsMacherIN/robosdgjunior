@@ -20,10 +20,19 @@ import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 import { useTouchDrag } from "../../utils/useTouchDrag.js";
 
-const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition, handleDrop }) => {
+const DroppedBlock = ({
+                        block,
+                        index,
+                        onDragStart,
+                        onInputChange,
+                        onDragEnd,
+                        onDragOverPosition,
+                        handleDrop,
+                        isChildBlock = false,
+                        parentIndex = null
+                      }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
-
 
   // Block.jsx:ssä
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
@@ -34,14 +43,14 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
       if (!blockElement) return;
 
       // Tarkista onko start-block
-      const isStartBlock = block.id === 'start';
+      const isStartBlock = block.type === 'start';
       if (isStartBlock) return;
 
-
       if (onDragStart) {
-
         dragState.current.isInternalDrag = true;
         dragState.current.fromIndex = index;
+        dragState.current.isChildBlock = isChildBlock || false;
+        dragState.current.parentIndex = parentIndex;
         // Luodaan synteettinen event
         const syntheticEvent = {
           target: {
@@ -60,16 +69,20 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           }
         };
 
-        dragState.current['application/internal'] = JSON.stringify({ fromIndex: index });
-
+        dragState.current['application/internal'] = JSON.stringify({
+          fromIndex: index,
+          isChildBlock: isChildBlock || false,
+          parentIndex: parentIndex
+        });
         onDragStart(syntheticEvent, block);
 
         blockElement.classList.add('dragging');
       }
     },
-    // Block.jsx
     onDragMove: (moveData) => {
       if (!isTouchDragging) return;
+
+
 
       // Liikuta draggattavaa elementtiä
       const block = dragState.current.target;
@@ -112,7 +125,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           const toIndex = parseInt(blockElement.dataset.index || '0');
           onDragOverPosition(position === 'before' ? toIndex : toIndex + 1);
 
-          //console.log('Drag over:', { index, position, toIndex });
+          console.log('Drag over:', { index, position, toIndex });
         }
       }
     },
@@ -183,18 +196,28 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    *
    * @param {DragEvent} e - Drag event object
    */
-      // DroppedBlock (Block.jsx) komponentissa
+  // DroppedBlock (Block.jsx) komponentissa
   const handleDragStart = (e) => {
-        const isStartBlock = block.id === 'start';
+        const isStartBlock = block.type === 'start';
+        const isEndBlock = block.type === 'end';
+
         if (isStartBlock) {
           e.preventDefault();
           return;
         }
 
+        if (isChildBlock) {
+          e.stopPropagation();
+        }
+
         e.dataTransfer.setData('application/json', JSON.stringify(block));
         e.dataTransfer.setData('application/internal',
-            JSON.stringify({ fromIndex: index }));
-        //console.log('Drag start:', index, block);
+            JSON.stringify({
+              fromIndex: index,
+              isChildBlock: isChildBlock || false,
+              parentIndex: parentIndex
+            }));
+
         onDragStart(e, block);
       };
 
@@ -301,8 +324,10 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
     e.stopPropagation();
 
     let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
-    if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat' ) return;
-    let inputValueData
+
+    if (droppedBlockData.type === 'start' || droppedBlockData.type === 'end' || droppedBlockData.type === 'repeat' ) return;
+
+    let inputValueData;
     if (droppedBlockData.defaultValue){
       console.log("child block default value found");
       let inputValueData = droppedBlockData.defaultValue;
@@ -313,12 +338,14 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
       let inputValueData = droppedBlockData.secondInputMin;
       droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
     }
+
     block.childBlocks.push(droppedBlockData);
     console.log(droppedBlockData);
+
     inputValueData = null;
     //console.log(block.childBlocks);
-    setHasChildren(true);
 
+    setHasChildren(true);
 
     blockRef.current.classList.remove('drag-over');
 
@@ -472,6 +499,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    *   secondInputValue: 'easy'
    * });
    */
+
   const renderBlockValue = (block) => {
     let valueText = '';
 
@@ -526,6 +554,10 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
                     onDragStart={onDragStart}
                     onDragEnd={onDragEnd}
                     onDragOverPosition={onDragOverPosition}
+                    handleDrop={handleDrop}
+                    isChildBlock={true}
+                    parentIndex={index}
+                    {...touchHandlers}
                 />
             ))}
           </div>
@@ -544,7 +576,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
       >
-        <BlockIconConfig blockId={block.id} />
+        <BlockIconConfig blockType={block.type} />
         {block.hasInput && (
           <div className="block-input-container">
             {renderBlockInput(block, index)}

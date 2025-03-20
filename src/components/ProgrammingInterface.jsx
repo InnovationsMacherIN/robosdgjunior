@@ -61,10 +61,11 @@ const ProgrammingInterface = () => {
   const [currentDropPosition, setCurrentDropPosition] = useState(null);
   const [isDraggingBlock, setIsDraggingBlock] = useState(false);
   const [isBlocksView, setIsBlocksView] = useState(true);
+  const [isDraggingExistingBlock, setIsDraggingExistingBlock] = useState(false);
+  const [hasStartBlock, setHasStartBlock] = useState(false);
+  const [hasEndBlock, setHasEndBlock] = useState(false);
 
   //const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
-
-
 
   const toggleView = () => {
     setIsBlocksView(!isBlocksView)
@@ -83,7 +84,6 @@ const ProgrammingInterface = () => {
    *
    * @returns {void}
    *
-   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
   */
   useEffect(() => {
     if (hasSavedBlocks()) {
@@ -128,12 +128,25 @@ const ProgrammingInterface = () => {
    */
   const handleDragStart = (e, block) => {
     console.log('Drag start:', block);
-    setIsDraggingBlock(true);
 
-    // Create the block with all necessary properties
+    // ei sallita startin tai endin liikuttelua
+    if (
+        (block.type === 'start' && hasStartBlock) ||
+        (block.type === 'end' && hasEndBlock)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    const fromIndex = parseInt(e.currentTarget.dataset.index, 10);
+
+    setIsDraggingBlock(true);
+    setIsDraggingExistingBlock(!isNaN(fromIndex));
+
+    // palikan luonti kaikilla tarpeellisilla tiedoilla
     const blockToTransfer = {
       ...block,
-      id: block.id || uuidv4(), // Ensure it has an ID
+      id: block.id || uuidv4(),
       inputValue: e.target.querySelector('input, select')?.value,
     };
 
@@ -142,17 +155,13 @@ const ProgrammingInterface = () => {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
 
-    // Set data for internal drag operations
+    // data sisäisille dragauksille
     const internalData = {
       fromIndex: parseInt(e.currentTarget.dataset.index, 10),
       isChildBlock: block.isChildBlock || false,
       parentIndex: block.parentIndex
     };
 
-    console.log('Block to transfer:', blockToTransfer);
-    console.log('Internal data:', internalData);
-
-    // Set both types of data
     e.dataTransfer.setData('application/json', JSON.stringify(blockToTransfer));
     e.dataTransfer.setData('application/internal', JSON.stringify(internalData));
   };
@@ -200,13 +209,11 @@ const ProgrammingInterface = () => {
    * @param {Object} dropEvent - Drop event data
    * @returns {void}
    *
-   * TODO: A LOT OF REPETITIVE AND UNNECESSARY CODE AND HARD TO UNDERSTAND, CLEAN UP!!
    */
   const handleDrop = (e, dropEvent) => {
     e.preventDefault();
     setIsDraggingBlock(false);
 
-    // Clean up visual indicators after drop operation
     const cleanupVisualIndicators = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
       document.querySelectorAll('.block.drop-target').forEach(el => el.classList.remove('drop-target'));
@@ -245,52 +252,93 @@ const ProgrammingInterface = () => {
 
   // desktopin drag/drop blockpaneelista
   const handleDesktopDrop = (e) => {
-    if (!e.dataTransfer?.types.includes('application/json')) return false;
-
-    try {
-      // Check if this is an internal reordering first
-      if (e.dataTransfer.types.includes('application/internal')) {
-        const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
-        const { fromIndex } = internalData;
-        if (fromIndex !== undefined && currentDropPosition !== null && currentDropPosition !== -1) {
-          handleReorder(fromIndex, currentDropPosition);
-          return true;
-        }
-      }
-
-      // Only create a new block if it's not an internal drag
-      const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
-      const dropTarget = e.target.closest('.programming-area');
-
-      if (dropTarget) {
-        const newBlock = createNewBlockWithDefaults({
-          ...blockData,
-          id: uuidv4()
-        });
-
-        setDroppedBlocks(blocks => {
-          if (currentDropPosition == null || currentDropPosition === -1) {
-            return [...blocks, newBlock];
-          } else {
-            const newBlocks = [...blocks];
-            newBlocks.splice(currentDropPosition, 0, newBlock);
-            return newBlocks;
-          }
-        });
-
-        return true;
-      }
-    } catch (error) {
-      console.error('Error processing drop:', error);
+    if (!e.dataTransfer?.types.includes('application/json')) {
+      return false;
     }
 
-    return false;
-  };
+    try {
+      const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
 
+      // tarkasta onko tämä sisäinen uudelleen järjestely
+      const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
+      const isInternalMove = typeof internalData.fromIndex === 'number' && !isNaN(internalData.fromIndex);
+
+      if (isInternalMove) {
+        if (currentDropPosition !== null && currentDropPosition !== -1) {
+          handleReorder(internalData.fromIndex, currentDropPosition);
+          return true;
+        }
+        return false;
+      }
+
+      // startin käsittely
+      if (blockData.type === 'start') {
+        if (hasStartBlock) return true;
+        setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
+        setHasStartBlock(true);
+        return true;
+      }
+
+      // endin käsittely
+      if (blockData.type === 'end') {
+        if (hasEndBlock) return true;
+        setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
+        setHasEndBlock(true);
+        return true;
+      }
+
+      // tavallisten palikoiden käsittely
+      const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
+
+      setDroppedBlocks(blocks => {
+        const newBlocks = [...blocks];
+        const endIndex = blocks.findIndex(b => b.type === 'end');
+
+        // jos ei ole palikoita
+        if (blocks.length === 0) {
+          return [newBlock];
+        }
+
+        // jos ollaan laittamassa tiettyyn paikkaan
+        if (currentDropPosition !== null && currentDropPosition !== -1) {
+          // ei sallita laittamista ennen starttia
+          if (blocks[0]?.type === 'start' && currentDropPosition === 0) {
+            return blocks;
+          }
+
+          // ei sallita laittamista endin jälkeen
+          if (endIndex !== -1 && currentDropPosition > endIndex) {
+            return blocks;
+          }
+
+          newBlocks.splice(currentDropPosition, 0, newBlock);
+          return newBlocks;
+        }
+
+        // jos end on olemassa, laita sitä ennen
+        if (endIndex !== -1) {
+          newBlocks.splice(endIndex, 0, newBlock);
+          return newBlocks;
+        }
+
+        return [...blocks, newBlock];
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error processing drop:', error);
+      return false;
+    }
+  };
 
   // luo uusi blocki default valueilla
   const createNewBlockWithDefaults = (block) => {
     const newBlock = { ...block };
+
+    // jos tehdään uusi, nollataan childBlocks
+    if (newBlock.type === 'repeat') {
+      newBlock.childBlocks = [];
+    }
 
     if (newBlock.defaultValue) {
       newBlock.inputValue = newBlock.defaultValue;
@@ -326,57 +374,76 @@ const ProgrammingInterface = () => {
 
   // (KOSKETUS) handlaa uuden blockin lisäys blockspaneelista
   const handleExternalTouchDrop = (e, dropEvent) => {
+    const blockData = dropEvent.blockData;
     const touch = e.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 
-    // valinta joko repeatiin tai pääalueeseen
-    if (dropTarget?.closest('.child-blocks-container')) {
-      handleChildContainerDrop(dropEvent);
-    } else if (dropTarget?.closest('.programming-area')) {
-      handleProgrammingAreaTouchDrop(dropEvent);
+    // handlaa start palikka
+    if (blockData.type === 'start') {
+      if (hasStartBlock) return;
+      setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
+      setHasStartBlock(true);
+      return;
     }
-  };
 
-  // (KOSKETUS) handlaa blockin laittaminen repeat blockiin
-  const handleChildContainerDrop = (dropEvent) => {
-    let droppedBlockData = {
-      ...dropEvent.blockData,
-      id: uuidv4()
-    };
+    // handlaa end palikka
+    if (blockData.type === 'end') {
+      if (hasEndBlock) return;
+      setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
+      setHasEndBlock(true);
+      return;
+    }
 
-    // ei sallita start, end, repeat blockien laittaoa tänne
-    if (['start', 'end', 'repeat'].includes(droppedBlockData.type)) return;
-
-    const repeatBlockIndex = droppedBlocks.findIndex(block => block.type === 'repeat');
-    if (repeatBlockIndex !== -1) {
-      if (droppedBlockData.defaultValue) {
-        droppedBlockData.inputValue = droppedBlockData.defaultValue;
+    // tarkista, ollaanko laittamassa repeatiin
+    const repeatContainer = dropTarget?.closest('.child-blocks-container');
+    if (repeatContainer) {
+      const parentBlock = repeatContainer.closest('.block-container');
+      if (parentBlock) {
+        const parentIndex = parseInt(parentBlock.dataset.index, 10);
+        handleChildContainerDrop(dropEvent, dropTarget);
+        return;
       }
-
-      setDroppedBlocks(blocks => {
-        const newBlocks = [...blocks];
-        newBlocks[repeatBlockIndex].childBlocks.push(droppedBlockData);
-        return newBlocks;
-      });
     }
-  };
 
-  // (KOSKETUS) handlaa blockin laitto pääalueeseen
-  const handleProgrammingAreaTouchDrop = (dropEvent) => {
-    let droppedBlockData = {
-      ...dropEvent.blockData,
-      id: uuidv4()
-    };
-    const newBlock = createNewBlockWithDefaults(droppedBlockData);
+    // käsittele peruspalikat programmin arealla
+    const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
 
     setDroppedBlocks(blocks => {
-      if (currentDropPosition === null || currentDropPosition === -1) {
-        return [...blocks, newBlock];
-      } else {
+      const endIndex = blocks.findIndex(b => b.type === 'end');
+
+      // jos ollaan laittamassa tiettyyn paikkaan ja se on validi
+      if (currentDropPosition !== null && currentDropPosition !== -1) {
         const newBlocks = [...blocks];
+        // älä salli ennen startia tai jälkeen endin
+        if (currentDropPosition <= 0 && blocks[0]?.type === 'start') return blocks;
+        if (endIndex !== -1 && currentDropPosition >= endIndex) return blocks;
         newBlocks.splice(currentDropPosition, 0, newBlock);
         return newBlocks;
       }
+
+      // jos end olemassa, laita ennen sitä
+      if (endIndex !== -1) {
+        const newBlocks = [...blocks];
+        newBlocks.splice(endIndex, 0, newBlock);
+        return newBlocks;
+      }
+
+      return [...blocks, newBlock];
+    });
+  };
+
+  // (KOSKETUS) handlaa blockin laittaminen repeat blockiin
+  const handleChildContainerDrop = (dropEvent, dropTarget) => {
+    const parentIndex = parseInt(dropTarget.closest('.block-container').dataset.index, 10);
+    let droppedBlockData = { ...dropEvent.blockData, id: uuidv4() };
+    if (['start', 'end', 'repeat'].includes(droppedBlockData.type)) return;
+
+    console.log(parentIndex)
+
+    setDroppedBlocks(blocks => {
+      const newBlocks = [...blocks];
+      newBlocks[parentIndex].childBlocks.push(droppedBlockData);
+      return newBlocks;
     });
   };
 
@@ -388,13 +455,35 @@ const ProgrammingInterface = () => {
    * @param {number} toIndex - new position, where block is dropped
    */
   const handleReorder = (fromIndex, toIndex) => {
-    setDroppedBlocks(blocks => {
-      //console.log('handle reorder:', blocks, fromIndex, toIndex);
+    setDroppedBlocks((blocks) => {
+      // validoi indeksit ensin
+      if (fromIndex < 0 || fromIndex >= blocks.length || toIndex < 0) {
+        return blocks;
+      }
+
+      const blockToMove = blocks[fromIndex];
+      if (!blockToMove) {
+        return blocks;
+      }
+
+      // ei saa siirtää aloitus tai lopetuspalikotia
+      if (blockToMove.type === 'start' || blockToMove.type === 'end') {
+        return blocks;
+      }
+
+      // tarkasta aloitus ja lopetuspalikoiden paikka
+      const startPos = blocks.findIndex((b) => b.type === 'start');
+      const endPos = blocks.findIndex((b) => b.type === 'end');
+
+      // älä salli laittaa ennen aloitusta tai lopetuksen jälkeen
+      if (startPos !== -1 && toIndex <= startPos) return blocks;
+      if (endPos !== -1 && toIndex >= endPos) return blocks;
+
       const newBlocks = [...blocks];
-      const [movedBlock] = newBlocks.splice(fromIndex, 1)
-      newBlocks.splice(toIndex, 0, movedBlock);
+      newBlocks.splice(fromIndex, 1);
+      newBlocks.splice(toIndex, 0, blockToMove);
       return newBlocks;
-    })
+    });
   };
 
   /**
@@ -440,22 +529,21 @@ const ProgrammingInterface = () => {
    * @returns {boolean} - true if user confirms
    * @function
    *
-   * TODO: FIX BUG IN TABLET/MOBILE DEVICE VIEW WHEN LOADING BLOCKS THE CHILD BLOCKS INSIDE REPEAT BLOCK ARE NOT DELETED PROPERLY ON CLEAR ALL
    */
   const handleClearBlocks = () => {
     if (window.confirm(t('confirms.clearAllBlocks'))) {
-      console.log('clear blocks', droppedBlocks);
-      for (let block of droppedBlocks) {
-        console.log("deleting: ",block);
-        if (block.childBlocks) {
-          console.log("child blocks found", block.childBlocks);
-          block.childBlocks = [];
-          console.log("child blocks found 2", block.childBlocks);
-        }
-      }
+
+      setHasStartBlock(false);
+      setHasEndBlock(false);
       setDroppedBlocks([]);
       clearSavedBlocks();
+
+      // Force a refresh of local storage
+      localStorage.removeItem('savedBlocks');
+
+      return true;
     }
+    return false;
   };
 
   /**
@@ -524,6 +612,7 @@ const ProgrammingInterface = () => {
 
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setIsDraggingBlock(false);
+    setIsDraggingExistingBlock(false);
 
     // eritellään childblockin ja tavallisen blockin poisto
     if (blockToDelete.isChildBlock && blockToDelete.parentIndex !== undefined) {
@@ -597,6 +686,7 @@ const ProgrammingInterface = () => {
           onDeleteBlock={handleDeleteBlock}
           onDragOverPosition={handleDragOverPosition}
           isDraggingBlock={isDraggingBlock}
+          isDraggingExistingBlock={isDraggingExistingBlock}
         >
           <ProgrammingArea
             droppedBlocks={droppedBlocks}

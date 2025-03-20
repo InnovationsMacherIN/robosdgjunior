@@ -19,6 +19,7 @@ import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 import { useTouchDrag } from "../../utils/useTouchDrag.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const DroppedBlock = ({
                         block,
@@ -38,13 +39,12 @@ const DroppedBlock = ({
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
     createClone: false,
     onDragStart: (dragData) => {
-      console.log('Touch drag start:', index, block);
       const blockElement = dragData.target;
       if (!blockElement) return;
 
       // ei sallita dragia start blockissa
-      const isStartBlock = block.type === 'start';
-      if (isStartBlock) return;
+      const isStartOrEndBlock = block.type === 'start' || block.type === 'end';
+      if (isStartOrEndBlock) return;
 
       if (onDragStart) {
         dragState.current.isInternalDrag = true;
@@ -290,7 +290,7 @@ const DroppedBlock = ({
   };
 
   const handleContainerDrop = (e) => {
-    //console.log("handleContainerDrop");
+    console.log("handleContainerDrop");
     if (!block.isContainer) return;
 
     e.preventDefault();
@@ -300,26 +300,32 @@ const DroppedBlock = ({
 
     if (droppedBlockData.type === 'start' || droppedBlockData.type === 'end' || droppedBlockData.type === 'repeat' ) return;
 
-    let inputValueData;
-    if (droppedBlockData.defaultValue){
-      console.log("child block default value found");
-      let inputValueData = droppedBlockData.defaultValue;
-      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+    droppedBlockData = {
+      ...droppedBlockData,
+      id: droppedBlockData.id || uuidv4()
+    };
+
+    if (droppedBlockData.hasInput) {
+      if (droppedBlockData.defaultValue !== undefined) {
+        droppedBlockData.inputValue = droppedBlockData.defaultValue;
+      } else if (droppedBlockData.inputType === 'select' && droppedBlockData.options?.length > 0) {
+        droppedBlockData.inputValue = droppedBlockData.options[0].value;
+      } else if (droppedBlockData.inputMin !== undefined) {
+        droppedBlockData.inputValue = droppedBlockData.inputMin;
+      }
     }
-    if (droppedBlockData.secondInputMin){
-      console.log("child block second input min found");
-      let inputValueData = droppedBlockData.secondInputMin;
-      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
+
+    // Initialize second input if needed
+    if (droppedBlockData.hasSecondInput) {
+      if (droppedBlockData.secondInputDefault !== undefined) {
+        droppedBlockData.secondInputValue = droppedBlockData.secondInputDefault;
+      } else if (droppedBlockData.secondInputMin !== undefined) {
+        droppedBlockData.secondInputValue = droppedBlockData.secondInputMin;
+      }
     }
 
     block.childBlocks.push(droppedBlockData);
-    console.log(droppedBlockData);
-
-    inputValueData = null;
-    //console.log(block.childBlocks);
-
     setHasChildren(true);
-
     blockRef.current.classList.remove('drag-over');
 
     //onInputChange is called to update the child blocks in the userinterface immediately
@@ -330,6 +336,7 @@ const DroppedBlock = ({
     if (!block.childBlocks) return;
 
     const updatedChildBlocks = [...block.childBlocks];
+
     if (isSecondInput) {
       updatedChildBlocks[childIndex] = {
         ...updatedChildBlocks[childIndex],
@@ -341,7 +348,9 @@ const DroppedBlock = ({
         inputValue: value
       };
     }
+
     block.childBlocks = updatedChildBlocks;
+    onInputChange();
   };
 
   /**
@@ -500,6 +509,7 @@ const DroppedBlock = ({
   if (block.isContainer) {
     return (
         <div
+            data-index={index}
             ref={blockRef}
             className={`block-container ${hasChildren ? 'has-children' : ''}`}
             draggable="true"
@@ -519,19 +529,22 @@ const DroppedBlock = ({
           </div>
           <div className="child-blocks-container">
             {block.childBlocks?.map((childBlock, childIndex) => (
-                <DroppedBlock
-                    key={`child-${childIndex}`}
-                    block={childBlock}
-                    index={childIndex}
-                    onInputChange={(value) => handleChildInputChange(childIndex, value)}
-                    onDragStart={onDragStart}
-                    onDragEnd={onDragEnd}
-                    onDragOverPosition={onDragOverPosition}
-                    handleDrop={handleDrop}
-                    isChildBlock={true}
-                    parentIndex={index}
-                    {...touchHandlers}
-                />
+                <div>
+                  <DroppedBlock
+                      key={`child-${childBlock.id || childIndex}`}
+                      block={childBlock}
+                      index={childIndex}
+                      onInputChange={(value, isSecondInput) =>
+                          handleChildInputChange(childIndex, value, isSecondInput)}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                      onDragOverPosition={onDragOverPosition}
+                      handleDrop={handleDrop}
+                      isChildBlock={true}
+                      parentIndex={index}
+                      {...touchHandlers}
+                  />
+                </div>
             ))}
           </div>
         </div>
@@ -539,15 +552,15 @@ const DroppedBlock = ({
   }
     return (
       <div
-        ref={blockRef}
-        className={`block ${block.className || ''}`}
-        draggable="true"
-        {...touchHandlers}
-        data-index={index}
-        onDragStart={handleDragStart}
-        onDragEnd={onDragEnd}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
+          ref={blockRef}
+          className={`block ${block.className || ''}`}
+          draggable={!(block.type === 'start' || block.type === 'end')}
+          {...(block.type === 'start' || block.type === 'end' ? {} : touchHandlers)}
+          data-index={index}
+          onDragStart={block.type === 'start' || block.type === 'end' ? null : handleDragStart}
+          onDragEnd={block.type === 'start' || block.type === 'end' ? null : onDragEnd}
+          onDragLeave={block.type === 'start' || block.type === 'end' ? null : handleDragLeave}
+          onDragOver={block.type === 'start' || block.type === 'end' ? null : handleDragOver}
       >
         <BlockIconConfig blockType={block.type} />
         {block.hasInput && (

@@ -42,7 +42,7 @@ const DroppedBlock = ({
       const blockElement = dragData.target;
       if (!blockElement) return;
 
-      // Tarkista onko start-block
+      // ei sallita dragia start blockissa
       const isStartBlock = block.type === 'start';
       if (isStartBlock) return;
 
@@ -51,10 +51,10 @@ const DroppedBlock = ({
         dragState.current.fromIndex = index;
         dragState.current.isChildBlock = isChildBlock || false;
         dragState.current.parentIndex = parentIndex;
-        // Luodaan synteettinen event
+
+        // luo synteettinen event
         const syntheticEvent = {
           target: {
-            // Määritellään querySelector suoraan funktioksi joka käyttää alkuperäistä blockElementtiä
             querySelector: (selector) => blockElement.querySelector(selector)
           },
           currentTarget: blockElement,
@@ -69,20 +69,26 @@ const DroppedBlock = ({
           }
         };
 
+        // sisällä isChildBlock ja parentindex block dataan
+        const blockForDrag = {
+          ...block,
+          isChildBlock: isChildBlock,
+          parentIndex: parentIndex
+        };
+
+        dragState.current['application/json'] = JSON.stringify(blockForDrag);
         dragState.current['application/internal'] = JSON.stringify({
           fromIndex: index,
           isChildBlock: isChildBlock || false,
           parentIndex: parentIndex
         });
-        onDragStart(syntheticEvent, block);
 
+        onDragStart(syntheticEvent, blockForDrag);
         blockElement.classList.add('dragging');
       }
     },
     onDragMove: (moveData) => {
       if (!isTouchDragging) return;
-
-
 
       // Liikuta draggattavaa elementtiä
       const block = dragState.current.target;
@@ -198,27 +204,30 @@ const DroppedBlock = ({
    */
   // DroppedBlock (Block.jsx) komponentissa
   const handleDragStart = (e) => {
-        const isStartBlock = block.type === 'start';
-        const isEndBlock = block.type === 'end';
-
-        if (isStartBlock) {
+        if (block.type === 'start') {
           e.preventDefault();
           return;
         }
 
+        if (onDragStart) {
+          const blockForDrag = {
+            ...block,
+            isChildBlock: isChildBlock,
+            parentIndex: parentIndex
+          };
+
+          onDragStart(e, blockForDrag);
+        }
+
+        // Mark data for internal reorder
+        e.dataTransfer.setData('application/internal', JSON.stringify({
+          fromIndex: index,
+          isChildBlock,
+          parentIndex
+        }));
         if (isChildBlock) {
           e.stopPropagation();
         }
-
-        e.dataTransfer.setData('application/json', JSON.stringify(block));
-        e.dataTransfer.setData('application/internal',
-            JSON.stringify({
-              fromIndex: index,
-              isChildBlock: isChildBlock || false,
-              parentIndex: parentIndex
-            }));
-
-        onDragStart(e, block);
       };
 
   /**
@@ -231,48 +240,12 @@ const DroppedBlock = ({
    */
   const handleDragOver = (e) => {
     e.preventDefault();
-    const blockElement = blockRef.current;
-    if (!blockElement) return;
-
-    const rect = blockElement.getBoundingClientRect();
-    const relativeY = e.clientY - rect.top;
-    const height = rect.height;
-
-    // Määritellään pudotusalueet: ylä- ja alapuolisko
-    const position = relativeY < height / 2 ? 'before' : 'after';
+    // Just set the drop position, no direct DOM manipulation
+    const rect = blockRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const position = (e.clientY - rect.top) < (rect.height / 2) ? 'before' : 'after';
     const toIndex = position === 'before' ? index : index + 1;
-
-    if (onDragOverPosition) {
-      onDragOverPosition(toIndex);
-    }
-
-    // Poistetaan vanhat indikaattorit ja siirtymät
-    document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
-    document.querySelectorAll('.block.drop-target').forEach(el =>
-      el.classList.remove('drop-target'));
-    document.querySelectorAll('.block.shift-right').forEach(el =>
-      el.classList.remove('shift-right'));
-
-    // Lisätään kohde-blokin highlight ja siirto
-    blockElement.classList.add('drop-target');
-
-    // Luodaan ja lisätään uusi indikaattori alkuperäiselle paikalle
-    const indicator = document.createElement('div');
-    indicator.className = 'block-drop-indicator';
-    blockElement.parentElement.insertBefore(indicator, blockElement);
-
-    // Lisätään shift-right luokka kaikille seuraaville blokeille
-    let nextElement = blockElement.nextElementSibling;
-    while (nextElement) {
-      nextElement.classList.add('shift-right');
-      nextElement = nextElement.nextElementSibling;
-    }
-
-    // Tallenna tieto dataTransferiin
-    e.dataTransfer.setData('application/drop-position',
-      JSON.stringify({ toIndex, position }));
-
-    //console.log('Drag over:', { index, position, toIndex });
+    onDragOverPosition?.(toIndex);
   };
 
   /**

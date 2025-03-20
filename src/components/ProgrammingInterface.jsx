@@ -76,8 +76,6 @@ const ProgrammingInterface = () => {
     setConnected(isConnected);
   };
 
-
-
   /**
    * saveBlocks - effect
    *
@@ -110,7 +108,6 @@ const ProgrammingInterface = () => {
     console.log(droppedBlocks)
   }, [droppedBlocks]);
 
-
   /**
    * handleUploadBlocks - handler
    * Updates droppedBlocks state with new blocks uploaded from file
@@ -130,25 +127,14 @@ const ProgrammingInterface = () => {
    * @param {Oblect} block - Block data object
    */
   const handleDragStart = (e, block) => {
-    // Clone the block to avoid reference issues
-
     console.log('Drag start:', block);
     setIsDraggingBlock(true);
-
-    // Get isChildBlock and parentIndex from the internal data if available
-    const isChildBlock = e.dataTransfer.types.includes('application/internal') ?
-        JSON.parse(e.dataTransfer.getData('application/internal'))?.isChildBlock : false;
-
-    const parentIndex = e.dataTransfer.types.includes('application/internal') ?
-        JSON.parse(e.dataTransfer.getData('application/internal'))?.parentIndex : undefined;
 
     // Create the block with all necessary properties
     const blockToTransfer = {
       ...block,
       id: block.id || uuidv4(), // Ensure it has an ID
       inputValue: e.target.querySelector('input, select')?.value,
-      isChildBlock: isChildBlock || false,
-      parentIndex: parentIndex
     };
 
     // Add second input value if needed
@@ -156,8 +142,19 @@ const ProgrammingInterface = () => {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
 
+    // Set data for internal drag operations
+    const internalData = {
+      fromIndex: parseInt(e.currentTarget.dataset.index, 10),
+      isChildBlock: block.isChildBlock || false,
+      parentIndex: block.parentIndex
+    };
+
     console.log('Block to transfer:', blockToTransfer);
+    console.log('Internal data:', internalData);
+
+    // Set both types of data
     e.dataTransfer.setData('application/json', JSON.stringify(blockToTransfer));
+    e.dataTransfer.setData('application/internal', JSON.stringify(internalData));
   };
 
   /**
@@ -168,6 +165,8 @@ const ProgrammingInterface = () => {
    */
   const handleDragOver = (e) => {
     e.preventDefault();
+    // We don't need any additional logic here as the actual
+    // drag over handling happens in the Block component
   };
 
   /**
@@ -229,10 +228,14 @@ const ProgrammingInterface = () => {
 
           handleExternalTouchDrop(e, dropEvent);
         }
-      } else if (isInternalDrag(e)) {
-        console.log("INTERNAL DESKTOP DROP")
+      } else if (e.dataTransfer.types.includes('application/internal')) {
+        // tämä on nyt hieman yksinkertaistettu versio väliaikaisesti tuosta uudelleen järjestelystä
 
-        handleInternalDesktopDrop(e);
+        const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
+        const { fromIndex } = internalData;
+        if (fromIndex !== currentDropPosition && currentDropPosition !== null && currentDropPosition !== -1) {
+          handleReorder(fromIndex, currentDropPosition);
+        }
       }
     } finally {
       cleanupVisualIndicators();
@@ -245,6 +248,17 @@ const ProgrammingInterface = () => {
     if (!e.dataTransfer?.types.includes('application/json')) return false;
 
     try {
+      // Check if this is an internal reordering first
+      if (e.dataTransfer.types.includes('application/internal')) {
+        const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
+        const { fromIndex } = internalData;
+        if (fromIndex !== undefined && currentDropPosition !== null && currentDropPosition !== -1) {
+          handleReorder(fromIndex, currentDropPosition);
+          return true;
+        }
+      }
+
+      // Only create a new block if it's not an internal drag
       const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
       const dropTarget = e.target.closest('.programming-area');
 
@@ -255,7 +269,6 @@ const ProgrammingInterface = () => {
         });
 
         setDroppedBlocks(blocks => {
-          // pistetään loppuun jos käyttäjä ei oo osunu mihinkään palikan väliin
           if (currentDropPosition == null || currentDropPosition === -1) {
             return [...blocks, newBlock];
           } else {
@@ -365,15 +378,6 @@ const ProgrammingInterface = () => {
         return newBlocks;
       }
     });
-  };
-
-  // (DESKTOP) handlaa palikoiden laitto pääalueeseen
-  const handleInternalDesktopDrop = (e) => {
-    const { fromIndex } = JSON.parse(e.dataTransfer.getData('application/internal'));
-
-    if (fromIndex !== currentDropPosition && currentDropPosition !== -1) {
-      handleReorder(fromIndex, currentDropPosition);
-    }
   };
 
   /**
@@ -521,49 +525,46 @@ const ProgrammingInterface = () => {
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setIsDraggingBlock(false);
 
-    // childblockeissa oma logiikkansa
-    if (blockToDelete.isChildBlock === true && blockToDelete.parentIndex !== undefined) {
-      console.log("HANDLING CHILD BLOCK DELETION");
-
-      setDroppedBlocks(currentBlocks => {
-        const newBlocks = [...currentBlocks];
-        const parentIndex = blockToDelete.parentIndex;
-        const parentBlock = newBlocks[parentIndex];
-
-        if (parentBlock && Array.isArray(parentBlock.childBlocks)) {
-          // poistetaan id:n perusteella
-          const childIndexToDelete = parentBlock.childBlocks.findIndex(
-              child => child.id === blockToDelete.id
-          );
-
-          if (childIndexToDelete !== -1) {
-            // tee uus array ilman sitä aiempaa
-            parentBlock.childBlocks = [
-              ...parentBlock.childBlocks.slice(0, childIndexToDelete),
-              ...parentBlock.childBlocks.slice(childIndexToDelete + 1)
-            ];
-          }
-        }
-
-        return newBlocks;
-      });
+    // eritellään childblockin ja tavallisen blockin poisto
+    if (blockToDelete.isChildBlock && blockToDelete.parentIndex !== undefined) {
+      handleChildBlockDeletion(blockToDelete);
     } else {
-      console.log("HANDLING REGULAR BLOCK DELETION");
-
-      setDroppedBlocks(currentBlocks => {
-        console.log("Current blocks before deletion:", JSON.parse(JSON.stringify(currentBlocks)));
-
-        // filtteröi poistettava palikka
-        const newBlocks = currentBlocks.filter((block, index) => {
-          const shouldKeep = !(block.id === blockToDelete.id && (index === blockToDeleteIndex || blockToDeleteIndex === undefined));
-          console.log(`Block ${index} (id: ${block.id}) should keep? ${shouldKeep}`);
-          return shouldKeep;
-        });
-
-        console.log("Blocks after deletion:", newBlocks);
-        return newBlocks;
-      });
+      handleRegularBlockDeletion(blockToDeleteIndex);
     }
+  };
+
+  // poisto repeat blockin sisältä
+  const handleChildBlockDeletion = (blockToDelete) => {
+    setDroppedBlocks(currentBlocks => {
+      const newBlocks = [...currentBlocks];
+      const parentIndex = blockToDelete.parentIndex;
+      const parentBlock = newBlocks[parentIndex];
+      console.log("BLOCK TO DELETE", blockToDelete)
+      console.log("PARENT INDEX", parentIndex)
+      console.log("PARENT BLOCK", parentBlock)
+
+      if (parentBlock && Array.isArray(parentBlock.childBlocks)) {
+        // etsi ja poista chilblock id:n perusteella
+        const childIndexToDelete = parentBlock.childBlocks.findIndex(
+            child => child.id === blockToDelete.id
+        );
+
+        if (childIndexToDelete !== -1) {
+          parentBlock.childBlocks = [
+            ...parentBlock.childBlocks.slice(0, childIndexToDelete),
+            ...parentBlock.childBlocks.slice(childIndexToDelete + 1)
+          ];
+        }
+      }
+      return newBlocks;
+    });
+  };
+
+  // perus blockien poisto
+  const handleRegularBlockDeletion = (blockToDeleteIndex) => {
+    setDroppedBlocks(currentBlocks => {
+      return currentBlocks.filter((_, index) => index !== blockToDeleteIndex);
+    });
   };
 
   const handleUpdateBlock = (index, updatedBlock) => {

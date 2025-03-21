@@ -79,16 +79,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Froehlich',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '01', label: 'Fröhlich' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -98,16 +96,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Herz',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '02', label: 'Herz' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -117,16 +113,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Herz_klein',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '03', label: 'Herz klein' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -136,16 +130,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Traurig',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '04', label: 'Traurig' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -155,16 +147,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Bose',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '05', label: 'Böse' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -174,16 +164,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Mude',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '06', label: 'Müde' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -193,16 +181,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Uberrascht',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '07', label: 'Überrascht' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -212,16 +198,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Richtig',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '08', label: 'Richtig' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -231,16 +215,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Falsch',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '09', label: 'Falsch' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -250,16 +232,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Zwinkern',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '10', label: 'Zwinkern' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -269,16 +249,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Alien',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '11', label: 'Alien' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -288,16 +266,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'image_Pfeil_nach_links',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '12', label: 'Pfeil nach links' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
@@ -307,16 +283,14 @@ export const blocksByCategory = {
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
-      inputType: 'select',
-      inputLabel: 'picture_Pfeil_nach_rechts',
+      inputType: 'number',
+      inputLabel: 'Sekunnit',
+      inputMin: 1,
+      inputMax: 9,
+      defaultValue: 1,
       options: [
         { value: '13', label: 'Pfeil nach rechts' }
       ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Sekunnit',
-      secondInputMin: 1,
-      secondInputMax: 9,
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {

@@ -36,6 +36,7 @@ const ProgrammingArea = ({
                            onUpdateBlock,
                            handleDragStart,
                            handleBlockInputChange,
+                           onChildInputChange,
                            onDeleteBlock,
                            onDragOverPosition,
                          }) => {
@@ -265,6 +266,7 @@ const ProgrammingArea = ({
               onDragStart={handleBlockDragStart}
               handleDrop={handleDrop}
               onInputChange={handleBlockInputChange}
+              onChildInputChange={onChildInputChange}
               onDragOverPosition={onDragOverPosition}
             />
           ))}

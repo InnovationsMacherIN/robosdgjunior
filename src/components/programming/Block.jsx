@@ -26,11 +26,12 @@ const DroppedBlock = ({
                         index,
                         onDragStart,
                         onInputChange,
+                        onChildInputChange,
                         onDragEnd,
                         onDragOverPosition,
                         handleDrop,
                         isChildBlock = false,
-                        parentIndex = null
+                        parentIndex = null,
                       }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
@@ -41,6 +42,7 @@ const DroppedBlock = ({
     onDragStart: (dragData) => {
       const blockElement = dragData.target;
       if (!blockElement) return;
+      dragData.isChildBlock = !!block.isChildBlock;
 
       // ei sallita dragia start blockissa
       const isStartOrEndBlock = block.type === 'start' || block.type === 'end';
@@ -101,7 +103,7 @@ const DroppedBlock = ({
 
       // Etsi kohde elementti
       const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
-      const blockElement = dropTarget?.closest('.block');
+      const blockElement = dropTarget?.closest('.block, .block-container');
 
       if (blockElement && blockElement !== block) {
         const rect = blockElement.getBoundingClientRect();
@@ -111,17 +113,17 @@ const DroppedBlock = ({
         // Poista vanhat indikaattorit
         document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
         document.querySelectorAll('.block.drop-target').forEach(el =>
-          el.classList.remove('drop-target'));
+            el.classList.remove('drop-target'));
         document.querySelectorAll('.block.shift-right').forEach(el =>
-          el.classList.remove('shift-right'));
+            el.classList.remove('shift-right'));
 
         // Lisää visuaaliset indikaattorit
         blockElement.classList.add('drop-target');
 
         // Lisää shift-right luokka seuraaville blokeille
         let nextElement = blockElement.nextElementSibling;
-        while (nextElement) {// Varmista ettei draggattavaan elementtiin lisätä luokkaa
-            nextElement.classList.add('shift-right');
+        while (nextElement) {
+          nextElement.classList.add('shift-right');
           nextElement = nextElement.nextElementSibling;
         }
 
@@ -130,8 +132,6 @@ const DroppedBlock = ({
           const position = relativeY < height / 2 ? 'before' : 'after';
           const toIndex = parseInt(blockElement.dataset.index || '0');
           onDragOverPosition(position === 'before' ? toIndex : toIndex + 1);
-
-          console.log('Drag over:', { index, position, toIndex });
         }
       }
     },
@@ -290,20 +290,13 @@ const DroppedBlock = ({
   };
 
   const handleContainerDrop = (e) => {
-    console.log("handleContainerDrop");
     if (!block.isContainer) return;
 
     e.preventDefault();
     e.stopPropagation();
 
     let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
-
     if (droppedBlockData.type === 'start' || droppedBlockData.type === 'end' || droppedBlockData.type === 'repeat' ) return;
-
-    droppedBlockData = {
-      ...droppedBlockData,
-      id: droppedBlockData.id || uuidv4()
-    };
 
     if (droppedBlockData.hasInput) {
       if (droppedBlockData.defaultValue !== undefined) {
@@ -315,7 +308,6 @@ const DroppedBlock = ({
       }
     }
 
-    // Initialize second input if needed
     if (droppedBlockData.hasSecondInput) {
       if (droppedBlockData.secondInputDefault !== undefined) {
         droppedBlockData.secondInputValue = droppedBlockData.secondInputDefault;
@@ -332,27 +324,6 @@ const DroppedBlock = ({
     onInputChange();
   };
 
-  const handleChildInputChange = (childIndex, value, isSecondInput = false) => {
-    if (!block.childBlocks) return;
-
-    const updatedChildBlocks = [...block.childBlocks];
-
-    if (isSecondInput) {
-      updatedChildBlocks[childIndex] = {
-        ...updatedChildBlocks[childIndex],
-        secondInputValue: value
-      };
-    } else {
-      updatedChildBlocks[childIndex] = {
-        ...updatedChildBlocks[childIndex],
-        inputValue: value
-      };
-    }
-
-    block.childBlocks = updatedChildBlocks;
-    onInputChange();
-  };
-
   /**
    * handleInputChange - handler (function)
    * Handles input value changes for a block
@@ -362,7 +333,7 @@ const DroppedBlock = ({
    * @param {boolean} isSecondInput - Whether updating first or second input
    */
   const handleInputChange = (value, isSecondInput = false) => {
-    onInputChange(index, value, isSecondInput);
+    onInputChange(index, value, isSecondInput, block.isChildBlock, block.parentIndex);
   };
 
   /**
@@ -442,16 +413,16 @@ const DroppedBlock = ({
   const renderSecondInput = (block) => {
     if (block.secondInputType === 'number') {
       return (
-        <CustomNumberInput
-          value={block.inputValue}
-          defaultValue={block.secondInputMin}
-          onChange={(value) => handleInputChange(value)}
-        />
+          <CustomNumberInput
+              value={block.secondInputValue || block.secondInputDefault || block.secondInputMin}
+              defaultValue={block.secondInputDefault || block.secondInputMin}
+              onChange={(value) => handleInputChange(value, true)}
+          />
       );
     }
     return (
-      <>
-      </>
+        <>
+        </>
     );
   };
 
@@ -517,6 +488,7 @@ const DroppedBlock = ({
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
             onDrop={handleContainerDrop}
+            {...touchHandlers}
         >
           <div className="block-content">
             <div className="block-header">
@@ -534,8 +506,15 @@ const DroppedBlock = ({
                       key={`child-${childBlock.id || childIndex}`}
                       block={childBlock}
                       index={childIndex}
-                      onInputChange={(value, isSecondInput) =>
-                          handleChildInputChange(childIndex, value, isSecondInput)}
+                      onInputChange={(childIndex, value) => {
+                        const updatedChildBlocks = [...block.childBlocks];
+                        updatedChildBlocks[childIndex] = {
+                          ...updatedChildBlocks[childIndex],
+                          inputValue: value
+                        };
+                        block.childBlocks = updatedChildBlocks;
+                        onChildInputChange(index, childIndex, value);
+                      }}
                       onDragStart={onDragStart}
                       onDragEnd={onDragEnd}
                       onDragOverPosition={onDragOverPosition}

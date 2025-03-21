@@ -221,33 +221,168 @@ const ProgrammingInterface = () => {
     };
 
     try {
-      // desktopin drag/drop blockpaneelista
-      if (handleDesktopDrop(e)) return;
-
       const isTouchEvent = e.type === 'touchend';
 
+      // desktopin drag/drop blockpaneelista
+      if (!isTouchEvent && handleDesktopDrop(e)) return;
+
+      // drop target elementti
+      let dropTarget;
       if (isTouchEvent) {
-        if (dropEvent.isInternalDrag === true) {
-          console.log("INTERNAL TOUCH DROP")
+        const touch = e.changedTouches?.[0];
+        if (touch) {
+          dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+        } else {
+          dropTarget = e.target;
+        }
+      } else {
+        dropTarget = e.target;
+      }
+
+      // katotaan onko se childcontainer
+      const childContainer = dropTarget?.closest('.child-blocks-container');
+      const isChildContainer = !!childContainer;
+
+      // TOUCH EVENT HANDLING
+      if (isTouchEvent) {
+        if (dropEvent?.isInternalDrag === true) {
+          console.log("INTERNAL TOUCH DROP");
           handleInternalTouchDrop(e, dropEvent);
         } else {
-          console.log("EXTERNAL TOUCH DROP")
-
+          console.log("EXTERNAL TOUCH DROP");
           handleExternalTouchDrop(e, dropEvent);
         }
-      } else if (e.dataTransfer.types.includes('application/internal')) {
-        // tämä on nyt hieman yksinkertaistettu versio väliaikaisesti tuosta uudelleen järjestelystä
+        return;
+      }
 
+      if (e.dataTransfer?.types.includes('application/internal')) {
         const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
-        const { fromIndex } = internalData;
-        if (fromIndex !== currentDropPosition && currentDropPosition !== null && currentDropPosition !== -1) {
-          handleReorder(fromIndex, currentDropPosition);
+        const blockData = JSON.parse(e.dataTransfer.getData('application/json') || '{}');
+
+        // liikutetaan repeatista mainiin
+        if (internalData.isChildBlock && !isChildContainer) {
+          handleMoveFromChildToMain(internalData, blockData);
+          return;
+        }
+
+        // liikutetaan mainista repeatiin
+        if (!internalData.isChildBlock && isChildContainer) {
+          // otetaan ensin talteen parent container
+          const parentContainer = childContainer.closest('.block-container');
+          if (!parentContainer) return;
+
+          const parentIndex = parseInt(parentContainer.dataset.index, 10);
+          if (isNaN(parentIndex)) return;
+
+          handleMoveFromMainToChild(internalData, blockData, parentIndex);
+          return;
+        }
+
+        // perus järjestely
+        if (internalData.fromIndex !== currentDropPosition &&
+            currentDropPosition !== null &&
+            currentDropPosition !== -1) {
+          handleReorder(internalData.fromIndex, currentDropPosition);
         }
       }
     } finally {
       cleanupVisualIndicators();
       setCurrentDropPosition(null);
     }
+  };
+
+  const handleMoveFromChildToMain = (internalData, blockData) => {
+    const { parentIndex, fromIndex } = internalData;
+
+    setDroppedBlocks(blocks => {
+      // kopio blockeista
+      const newBlocks = JSON.parse(JSON.stringify(blocks));
+
+      // parent block talteen
+      const parentBlock = newBlocks[parentIndex];
+      if (!parentBlock?.childBlocks) return newBlocks;
+
+      // liikutettava block talteen
+      const blockToMove = parentBlock.childBlocks[fromIndex];
+      if (!blockToMove) return newBlocks;
+
+      // muokataan repeatin ominaisuudet pois
+      const movedBlock = {
+        ...blockToMove,
+        isChildBlock: false,
+        parentIndex: null
+      };
+
+      // poistetaan childblockeista
+      parentBlock.childBlocks = parentBlock.childBlocks.filter((_, idx) => idx !== fromIndex);
+
+      // liikutetaan drop positioon
+      let insertPos = currentDropPosition !== null && currentDropPosition !== -1
+          ? currentDropPosition
+          : newBlocks.length;
+
+      // etsitään start ja end jos ne on olemassa
+      const startBlockIndex = newBlocks.findIndex(block => block.type === 'start');
+      const endBlockIndex = newBlocks.findIndex(block => block.type === 'end');
+
+      // varmistetaan ettei aseteta starttia edelle
+      if (startBlockIndex !== -1 && insertPos <= startBlockIndex) {
+        insertPos = startBlockIndex + 1; // laitetaan startin jälkeen
+      }
+
+      // varmistetaan ettei aseteta endin jälkeen
+      if (endBlockIndex !== -1 && insertPos > endBlockIndex) {
+        insertPos = endBlockIndex; // laitetaan endin edelle
+      }
+
+      // laitetaan blocki pääalueelle
+      newBlocks.splice(insertPos, 0, movedBlock);
+      return newBlocks;
+    });
+  };
+
+  // aika sama kuin siirrossa childista mainiin
+  const handleMoveFromMainToChild = (internalData, blockData, targetParentIndex) => {
+    const { fromIndex } = internalData;
+
+    setDroppedBlocks(blocks => {
+      const newBlocks = JSON.parse(JSON.stringify(blocks));
+
+      const blockToMove = {
+        ...newBlocks[fromIndex],
+        isChildBlock: true,
+        parentIndex: targetParentIndex
+      };
+
+      // alustetaan childblocks array jos tarvitaan
+      if (!newBlocks[targetParentIndex].childBlocks) {
+        newBlocks[targetParentIndex].childBlocks = [];
+      }
+
+      newBlocks[targetParentIndex].childBlocks.push(blockToMove);
+
+      // poistetaan pääalueelta
+      newBlocks.splice(fromIndex, 1);
+
+      return newBlocks;
+    });
+  };
+
+  const handleChildBlockReorder = (parentIndex, fromIndex, toIndex) => {
+    setDroppedBlocks(blocks => {
+      const newBlocks = JSON.parse(JSON.stringify(blocks));
+      const parentBlock = newBlocks[parentIndex];
+
+      if (!parentBlock?.childBlocks) return newBlocks;
+
+      // siirrettävä blocki
+      const [blockToMove] = parentBlock.childBlocks.splice(fromIndex, 1);
+
+      // uusi positio
+      parentBlock.childBlocks.splice(toIndex, 0, blockToMove);
+
+      return newBlocks;
+    });
   };
 
   // desktopin drag/drop blockpaneelista
@@ -351,11 +486,54 @@ const ProgrammingInterface = () => {
     return newBlock;
   };
 
+  const handleMoveBetweenChildContainers = (sourceParentIndex, sourceChildIndex, targetParentIndex) => {
+    setDroppedBlocks(blocks => {
+      const newBlocks = JSON.parse(JSON.stringify(blocks));
+
+      // otetaan alkuperäinen repeat block talteen
+      const sourceParent = newBlocks[sourceParentIndex];
+      if (!sourceParent?.childBlocks) return newBlocks;
+
+      // kohde repeat block
+      const targetParent = newBlocks[targetParentIndex];
+      if (!targetParent?.childBlocks) return newBlocks;
+
+      // liikutettava block
+      const blockToMove = sourceParent.childBlocks[sourceChildIndex];
+      if (!blockToMove) return newBlocks;
+
+      // kopio ja uusi parent index
+      const movedBlock = {
+        ...blockToMove,
+        parentIndex: targetParentIndex
+      };
+
+      // poistetaan vanhasta
+      sourceParent.childBlocks = sourceParent.childBlocks.filter((_, idx) => idx !== sourceChildIndex);
+
+      // lisätään uuteen
+      targetParent.childBlocks.push(movedBlock);
+
+      return newBlocks;
+    });
+  };
+
   // (KOSKETUS) handlataan palikoiden järjestely programmin arean sisällä
   const handleInternalTouchDrop = (e, dropEvent) => {
+    e._touchHandled = true;
+
     const blockData = JSON.parse(dropEvent['application/json']);
     const touch = e.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    // estetään repeatien siirto repeatien sisään
+    if ((blockData.isContainer || blockData.type === 'repeat') && touch) {
+      const elementsAtPoint = document.elementsFromPoint(touch.clientX, touch.clientY);
+
+      if (elementsAtPoint.some(el => el.closest('.child-blocks-container'))) {
+        return;
+      }
+    }
 
     // tarkista onko delete zonessa
     if (dropTarget?.closest('.delete-zone')) {
@@ -363,11 +541,60 @@ const ProgrammingInterface = () => {
       return;
     }
 
-    // järjestele uudestaan
+    // data dropeventistä
     const fromIndex = dropEvent.fromIndex;
+    const isChildBlock = dropEvent.isChildBlock;
+    const parentIndex = dropEvent.parentIndex;
+
+    // etsi target container/blocki
+    const targetContainer = dropTarget?.closest('.child-blocks-container');
+    const targetBlock = dropTarget?.closest('.block');
+    let targetIndex = -1;
+
+    if (targetBlock) {
+      targetIndex = parseInt(targetBlock.dataset.index, 10);
+    }
+
+    // tarkasta ollaanko järjestelemässä uudelleen repeatin sisällä
+    if (isChildBlock && targetContainer) {
+      const targetParentIndex = parseInt(targetContainer.closest('.block-container').dataset.index, 10);
+
+      if (targetParentIndex === parentIndex && !isNaN(targetIndex)) {
+        // järjestellään uudelleen jos indeksi on eri kuin aluksi
+        if (fromIndex !== targetIndex) {
+          handleChildBlockReorder(parentIndex, fromIndex, targetIndex);
+        }
+        return;
+      }
+
+      // tarkista jos ollaan liikuttamassa repeatista toiseen
+      if (targetParentIndex !== parentIndex) {
+        handleMoveBetweenChildContainers(parentIndex, fromIndex, targetParentIndex);
+        return;
+      }
+    }
+
+    // tarkista jos ollaan liikuttamassa repeatista mainiin
+    if (isChildBlock && !targetContainer) {
+      handleMoveFromChildToMain({ parentIndex, fromIndex }, blockData);
+      return;
+    }
+
+    // tarkista jos ollaan liikuttamassa mainista repeatiin
+    if (!isChildBlock && targetContainer) {
+      const targetParentBlock = targetContainer.closest('.block-container');
+      const targetParentIndex = parseInt(targetParentBlock.dataset.index, 10);
+
+      if (!isNaN(targetParentIndex)) {
+        handleMoveFromMainToChild({ fromIndex }, blockData, targetParentIndex);
+      }
+      return;
+    }
+
+    // järjestele uudestaan
     if (fromIndex !== currentDropPosition &&
-        currentDropPosition !== -1 &&
-        currentDropPosition !== null) {
+        currentDropPosition !== null &&
+        currentDropPosition !== -1) {
       handleReorder(fromIndex, currentDropPosition);
     }
   };
@@ -436,9 +663,29 @@ const ProgrammingInterface = () => {
   const handleChildContainerDrop = (dropEvent, dropTarget) => {
     const parentIndex = parseInt(dropTarget.closest('.block-container').dataset.index, 10);
     let droppedBlockData = { ...dropEvent.blockData, id: uuidv4() };
+
+    // ei sallita start/end blockien laittoa
     if (['start', 'end', 'repeat'].includes(droppedBlockData.type)) return;
 
-    console.log(parentIndex)
+    // primary input
+    if (droppedBlockData.hasInput) {
+      if (droppedBlockData.defaultValue !== undefined) {
+        droppedBlockData.inputValue = droppedBlockData.defaultValue;
+      } else if (droppedBlockData.inputType === 'select' && droppedBlockData.options?.length > 0) {
+        droppedBlockData.inputValue = droppedBlockData.options[0].value;
+      } else if (droppedBlockData.inputMin !== undefined) {
+        droppedBlockData.inputValue = droppedBlockData.inputMin;
+      }
+    }
+
+    // secondary input
+    if (droppedBlockData.hasSecondInput) {
+      if (droppedBlockData.secondInputDefault !== undefined) {
+        droppedBlockData.secondInputValue = droppedBlockData.secondInputDefault;
+      } else if (droppedBlockData.secondInputMin !== undefined) {
+        droppedBlockData.secondInputValue = droppedBlockData.secondInputMin;
+      }
+    }
 
     setDroppedBlocks(blocks => {
       const newBlocks = [...blocks];
@@ -517,6 +764,24 @@ const ProgrammingInterface = () => {
       }
 
       newBlocks[index] = block;
+      return newBlocks;
+    });
+  };
+
+  const handleChildBlockInputChange = (parentIndex, childIndex, value, isSecondInput) => {
+    setDroppedBlocks(blocks => {
+      const newBlocks = [...blocks];
+      const parentBlock = {...newBlocks[parentIndex]};
+      const childBlock = {...parentBlock.childBlocks[childIndex]};
+
+      if (isSecondInput) {
+        childBlock.secondInputValue = value;
+      } else {
+        childBlock.inputValue = value;
+      }
+
+      parentBlock.childBlocks[childIndex] = childBlock;
+      newBlocks[parentIndex] = parentBlock;
       return newBlocks;
     });
   };
@@ -628,9 +893,6 @@ const ProgrammingInterface = () => {
       const newBlocks = [...currentBlocks];
       const parentIndex = blockToDelete.parentIndex;
       const parentBlock = newBlocks[parentIndex];
-      console.log("BLOCK TO DELETE", blockToDelete)
-      console.log("PARENT INDEX", parentIndex)
-      console.log("PARENT BLOCK", parentBlock)
 
       if (parentBlock && Array.isArray(parentBlock.childBlocks)) {
         // etsi ja poista chilblock id:n perusteella
@@ -693,7 +955,7 @@ const ProgrammingInterface = () => {
             isExecuting={isExecuting}
             handleDragOver={handleDragOver}
             handleDrop={handleDrop}
-
+            onChildInputChange={handleChildBlockInputChange}
             onUpdateBlock={handleUpdateBlock}
             handleDragStart={handleDragStart}
             handleBlockInputChange={handleBlockInputChange}

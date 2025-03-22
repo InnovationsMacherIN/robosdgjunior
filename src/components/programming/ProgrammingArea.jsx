@@ -207,7 +207,7 @@ const ProgrammingArea = ({
         // zoomauksen säätöraja, jos ei ole tarpeeksi niin ei zoomata. muuten liikkuu koko höskä koko
         // ajan teki mitä hyvänsä
         const pinchRatio = currentDistance / previousTouchDistance.current;
-        if (Math.abs(pinchRatio - 1) > 0.11) {
+        if (Math.abs(pinchRatio - 1) > 0.16) {
           const newScale = Math.min(Math.max(scale * pinchRatio, MIN_ZOOM), MAX_ZOOM);
 
           const rect = areaRef.current.getBoundingClientRect();

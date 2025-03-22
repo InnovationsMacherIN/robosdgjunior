@@ -253,8 +253,15 @@ const ProgrammingArea = ({
 
   // chain drag handlerit
   const handleChainDragStart = useCallback((e, chainId) => {
-    const draggingBlock = e.target.closest('.block');
-    if (draggingBlock && draggingBlock.querySelector('[data-block-id]')?.dataset.typeId !== 'start') {
+    let target = null;
+
+    if (e.target.closest('.block')) {
+      target = e.target.closest('.block');
+    } else if (e.target.closest('.block-container')) {
+      target = e.target.closest('.block-container');
+    }
+
+    if (target && target.querySelector('[data-block-id]')?.dataset.typeId !== 'start') {
       return;
     }
 

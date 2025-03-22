@@ -350,32 +350,38 @@ const DroppedBlock = ({
    * @param {*} block.defaultValue - Default value for the input
    * @returns {React.ReactElement} Input element based on block type
    */
+// In Block.jsx, modify the renderBlockInput function:
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
         return (
-          <CustomNumberInput
-            value={block.inputValue}
-            defaultValue={block.defaultValue}
-            onChange={(value) => handleInputChange(value)}
-          />
+            <CustomNumberInput
+                value={block.inputValue}
+                defaultValue={block.defaultValue}
+                onChange={(value) => {
+                  handleInputChange(value);
+                }}
+                onClick={() => {
+                }}
+            />
         );
       case 'select':
         return (
-          <>
-          </>
+            <>
+            </>
         );
       case 'text':
         return (
-          <input
-            type="text"
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          />
+            <input
+                type="text"
+                defaultValue={block.defaultValue}
+                onChange={(e) => handleInputChange(e.target.value)}
+            />
         );
       default:
+        console.warn("Unknown input type:", block.inputType, "for block:", block.type);
         return (
-          <div></div>
+            <div></div>
         );
     }
   };

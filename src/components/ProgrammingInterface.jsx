@@ -64,6 +64,8 @@ const ProgrammingInterface = () => {
   const [isDraggingExistingBlock, setIsDraggingExistingBlock] = useState(false);
   const [hasStartBlock, setHasStartBlock] = useState(false);
   const [hasEndBlock, setHasEndBlock] = useState(false);
+  const [resetView, setResetView] = useState(false);
+  const [wasJustCleared, setWasJustCleared] = useState(false);
 
   //const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
 
@@ -213,6 +215,14 @@ const ProgrammingInterface = () => {
   const handleDrop = (e, dropEvent) => {
     e.preventDefault();
     setIsDraggingBlock(false);
+
+    if (wasJustCleared && droppedBlocks.length === 0) {
+      setResetView(true);
+      setTimeout(() => {
+        setResetView(false);
+      }, 100);
+      setWasJustCleared(false);
+    }
 
     const cleanupVisualIndicators = () => {
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
@@ -803,6 +813,13 @@ const ProgrammingInterface = () => {
       setDroppedBlocks([]);
       clearSavedBlocks();
 
+      setResetView(true);
+      setWasJustCleared(true);
+
+      setTimeout(() => {
+        setResetView(false);
+      }, 100);
+
       // Force a refresh of local storage
       localStorage.removeItem('savedBlocks');
 
@@ -944,14 +961,9 @@ const ProgrammingInterface = () => {
           onUploadBlocks={handleUploadBlocks}
         />
 
-        <ZoomableArea
-          onDeleteBlock={handleDeleteBlock}
-          onDragOverPosition={handleDragOverPosition}
-          isDraggingBlock={isDraggingBlock}
-          isDraggingExistingBlock={isDraggingExistingBlock}
-        >
-          <ProgrammingArea
+        <ProgrammingArea
             droppedBlocks={droppedBlocks}
+            resetView={resetView}
             isExecuting={isExecuting}
             handleDragOver={handleDragOver}
             handleDrop={handleDrop}
@@ -960,8 +972,10 @@ const ProgrammingInterface = () => {
             handleDragStart={handleDragStart}
             handleBlockInputChange={handleBlockInputChange}
             onDragOverPosition={handleDragOverPosition}
-          />
-        </ZoomableArea>
+            onDeleteBlock={handleDeleteBlock}
+            isDraggingBlock={isDraggingBlock}
+            isDraggingExistingBlock={isDraggingExistingBlock}
+        />
 
         <BlocksPanel
           categories={categories}

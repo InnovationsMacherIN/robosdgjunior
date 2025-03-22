@@ -44,7 +44,7 @@ const ProgrammingArea = ({
   const previousTouchDistance = useRef(null);
   const [gestureType, setGestureType] = useState(null); // zoom, panning ja null
   const initialTouchDistance = useRef(null);
-  const ZOOM_THRESHOLD = 10;
+  const ZOOM_THRESHOLD = 30;
 
   const areaRef = useRef(null);
 
@@ -52,14 +52,27 @@ const ProgrammingArea = ({
     if (!areaRef.current) return { minX: -Infinity, maxX: Infinity };
 
     const containerWidth = areaRef.current.clientWidth;
-    const contentWidth = areaRef.current.querySelector('.zoomable-content').scrollWidth * scale;
+    const contentElement = areaRef.current.querySelector('.zoomable-content');
+    const blockChain = contentElement?.querySelector('.block-chain-container');
 
-    // 100px bufferit
-    const minX = containerWidth - contentWidth - 100;
-    const maxX = 100;
+    // oikea koko, kaikki mukaan tuosta alilootasta
+    let contentWidth = 0;
+    if (blockChain) {
+      const blockChainRect = blockChain.getBoundingClientRect();
+      const positionOffset = chainPositions["main-chain"]?.x || 20;
+      contentWidth = (blockChainRect.width / scale) + positionOffset;
+    } else {
+      contentWidth = contentElement.scrollWidth;
+    }
+
+    // skaalauksen mukaan boundaryt. tämä oli bugi, nyt pystyy saavuttamaan lopun kaikilla skaalauksilla
+    const buffer = 100 / scale;
+
+    const minX = Math.min(containerWidth/scale - contentWidth - buffer, 0);
+    const maxX = buffer;
 
     return { minX, maxX };
-  }, [scale]);
+  }, [scale, chainPositions]);
 
   const centerViewOnContent = useCallback(() => {
     if (!areaRef.current) return;
@@ -199,29 +212,6 @@ const ProgrammingArea = ({
         }
       }
 
-      // handlaa zoomaus
-      if ((gestureType === 'zoom' || gestureType === null) &&
-          previousTouchDistance.current &&
-          currentDistance) {
-
-        // zoomauksen säätöraja, jos ei ole tarpeeksi niin ei zoomata. muuten liikkuu koko höskä koko
-        // ajan teki mitä hyvänsä
-        const pinchRatio = currentDistance / previousTouchDistance.current;
-        if (Math.abs(pinchRatio - 1) > 0.16) {
-          const newScale = Math.min(Math.max(scale * pinchRatio, MIN_ZOOM), MAX_ZOOM);
-
-          const rect = areaRef.current.getBoundingClientRect();
-          const touchX = (currentMidpoint.x - rect.left) / scale;
-
-          const newTranslateX = touchX - (touchX * newScale) / scale + translate.x;
-          const newTranslateY = 0;
-
-          setScale(newScale);
-          setTranslate({ x: newTranslateX, y: newTranslateY });
-          previousTouchDistance.current = currentDistance;
-        }
-      }
-
       // default on panning
       if (gestureType === 'pan' || gestureType === null) {
         const dx = (currentMidpoint.x - startPos.x) / scale;
@@ -234,6 +224,29 @@ const ProgrammingArea = ({
 
         setTranslate(prev => ({ x: constrainedX, y: prev.y }));
         setStartPos(currentMidpoint);
+      } else if ((gestureType === 'zoom') &&
+          previousTouchDistance.current &&
+          currentDistance) {
+
+        // zoomauksen säätöraja, jos ei ole tarpeeksi niin ei zoomata. muuten liikkuu koko höskä koko
+        // ajan teki mitä hyvänsä. ZOOM_THRESHOLD on myös yhtä tärkeä
+        const pinchRatio = currentDistance / previousTouchDistance.current;
+        if (Math.abs(pinchRatio - 1) > 0.03) {
+          const smoothingFactor = 0.7;
+          const smoothedPinchRatio = 1 + (pinchRatio - 1) * smoothingFactor;
+
+          const newScale = Math.min(Math.max(scale * smoothedPinchRatio, MIN_ZOOM), MAX_ZOOM);
+
+          const rect = areaRef.current.getBoundingClientRect();
+          const touchX = (currentMidpoint.x - rect.left) / scale;
+
+          const newTranslateX = touchX - (touchX * newScale) / scale + translate.x;
+          const newTranslateY = 0;
+
+          setScale(newScale);
+          setTranslate({ x: newTranslateX, y: newTranslateY });
+          previousTouchDistance.current = currentDistance;
+        }
       }
 
       // päivitetään edellinen distanssi seuraavaa laskentaa varten

@@ -257,6 +257,7 @@ const ProgrammingArea = ({
 
     if (e.target.closest('.block')) {
       target = e.target.closest('.block');
+      e.stopPropagation();
     } else if (e.target.closest('.block-container')) {
       target = e.target.closest('.block-container');
     }

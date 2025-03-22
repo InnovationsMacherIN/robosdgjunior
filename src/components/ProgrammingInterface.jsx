@@ -131,6 +131,8 @@ const ProgrammingInterface = () => {
   const handleDragStart = (e, block) => {
     console.log('Drag start:', block);
 
+    e.stopPropagation();
+
     // ei sallita startin tai endin liikuttelua
     if (
         (block.type === 'start' && hasStartBlock) ||
@@ -533,6 +535,9 @@ const ProgrammingInterface = () => {
     e._touchHandled = true;
 
     const blockData = JSON.parse(dropEvent['application/json']);
+
+    console.log("BLOCKDATA", blockData)
+
     const touch = e.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 

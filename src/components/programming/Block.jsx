@@ -310,9 +310,9 @@ const DroppedBlock = ({
 
     if (droppedBlockData.hasSecondInput) {
       if (droppedBlockData.secondInputDefault !== undefined) {
-        droppedBlockData.secondInputValue = droppedBlockData.secondInputDefault;
+        droppedBlockData.inputValue = droppedBlockData.secondInputMin;
       } else if (droppedBlockData.secondInputMin !== undefined) {
-        droppedBlockData.secondInputValue = droppedBlockData.secondInputMin;
+        droppedBlockData.inputValue = droppedBlockData.secondInputMin;
       }
     }
 

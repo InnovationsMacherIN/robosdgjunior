@@ -203,16 +203,36 @@
 
 
 /* Robo Illustration Container for the image of the robot*/
-.robo-illustration-container {
-  position: absolute; /* Position relative to the .categories container */
-  top: 20px;
-  right: 0;
-  width: auto;
-  height: auto;
-  z-index: 100; /* Ensure it stays on top of other content */
+@media (min-width: 768px) {
+  .robo-illustration-container {
+    position: absolute; /* Position relative to the .categories container */
+    top: 20px;
+    right: 0;
+    width: auto;
+    height: auto;
+    z-index: 100; /* Ensure it stays on top of other content */
+  }
 }
 
-.robo-illustration {
-  width: 100%;
-  height: auto;
+@media (min-width: 768px) {
+
+  .robo-illustration {
+    width: 100%;
+    height: auto;
+  }
+
+}
+
+@media (max-width: 767px) {
+  .robo-illustration-container {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+
+  .robo-illustration {
+    display: none;
+  }
+
 }

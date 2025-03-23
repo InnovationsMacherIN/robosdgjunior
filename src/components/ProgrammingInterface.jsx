@@ -125,8 +125,8 @@ const ProgrammingInterface = () => {
    * Handles the start of block dragging
    * Prepares block data for transfer including input values
    *
-   * @param {DreagEvent} e - Drag event
-   * @param {Oblect} block - Block data object
+   * @param {DragEvent} e - Drag event
+   * @param {Object} block - Block data object
    */
   const handleDragStart = (e, block) => {
     console.log('Drag start:', block);
@@ -216,6 +216,7 @@ const ProgrammingInterface = () => {
    */
   const handleDrop = (e, dropEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDraggingBlock(false);
 
     if (wasJustCleared && droppedBlocks.length === 0) {
@@ -235,7 +236,7 @@ const ProgrammingInterface = () => {
     try {
       const isTouchEvent = e.type === 'touchend';
 
-      // desktopin drag/drop blockpaneelista
+      // desktopin droppilogiikka
       if (!isTouchEvent && handleDesktopDrop(e)) return;
 
       // drop target elementti
@@ -267,39 +268,41 @@ const ProgrammingInterface = () => {
         return;
       }
 
-      if (e.dataTransfer?.types.includes('application/internal')) {
-        const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
-        const blockData = JSON.parse(e.dataTransfer.getData('application/json') || '{}');
-
-        // liikutetaan repeatista mainiin
-        if (internalData.isChildBlock && !isChildContainer) {
-          handleMoveFromChildToMain(internalData, blockData);
-          return;
-        }
-
-        // liikutetaan mainista repeatiin
-        if (!internalData.isChildBlock && isChildContainer) {
-          // otetaan ensin talteen parent container
-          const parentContainer = childContainer.closest('.block-container');
-          if (!parentContainer) return;
-
-          const parentIndex = parseInt(parentContainer.dataset.index, 10);
-          if (isNaN(parentIndex)) return;
-
-          handleMoveFromMainToChild(internalData, blockData, parentIndex);
-          return;
-        }
-
-        // perus järjestely
-        if (internalData.fromIndex !== currentDropPosition &&
-            currentDropPosition !== null &&
-            currentDropPosition !== -1) {
-          handleReorder(internalData.fromIndex, currentDropPosition);
-        }
-      }
     } finally {
       cleanupVisualIndicators();
       setCurrentDropPosition(null);
+    }
+  };
+
+  const handleDesktopDrop = (e) => {
+    if (!e.dataTransfer?.types.includes('application/json')) {
+      return false;
+    }
+
+    try {
+      const hasInternalData = e.dataTransfer.types.includes('application/internal');
+      let internalData = null;
+
+      if (hasInternalData) {
+        try {
+          internalData = JSON.parse(e.dataTransfer.getData('application/internal'));
+          // tämä on nyt tämmöinen hack, en nyt osaa oikein muuten määrittää onko se blockpanelista
+          // vaiko programmingarealta peräisin.
+          const isInternalDrag = internalData && typeof internalData.fromIndex === 'number';
+
+          if (isInternalDrag) {
+            return handleDesktopInternalDrop(e);
+          }
+        } catch (err) {
+          console.error('Error parsing internal drag data:', err);
+        }
+      }
+
+      return handleDesktopExternalDrop(e);
+
+    } catch (error) {
+      console.error('Error processing drop:', error);
+      return false;
     }
   };
 
@@ -397,85 +400,177 @@ const ProgrammingInterface = () => {
     });
   };
 
-  // desktopin drag/drop blockpaneelista
-  const handleDesktopDrop = (e) => {
-    if (!e.dataTransfer?.types.includes('application/json')) {
-      return false;
+  // DESKTOP dragging programming arean sisällä
+  const handleDesktopInternalDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
+    const dropTarget = e.target;
+
+    // tarkista onko delete zonessa
+    if (dropTarget?.closest('.delete-zone')) {
+      handleDeleteBlock(blockData, internalData.fromIndex);
+      return true;
     }
 
-    try {
-      const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
+    // estetään duplikaatit jos liikutellaan paikallaan
+    if (internalData.fromIndex === currentDropPosition) {
+      return true;
+    }
 
-      // tarkasta onko tämä sisäinen uudelleen järjestely
-      const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
-      const isInternalMove = typeof internalData.fromIndex === 'number' && !isNaN(internalData.fromIndex);
+    // tarkista jos ollaan siirtämässä childblockia main arealle
+    if (internalData.isChildBlock && !e.target?.closest('.child-blocks-container')) {
+      handleMoveFromChildToMain(internalData, blockData);
+      return true;
+    }
 
-      if (isInternalMove) {
-        if (currentDropPosition !== null && currentDropPosition !== -1) {
-          handleReorder(internalData.fromIndex, currentDropPosition);
+    // tarkista jos ollaan siirtämässä blockia repeatiin
+    const targetContainer = e.target?.closest('.child-blocks-container');
+    if (!internalData.isChildBlock && targetContainer) {
+      const parentContainer = targetContainer.closest('.block-container');
+      if (parentContainer) {
+        const parentIndex = parseInt(parentContainer.dataset.index, 10);
+        if (!isNaN(parentIndex)) {
+          handleMoveFromMainToChild(internalData, blockData, parentIndex);
           return true;
         }
-        return false;
       }
-
-      // startin käsittely
-      if (blockData.type === 'start') {
-        if (hasStartBlock) return true;
-        setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
-        setHasStartBlock(true);
-        return true;
-      }
-
-      // endin käsittely
-      if (blockData.type === 'end') {
-        if (hasEndBlock) return true;
-        setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
-        setHasEndBlock(true);
-        return true;
-      }
-
-      // tavallisten palikoiden käsittely
-      const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
-
-      setDroppedBlocks(blocks => {
-        const newBlocks = [...blocks];
-        const endIndex = blocks.findIndex(b => b.type === 'end');
-
-        // jos ei ole palikoita
-        if (blocks.length === 0) {
-          return [newBlock];
-        }
-
-        // jos ollaan laittamassa tiettyyn paikkaan
-        if (currentDropPosition !== null && currentDropPosition !== -1) {
-          // ei sallita laittamista ennen starttia
-          if (blocks[0]?.type === 'start' && currentDropPosition === 0) {
-            return blocks;
-          }
-
-          // ei sallita laittamista endin jälkeen
-          if (endIndex !== -1 && currentDropPosition > endIndex) {
-            return blocks;
-          }
-
-          newBlocks.splice(currentDropPosition, 0, newBlock);
-          return newBlocks;
-        }
-
-        // jos end on olemassa, laita sitä ennen
-        if (endIndex !== -1) {
-          newBlocks.splice(endIndex, 0, newBlock);
-          return newBlocks;
-        }
-
-        return [...blocks, newBlock];
-      });
-
-      return true;
-    } catch (error) {
-      console.error('Error processing drop:', error);
-      return false;
     }
+
+    // tarkista, jos liikutellaan repeatien sisällä childeja
+    if (internalData.isChildBlock && targetContainer) {
+      const targetParentBlock = targetContainer.closest('.block-container');
+      const targetParentIndex = parseInt(targetParentBlock?.dataset.index, 10);
+
+      if (!isNaN(targetParentIndex) && targetParentIndex !== internalData.parentIndex) {
+        handleMoveBetweenChildContainers(
+            internalData.parentIndex,
+            internalData.fromIndex,
+            targetParentIndex
+        );
+        return true;
+      }
+    }
+
+    // perus reorder blockien sisällä
+    if (internalData.fromIndex !== currentDropPosition &&
+        currentDropPosition !== null &&
+        currentDropPosition !== -1) {
+      handleReorder(internalData.fromIndex, currentDropPosition);
+      return true;
+    }
+
+    return false;
+  };
+
+  // DESKTOP blockien liikuttelu blockspanelista programmingarealle
+  const handleDesktopExternalDrop = (e) => {
+    const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
+
+    // startin käsittely
+    if (blockData.type === 'start') {
+      if (hasStartBlock) return true;
+      setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
+      setHasStartBlock(true);
+      return true;
+    }
+
+    // endin käsittely
+    if (blockData.type === 'end') {
+      if (hasEndBlock) return true;
+      setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
+      setHasEndBlock(true);
+      return true;
+    }
+
+    // tarkista ollaanko siirtämässä repeatiin
+    const dropTarget = e.target;
+    const repeatContainer = dropTarget?.closest('.child-blocks-container');
+    if (repeatContainer) {
+      const parentContainer = repeatContainer.closest('.block-container');
+      if (parentContainer) {
+        const parentIndex = parseInt(parentContainer.dataset.index, 10);
+        if (!isNaN(parentIndex)) {
+          if (blockData.type === 'start' || blockData.type === 'end' || blockData.type === 'repeat') {
+            return true;
+          }
+
+          // luo uusi blocki
+          const newBlock = {
+            ...blockData,
+            id: uuidv4(),
+            isChildBlock: true,
+            parentIndex: parentIndex
+          };
+
+          if (newBlock.hasInput) {
+            if (newBlock.defaultValue !== undefined) {
+              newBlock.inputValue = newBlock.defaultValue;
+            } else if (newBlock.inputType === 'select' && newBlock.options?.length > 0) {
+              newBlock.inputValue = newBlock.options[0].value;
+            } else if (newBlock.inputMin !== undefined) {
+              newBlock.inputValue = newBlock.inputMin;
+            }
+          }
+
+          if (newBlock.hasSecondInput) {
+            if (newBlock.secondInputDefault !== undefined) {
+              newBlock.secondInputValue = newBlock.secondInputDefault;
+            } else if (newBlock.secondInputMin !== undefined) {
+              newBlock.secondInputValue = newBlock.secondInputMin;
+            }
+          }
+
+          setDroppedBlocks(blocks => {
+            const newBlocks = JSON.parse(JSON.stringify(blocks));
+            const parentBlock = newBlocks[parentIndex];
+
+            // initialisoi childbockit jos tarvii
+            if (!parentBlock.childBlocks) {
+              parentBlock.childBlocks = [];
+            }
+
+            const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
+
+            // lisää childblockeihin
+            parentBlock.childBlocks.push(newBlock);
+            return newBlocks;
+          });
+
+          return true;
+        }
+      }
+    }
+
+    // tavallisten palikoiden käsittely
+    const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
+
+    setDroppedBlocks(blocks => {
+      const endIndex = blocks.findIndex(b => b.type === 'end');
+
+      // jos ollaan laittamassa tiettyyn paikkaan
+      if (currentDropPosition !== null && currentDropPosition !== -1) {
+        const newBlocks = [...blocks];
+        // ei sallita laittamista ennen starttia
+        if (currentDropPosition <= 0 && blocks[0]?.type === 'start') return blocks;
+        if (endIndex !== -1 && currentDropPosition >= endIndex) return blocks;
+        newBlocks.splice(currentDropPosition, 0, newBlock);
+        return newBlocks;
+      }
+
+      // jos end on olemassa, laita sitä ennen
+      if (endIndex !== -1) {
+        const newBlocks = [...blocks];
+        newBlocks.splice(endIndex, 0, newBlock);
+        return newBlocks;
+      }
+
+      return [...blocks, newBlock];
+    });
+
+    return true;
   };
 
   // luo uusi blocki default valueilla
@@ -905,7 +1000,7 @@ const ProgrammingInterface = () => {
     if (blockToDelete.isChildBlock && blockToDelete.parentIndex !== undefined) {
       handleChildBlockDeletion(blockToDelete);
     } else {
-      handleRegularBlockDeletion(blockToDeleteIndex);
+      handleRegularBlockDeletion(blockToDelete);
     }
   };
 
@@ -934,9 +1029,11 @@ const ProgrammingInterface = () => {
   };
 
   // perus blockien poisto
-  const handleRegularBlockDeletion = (blockToDeleteIndex) => {
+  const handleRegularBlockDeletion = (blockToDelete) => {
+    const blockId = typeof blockToDelete === 'object' ? blockToDelete.id : blockToDelete;
+
     setDroppedBlocks(currentBlocks => {
-      return currentBlocks.filter((_, index) => index !== blockToDeleteIndex);
+      return currentBlocks.filter(block => block.id !== blockId);
     });
   };
 

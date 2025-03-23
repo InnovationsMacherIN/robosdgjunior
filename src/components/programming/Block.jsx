@@ -167,8 +167,6 @@ const DroppedBlock = ({
         el.style.zIndex = '';
       });
 
-      console.log(e, endData);
-
       handleDrop(e, endData);
 
       if (onDragEnd) {
@@ -289,41 +287,6 @@ const DroppedBlock = ({
     }
   };
 
-  const handleContainerDrop = (e) => {
-    if (!block.isContainer) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
-    if (droppedBlockData.type === 'start' || droppedBlockData.type === 'end' || droppedBlockData.type === 'repeat' ) return;
-
-    if (droppedBlockData.hasInput) {
-      if (droppedBlockData.defaultValue !== undefined) {
-        droppedBlockData.inputValue = droppedBlockData.defaultValue;
-      } else if (droppedBlockData.inputType === 'select' && droppedBlockData.options?.length > 0) {
-        droppedBlockData.inputValue = droppedBlockData.options[0].value;
-      } else if (droppedBlockData.inputMin !== undefined) {
-        droppedBlockData.inputValue = droppedBlockData.inputMin;
-      }
-    }
-
-    if (droppedBlockData.hasSecondInput) {
-      if (droppedBlockData.secondInputDefault !== undefined) {
-        droppedBlockData.inputValue = droppedBlockData.secondInputMin;
-      } else if (droppedBlockData.secondInputMin !== undefined) {
-        droppedBlockData.inputValue = droppedBlockData.secondInputMin;
-      }
-    }
-
-    block.childBlocks.push(droppedBlockData);
-    setHasChildren(true);
-    blockRef.current.classList.remove('drag-over');
-
-    //onInputChange is called to update the child blocks in the userinterface immediately
-    onInputChange();
-  };
-
   /**
    * handleInputChange - handler (function)
    * Handles input value changes for a block
@@ -350,7 +313,7 @@ const DroppedBlock = ({
    * @param {*} block.defaultValue - Default value for the input
    * @returns {React.ReactElement} Input element based on block type
    */
-// In Block.jsx, modify the renderBlockInput function:
+  // In Block.jsx, modify the renderBlockInput function:
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
@@ -493,7 +456,6 @@ const DroppedBlock = ({
             onDragStart={handleDragStart}
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
-            onDrop={handleContainerDrop}
             {...touchHandlers}
         >
           <div className="block-content">

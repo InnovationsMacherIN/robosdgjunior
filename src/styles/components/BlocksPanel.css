@@ -206,19 +206,42 @@
 @media (min-width: 768px) {
   .robo-illustration-container {
     position: absolute; /* Position relative to the .categories container */
-    top: 20px;
-    right: 0;
+    top: 150px;
+    right: 0px;
     width: auto;
     height: auto;
     z-index: 100; /* Ensure it stays on top of other content */
+  }
+
+  .robo-illustration::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 80%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  [data-block-id="leds-off"] {
+  margin-right:250px;
   }
 }
 
 @media (min-width: 768px) {
 
   .robo-illustration {
-    width: 100%;
+    max-width: 300px;
     height: auto;
+    z-index: 999;
+    padding: 40px;
+    background: linear-gradient(to left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 80%);
   }
 
 }

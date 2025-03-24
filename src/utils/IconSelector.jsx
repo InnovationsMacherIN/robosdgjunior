@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Bird, Egg, Laugh, Square } from 'lucide-react';
-import ArrowUp from "../assets/icons/icon-emoji-checkmark.svg";
-import Coin from "../assets/icons/icon-emoji-checkmark.svg";
-import Book from "../assets/icons/icon-emoji-checkmark.svg";
-import Equality from "../assets/icons/icon-emoji-checkmark.svg";
-import Water from "../assets/icons/icon-emoji-checkmark.svg";
-import Sun from "../assets/icons/icon-emoji-checkmark.svg";
-import Heart from "../assets/icons/icon-emoji-checkmark.svg";
-import House from "../assets/icons/icon-emoji-happy.svg";
-import Eight from "../assets/icons/icon-emoji-happy.svg";
-import Transport from "../assets/icons/icon-emoji-happy.svg";
-import Tree from "../assets/icons/icon-emoji-happy.svg";
-import Soup from "../assets/icons/icon-emoji-happy.svg";
-import Fish from "../assets/icons/icon-emoji-happy.svg";
-import Peace from "../assets/icons/icon-emoji-happy.svg";
+import ArrowUp from "../assets/icons/robo-usericon-arrow-up.svg";
+import Coin from "../assets/icons/robo-usericon-coin.svg";
+import Book from "../assets/icons/robo-usericon-book.svg";
+import Equality from "../assets/icons/robo-usericon-equality.svg";
+import Water from "../assets/icons/robo-usericon-water.svg";
+import Sun from "../assets/icons/robo-usericon-sun.svg";
+import Heart from "../assets/icons/robo-usericon-heart.svg";
+import House from "../assets/icons/robo-usericon-house.svg";
+import Eight from "../assets/icons/robo-usericon-eight.svg";
+import Transport from "../assets/icons/robo-usericon-transport.svg";
+import Tree from "../assets/icons/robo-usericon-tree.svg";
+import Soup from "../assets/icons/robo-usericon-soup.svg";
+import Fish from "../assets/icons/robo-usericon-fish.svg";
+import Peace from "../assets/icons/robo-usericon-peace.svg";
 import '../styles/components/IconSelector.css';
 import RoboClose from '../assets/icons/robo-close.jsx';
 
@@ -80,7 +80,7 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
                 onClick={() => handleIconSelect(Icon)}
                 className="icon-button"
               >
-                <img src={Icon} alt="Icon" width="30" height="30"  />
+                <img src={Icon} alt="Icon" width="40" height="40"  />
               </div>
             ))}
           </div>

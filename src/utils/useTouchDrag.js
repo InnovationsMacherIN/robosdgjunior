@@ -42,7 +42,18 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
     }
 
     const touch = e.touches[0];
-    const target = touch.target.closest('.block');
+
+    let target = null;
+
+    // repeat blockit on block-container luokassa
+    if (touch.target.closest('.block')) {
+      target = touch.target.closest('.block');
+      e.stopPropagation();
+    } else if (touch.target.closest('.block-container')) {
+      target = touch.target.closest('.block-container');
+    }
+
+    console.log(target)
 
     if (!target) return;
 

@@ -38,10 +38,10 @@ const BlocksPanel = ({
                        blocksByCategory,
                        handleDragStart,
                        handleDrop,
+                       onDragOverPosition
                      }) => {
 
   const [blocks, setBlocks] = useState(blocksByCategory);
-
 
   /**
    * useTouchDrag -hook
@@ -72,7 +72,7 @@ const BlocksPanel = ({
         // Store clone and block data
         dragState.current.clone = clone;
         dragState.current.blockData = blocks[selectedCategory].find(
-          b => b.id === blockElement.dataset.blockId
+          b => b.type === blockElement.dataset.blockId
         );
 
         // Position clone at touch point
@@ -81,22 +81,55 @@ const BlocksPanel = ({
       },
 
       onDragMove: (moveData) => {
-        if (!isDragging || !dragState.current.clone) return;
+          if (!isDragging || !dragState.current.clone) return;
 
-        const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
-        const programmingArea = dropTarget?.closest('.programming-area');
+          // 1) Figure out the element under the finger
+          const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
+          if (!dropTarget) return;
 
-        // Remove previous highlights
-        document.querySelectorAll('.drag-over').forEach(el => {
-          el.classList.remove('drag-over');
-        });
+          // 2) Check if we’re over a .block
+          const blockElement = dropTarget.closest('.block');
+          if (blockElement) {
+              // Use data-index from your existing block rendering
+              const rect = blockElement.getBoundingClientRect();
+              const relativeY = moveData.y - rect.top;
+              const height = rect.height;
 
-        // Add highlight to current drop target
-        if (programmingArea) {
-          programmingArea.classList.add('drag-over');
-        }
+              // "before" if top half, "after" if bottom half
+              const position = relativeY < height / 2 ? 'before' : 'after';
 
+              // The block’s own index is stored in data-index
+              const index = parseInt(blockElement.dataset.index, 10) || 0;
+              const toIndex = (position === 'before') ? index : index + 1;
 
+              // 3) Update insertion position
+              if (onDragOverPosition) {
+                  onDragOverPosition(toIndex);
+              }
+
+              // (Optional) Show highlight or “drop indicator” if you want
+              // – you can do the same "shift-right" effect or drop-target effect:
+              // remove old highlights, highlight blockElement, etc.
+              // Example:
+              document.querySelectorAll('.block.drop-target').forEach(el => {
+                  el.classList.remove('drop-target');
+              });
+              blockElement.classList.add('drop-target');
+
+          } else {
+              // 4) If not over a .block, check if we’re still over the main .programming-area
+              const programmingArea = dropTarget.closest('.programming-area');
+              if (programmingArea) {
+                  // e.g. put it at the end:
+                  if (onDragOverPosition) {
+                      onDragOverPosition(null);
+                  }
+                  // you can also remove highlights if needed
+                  document.querySelectorAll('.block.drop-target').forEach(el => {
+                      el.classList.remove('drop-target');
+                  });
+              }
+          }
       },
 
       onDragEnd: (e, endData) => {
@@ -111,9 +144,6 @@ const BlocksPanel = ({
         });
       }
     });
-
-
-
 
   /**
    * getCategoryImage -function
@@ -146,8 +176,6 @@ const BlocksPanel = ({
       </div>
     );
   };
-
-
 
   /**
    * BlocksPanel -component
@@ -186,14 +214,14 @@ const BlocksPanel = ({
       <div className="blocks-container">
         {blocksByCategory[selectedCategory]?.map((block) => (
           <div
-            key={block.id}
+            key={block.type}
             className={`block ${block.className}`}
             draggable={!('ontouchstart' in window)}
             onDragStart={(e) => handleDragStart(e, block)}
             {...touchHandlers}
-            data-block-id={block.id}
+            data-block-id={block.type}
           >
-            <BlockIconConfig blockId={block.id} />
+            <BlockIconConfig blockType={block.type} />
             < div className="block-input-container">
             {/*renderInput(block)*/}
             </div>

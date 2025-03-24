@@ -39,42 +39,67 @@ const CustomNumberInput = ({ value, onChange, defaultValue }) => {
     setShowPopup(false);
   };
 
+  const handleInputClick = (e) => {
+    // containerit jostain syystä tekee käsittämättömiä asioita ja ei näytä tätä jos ei
+    // tee stopPropagation
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    setShowPopup(true);
+  };
+
   // Render the popup using portal
   const renderPopup = () => {
     if (!showPopup) return null;
 
     return createPortal(
-      <div className="number-input-container">
-        <div className="popup-overlay" />
-        <div className="popup">
-          <button onClick={() => setShowPopup(false)} className="close-button">
-            <RoboClose style={{ width: '26px', height: '50px' }} />
-          </button>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-            <button
-              key={number}
-              onClick={() => handleButtonClick(number)}
-              className="number-button"
-            >
-              {number}
+        <div className="number-input-container">
+          <div className="popup-overlay" />
+          <div className="popup">
+            <button onClick={() => setShowPopup(false)} className="close-button">
+              <RoboClose style={{ width: '26px', height: '50px' }} />
             </button>
-          ))}
-        </div>
-      </div>,
-      document.body
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                <button
+                    key={number}
+                    onClick={() => handleButtonClick(number)}
+                    className="number-button"
+                >
+                  {number}
+                </button>
+            ))}
+          </div>
+        </div>,
+        document.body
     );
   };
 
   return (
-    <div className="custom-number-input">
-      <input
-        type="text"
-        value={value || defaultValue}
-        readOnly
-        onClick={() => setShowPopup(true)}
-      />
-      {renderPopup()}
-    </div>
+      <div
+          className="custom-number-input"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'relative',
+            zIndex: 10
+          }}
+      >
+        <input
+            type="text"
+            value={value || defaultValue}
+            readOnly
+            onClick={handleInputClick}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+            }}
+            style={{
+              position: 'relative',
+              zIndex: 5,
+              pointerEvents: 'auto',
+              cursor: 'pointer'
+            }}
+        />
+        {renderPopup()}
+      </div>
   );
 };
 

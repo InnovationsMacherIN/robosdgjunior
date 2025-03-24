@@ -304,8 +304,10 @@
   border-bottom: 2px solid black;
 }
 
-.child-blocks-container .block-input-container {
-  display: none;
+
+.child-blocks-container .block .block-input-container {
+  bottom: -10px !important;
+  left: calc(50%) !important;
 }
 
 .block-input {

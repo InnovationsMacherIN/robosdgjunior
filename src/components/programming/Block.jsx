@@ -19,33 +19,44 @@ import BlockIconConfig from "../../config/blockIconConfig";
 import '../../styles/blockIconConfig.css';
 import CustomNumberInput from "../../utils/CustomNumberInput.jsx";
 import { useTouchDrag } from "../../utils/useTouchDrag.js";
+import { v4 as uuidv4 } from 'uuid';
 
-const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onDragOverPosition, handleDrop }) => {
+const DroppedBlock = ({
+                        block,
+                        index,
+                        onDragStart,
+                        onInputChange,
+                        onChildInputChange,
+                        onDragEnd,
+                        onDragOverPosition,
+                        handleDrop,
+                        isChildBlock = false,
+                        parentIndex = null,
+                      }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
-
 
   // Block.jsx:ssä
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
     createClone: false,
     onDragStart: (dragData) => {
-      console.log('Touch drag start:', index, block);
       const blockElement = dragData.target;
       if (!blockElement) return;
+      dragData.isChildBlock = !!block.isChildBlock;
 
-      // Tarkista onko start-block
-      const isStartBlock = block.id === 'start';
-      if (isStartBlock) return;
-
+      // ei sallita dragia start blockissa
+      const isStartOrEndBlock = block.type === 'start' || block.type === 'end';
+      if (isStartOrEndBlock) return;
 
       if (onDragStart) {
-
         dragState.current.isInternalDrag = true;
         dragState.current.fromIndex = index;
-        // Luodaan synteettinen event
+        dragState.current.isChildBlock = isChildBlock || false;
+        dragState.current.parentIndex = parentIndex;
+
+        // luo synteettinen event
         const syntheticEvent = {
           target: {
-            // Määritellään querySelector suoraan funktioksi joka käyttää alkuperäistä blockElementtiä
             querySelector: (selector) => blockElement.querySelector(selector)
           },
           currentTarget: blockElement,
@@ -60,14 +71,24 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           }
         };
 
-        dragState.current['application/internal'] = JSON.stringify({ fromIndex: index });
+        // sisällä isChildBlock ja parentindex block dataan
+        const blockForDrag = {
+          ...block,
+          isChildBlock: isChildBlock,
+          parentIndex: parentIndex
+        };
 
-        onDragStart(syntheticEvent, block);
+        dragState.current['application/json'] = JSON.stringify(blockForDrag);
+        dragState.current['application/internal'] = JSON.stringify({
+          fromIndex: index,
+          isChildBlock: isChildBlock || false,
+          parentIndex: parentIndex
+        });
 
+        onDragStart(syntheticEvent, blockForDrag);
         blockElement.classList.add('dragging');
       }
     },
-    // Block.jsx
     onDragMove: (moveData) => {
       if (!isTouchDragging) return;
 
@@ -82,7 +103,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
 
       // Etsi kohde elementti
       const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
-      const blockElement = dropTarget?.closest('.block');
+      const blockElement = dropTarget?.closest('.block, .block-container');
 
       if (blockElement && blockElement !== block) {
         const rect = blockElement.getBoundingClientRect();
@@ -92,17 +113,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         // Poista vanhat indikaattorit
         document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
         document.querySelectorAll('.block.drop-target').forEach(el =>
-          el.classList.remove('drop-target'));
+            el.classList.remove('drop-target'));
         document.querySelectorAll('.block.shift-right').forEach(el =>
-          el.classList.remove('shift-right'));
+            el.classList.remove('shift-right'));
 
         // Lisää visuaaliset indikaattorit
         blockElement.classList.add('drop-target');
 
         // Lisää shift-right luokka seuraaville blokeille
         let nextElement = blockElement.nextElementSibling;
-        while (nextElement) {// Varmista ettei draggattavaan elementtiin lisätä luokkaa
-            nextElement.classList.add('shift-right');
+        while (nextElement) {
+          nextElement.classList.add('shift-right');
           nextElement = nextElement.nextElementSibling;
         }
 
@@ -111,8 +132,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           const position = relativeY < height / 2 ? 'before' : 'after';
           const toIndex = parseInt(blockElement.dataset.index || '0');
           onDragOverPosition(position === 'before' ? toIndex : toIndex + 1);
-
-          //console.log('Drag over:', { index, position, toIndex });
         }
       }
     },
@@ -148,8 +167,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
         el.style.zIndex = '';
       });
 
-      console.log(e, endData);
-
       handleDrop(e, endData);
 
       if (onDragEnd) {
@@ -183,19 +200,32 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    *
    * @param {DragEvent} e - Drag event object
    */
-      // DroppedBlock (Block.jsx) komponentissa
+  // DroppedBlock (Block.jsx) komponentissa
   const handleDragStart = (e) => {
-        const isStartBlock = block.id === 'start';
-        if (isStartBlock) {
+        if (block.type === 'start') {
           e.preventDefault();
           return;
         }
 
-        e.dataTransfer.setData('application/json', JSON.stringify(block));
-        e.dataTransfer.setData('application/internal',
-            JSON.stringify({ fromIndex: index }));
-        //console.log('Drag start:', index, block);
-        onDragStart(e, block);
+        if (onDragStart) {
+          const blockForDrag = {
+            ...block,
+            isChildBlock: isChildBlock,
+            parentIndex: parentIndex
+          };
+
+          onDragStart(e, blockForDrag);
+        }
+
+        // Mark data for internal reorder
+        e.dataTransfer.setData('application/internal', JSON.stringify({
+          fromIndex: index,
+          isChildBlock,
+          parentIndex
+        }));
+        if (isChildBlock) {
+          e.stopPropagation();
+        }
       };
 
   /**
@@ -208,48 +238,12 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    */
   const handleDragOver = (e) => {
     e.preventDefault();
-    const blockElement = blockRef.current;
-    if (!blockElement) return;
-
-    const rect = blockElement.getBoundingClientRect();
-    const relativeY = e.clientY - rect.top;
-    const height = rect.height;
-
-    // Määritellään pudotusalueet: ylä- ja alapuolisko
-    const position = relativeY < height / 2 ? 'before' : 'after';
+    // Just set the drop position, no direct DOM manipulation
+    const rect = blockRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const position = (e.clientY - rect.top) < (rect.height / 2) ? 'before' : 'after';
     const toIndex = position === 'before' ? index : index + 1;
-
-    if (onDragOverPosition) {
-      onDragOverPosition(toIndex);
-    }
-
-    // Poistetaan vanhat indikaattorit ja siirtymät
-    document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
-    document.querySelectorAll('.block.drop-target').forEach(el =>
-      el.classList.remove('drop-target'));
-    document.querySelectorAll('.block.shift-right').forEach(el =>
-      el.classList.remove('shift-right'));
-
-    // Lisätään kohde-blokin highlight ja siirto
-    blockElement.classList.add('drop-target');
-
-    // Luodaan ja lisätään uusi indikaattori alkuperäiselle paikalle
-    const indicator = document.createElement('div');
-    indicator.className = 'block-drop-indicator';
-    blockElement.parentElement.insertBefore(indicator, blockElement);
-
-    // Lisätään shift-right luokka kaikille seuraaville blokeille
-    let nextElement = blockElement.nextElementSibling;
-    while (nextElement) {
-      nextElement.classList.add('shift-right');
-      nextElement = nextElement.nextElementSibling;
-    }
-
-    // Tallenna tieto dataTransferiin
-    e.dataTransfer.setData('application/drop-position',
-      JSON.stringify({ toIndex, position }));
-
-    //console.log('Drag over:', { index, position, toIndex });
+    onDragOverPosition?.(toIndex);
   };
 
   /**
@@ -293,57 +287,6 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
     }
   };
 
-  const handleContainerDrop = (e) => {
-    //console.log("handleContainerDrop");
-    if (!block.isContainer) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    let droppedBlockData = JSON.parse(e.dataTransfer.getData('application/json'));
-    if (droppedBlockData.id === 'start' || droppedBlockData.id === 'end' || droppedBlockData.id === 'repeat' ) return;
-    let inputValueData
-    if (droppedBlockData.defaultValue){
-      console.log("child block default value found");
-      let inputValueData = droppedBlockData.defaultValue;
-      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
-    }
-    if (droppedBlockData.secondInputMin){
-      console.log("child block second input min found");
-      let inputValueData = droppedBlockData.secondInputMin;
-      droppedBlockData = {...droppedBlockData, inputValue: inputValueData};
-    }
-    block.childBlocks.push(droppedBlockData);
-    console.log(droppedBlockData);
-    inputValueData = null;
-    //console.log(block.childBlocks);
-    setHasChildren(true);
-
-
-    blockRef.current.classList.remove('drag-over');
-
-    //onInputChange is called to update the child blocks in the userinterface immediately
-    onInputChange();
-  };
-
-  const handleChildInputChange = (childIndex, value, isSecondInput = false) => {
-    if (!block.childBlocks) return;
-
-    const updatedChildBlocks = [...block.childBlocks];
-    if (isSecondInput) {
-      updatedChildBlocks[childIndex] = {
-        ...updatedChildBlocks[childIndex],
-        secondInputValue: value
-      };
-    } else {
-      updatedChildBlocks[childIndex] = {
-        ...updatedChildBlocks[childIndex],
-        inputValue: value
-      };
-    }
-    block.childBlocks = updatedChildBlocks;
-  };
-
   /**
    * handleInputChange - handler (function)
    * Handles input value changes for a block
@@ -353,7 +296,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    * @param {boolean} isSecondInput - Whether updating first or second input
    */
   const handleInputChange = (value, isSecondInput = false) => {
-    onInputChange(index, value, isSecondInput);
+    onInputChange(index, value, isSecondInput, block.isChildBlock, block.parentIndex);
   };
 
   /**
@@ -370,32 +313,38 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    * @param {*} block.defaultValue - Default value for the input
    * @returns {React.ReactElement} Input element based on block type
    */
+  // In Block.jsx, modify the renderBlockInput function:
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
         return (
-          <CustomNumberInput
-            value={block.inputValue}
-            defaultValue={block.defaultValue}
-            onChange={(value) => handleInputChange(value)}
-          />
+            <CustomNumberInput
+                value={block.inputValue}
+                defaultValue={block.defaultValue}
+                onChange={(value) => {
+                  handleInputChange(value);
+                }}
+                onClick={() => {
+                }}
+            />
         );
       case 'select':
         return (
-          <>
-          </>
+            <>
+            </>
         );
       case 'text':
         return (
-          <input
-            type="text"
-            defaultValue={block.defaultValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-          />
+            <input
+                type="text"
+                defaultValue={block.defaultValue}
+                onChange={(e) => handleInputChange(e.target.value)}
+            />
         );
       default:
+        console.warn("Unknown input type:", block.inputType, "for block:", block.type);
         return (
-          <div></div>
+            <div></div>
         );
     }
   };
@@ -433,16 +382,16 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   const renderSecondInput = (block) => {
     if (block.secondInputType === 'number') {
       return (
-        <CustomNumberInput
-          value={block.inputValue}
-          defaultValue={block.secondInputMin}
-          onChange={(value) => handleInputChange(value)}
-        />
+          <CustomNumberInput
+              value={block.secondInputValue || block.secondInputDefault || block.secondInputMin}
+              defaultValue={block.secondInputDefault || block.secondInputMin}
+              onChange={(value) => handleInputChange(value, true)}
+          />
       );
     }
     return (
-      <>
-      </>
+        <>
+        </>
     );
   };
 
@@ -472,6 +421,7 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
    *   secondInputValue: 'easy'
    * });
    */
+
   const renderBlockValue = (block) => {
     let valueText = '';
 
@@ -499,13 +449,14 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   if (block.isContainer) {
     return (
         <div
+            data-index={index}
             ref={blockRef}
             className={`block-container ${hasChildren ? 'has-children' : ''}`}
             draggable="true"
             onDragStart={handleDragStart}
             onDragOver={handleContainerDragOver}
             onDragLeave={handleContainerDragLeave}
-            onDrop={handleContainerDrop}
+            {...touchHandlers}
         >
           <div className="block-content">
             <div className="block-header">
@@ -518,15 +469,29 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
           </div>
           <div className="child-blocks-container">
             {block.childBlocks?.map((childBlock, childIndex) => (
-                <DroppedBlock
-                    key={`child-${childIndex}`}
-                    block={childBlock}
-                    index={childIndex}
-                    onInputChange={(value) => handleChildInputChange(childIndex, value)}
-                    onDragStart={onDragStart}
-                    onDragEnd={onDragEnd}
-                    onDragOverPosition={onDragOverPosition}
-                />
+                <div>
+                  <DroppedBlock
+                      key={`child-${childBlock.id || childIndex}`}
+                      block={childBlock}
+                      index={childIndex}
+                      onInputChange={(childIndex, value) => {
+                        const updatedChildBlocks = [...block.childBlocks];
+                        updatedChildBlocks[childIndex] = {
+                          ...updatedChildBlocks[childIndex],
+                          inputValue: value
+                        };
+                        block.childBlocks = updatedChildBlocks;
+                        onChildInputChange(index, childIndex, value);
+                      }}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                      onDragOverPosition={onDragOverPosition}
+                      handleDrop={handleDrop}
+                      isChildBlock={true}
+                      parentIndex={index}
+                      {...touchHandlers}
+                  />
+                </div>
             ))}
           </div>
         </div>
@@ -534,17 +499,17 @@ const DroppedBlock = ({ block, index, onDragStart, onInputChange, onDragEnd, onD
   }
     return (
       <div
-        ref={blockRef}
-        className={`block ${block.className || ''}`}
-        draggable="true"
-        {...touchHandlers}
-        data-index={index}
-        onDragStart={handleDragStart}
-        onDragEnd={onDragEnd}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
+          ref={blockRef}
+          className={`block ${block.className || ''}`}
+          draggable={!(block.type === 'start' || block.type === 'end')}
+          {...(block.type === 'start' || block.type === 'end' ? {} : touchHandlers)}
+          data-index={index}
+          onDragStart={block.type === 'start' || block.type === 'end' ? null : handleDragStart}
+          onDragEnd={block.type === 'start' || block.type === 'end' ? null : onDragEnd}
+          onDragLeave={block.type === 'start' || block.type === 'end' ? null : handleDragLeave}
+          onDragOver={block.type === 'start' || block.type === 'end' ? null : handleDragOver}
       >
-        <BlockIconConfig blockId={block.id} />
+        <BlockIconConfig blockType={block.type} />
         {block.hasInput && (
           <div className="block-input-container">
             {renderBlockInput(block, index)}

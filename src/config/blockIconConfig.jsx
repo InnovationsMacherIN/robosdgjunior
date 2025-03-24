@@ -24,10 +24,10 @@ import icon_repeat from "../assets/icons/robo-repeat-v2.svg";
 import icon_stop from "../assets/icons/robo-stop-block.svg";
 import icon_pirouette from "../assets/icons/robo-pirouette.svg";
 
-const BlockIconConfig = ({ blockId }) => {
+const BlockIconConfig = ({ blockType }) => {
 
-  const getIconSrc = (blockId) => {
-    switch (blockId) {
+  const getIconSrc = (blockType) => {
+    switch (blockType) {
       case 'start':
         return icon_start;
       case 'end':
@@ -133,7 +133,7 @@ const BlockIconConfig = ({ blockId }) => {
 
   return (
     <div className="block-icon-container">
-      <img src={getIconSrc(blockId)} alt="Block Icon" className="block-icon"/>
+      <img src={getIconSrc(blockType)} alt="Block Icon" className="block-icon"/>
     </div>
   );
 };

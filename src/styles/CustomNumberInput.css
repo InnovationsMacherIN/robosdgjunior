@@ -94,7 +94,7 @@
 /* Tablet-specific styles */
 @media (max-width: 1024px) {
   .popup {
-    width: 230px;
+    width: 280px;
   }
 
   .number-button {

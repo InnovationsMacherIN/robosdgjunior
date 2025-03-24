@@ -47,7 +47,7 @@ const CodeView = ({ blocks = [], onClose }) => {
     const inputValue = getSafeValue(block, 'inputValue');
     const secondInputValue = getSafeValue(block, 'secondInputValue');
 
-    switch (block.id) {
+    switch (block.type) {
       case 'start':
         return `${spacing}// Initialize program
 ${spacing}let programRunning = true;
@@ -89,7 +89,7 @@ ${spacing}startProgram();\n`;
       case 'leds-off':
         return `${spacing}    await robot.turnOffDisplay(); // Turn off LED display\n`;
 
-      case block.id.match(/^show-picture_\d+/)?.input:
+      case block.type.match(/^show-picture_\d+/)?.input:
         const picLabel = getOptionLabel(block);
         console.log(block)
         return `${spacing}    await robot.showPicture("${picLabel}", ${block.inputValue}); // Show ${picLabel} for ${inputValue} seconds\n`;
@@ -117,16 +117,16 @@ ${spacing}startProgram();\n`;
       case 'pirouette':
         return `${spacing}    await robot.pirouette(${inputValue}); // Pirouette ${inputValue} times\n`;
 
-      case block.id.match(/^melody_\d+/)?.input:
+      case block.type.match(/^melody_\d+/)?.input:
         const melodyLabel = getOptionLabel(block);
         return `${spacing}    await robot.playMelody("${melodyLabel}"); // Play melody: ${melodyLabel}\n`;
 
-      case block.id.match(/^sound_\d+/)?.input:
+      case block.type.match(/^sound_\d+/)?.input:
         const soundLabel = getOptionLabel(block);
         return `${spacing}    await robot.playSound("${soundLabel}"); // Play sound: ${soundLabel}\n`;
 
       default:
-        return `${spacing}    // Unknown block: ${block.id}\n`;
+        return `${spacing}    // Unknown block: ${block.type}\n`;
     }
   };
 
@@ -138,7 +138,7 @@ ${spacing}startProgram();\n`;
     const inputValue = getSafeValue(block, 'inputValue');
     const secondInputValue = getSafeValue(block, 'secondInputValue');
 
-    switch (block.id) {
+    switch (block.type) {
       case 'start':
         return `${spacing}# Initialize program
 ${spacing}import asyncio
@@ -184,7 +184,7 @@ ${spacing}asyncio.run(start_program())\n`;
       case 'leds-off':
         return `${spacing}        await robot.turn_off_display()  # Turn off LED display\n`;
 
-      case block.id.match(/^show-picture_\d+/)?.input:
+      case block.type.match(/^show-picture_\d+/)?.input:
         const picLabel = getOptionLabel(block);
         return `${spacing}        await robot.show_picture("${picLabel}", ${inputValue})  # Show ${picLabel} for ${inputValue} seconds\n`;
 
@@ -210,16 +210,16 @@ ${spacing}asyncio.run(start_program())\n`;
       case 'pirouette':
         return `${spacing}        await robot.pirouette(${inputValue})  # Pirouette ${inputValue} times\n`;
 
-      case block.id.match(/^melody_\d+/)?.input:
+      case block.type.match(/^melody_\d+/)?.input:
         const melodyLabel = getOptionLabel(block);
         return `${spacing}        await robot.play_melody("${melodyLabel}")  # Play melody: ${melodyLabel}\n`;
 
-      case block.id.match(/^sound_\d+/)?.input:
+      case block.type.match(/^sound_\d+/)?.input:
         const soundLabel = getOptionLabel(block);
         return `${spacing}        await robot.play_sound("${soundLabel}")  # Play sound: ${soundLabel}\n`;
 
       default:
-        return `${spacing}        # Unknown block: ${block.id}\n`;
+        return `${spacing}        # Unknown block: ${block.type}\n`;
     }
   };
 

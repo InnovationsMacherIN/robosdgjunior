@@ -55,7 +55,7 @@
 .button-connect { background-color: #993399; border: 3px solid #1D1D1B;}
 .button-code-view { background-color: #993399; border: 3px solid #1D1D1B;}
 .button-profile { border: 3px solid #1D1D1B;}
-.button-clear {background-color: #cc0000;}
+.button-clear {background-color: #cc0000;height: 65px;}
 
 .button-start:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
 .button-stop:hover { box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Sisäinen varjo */}
@@ -470,6 +470,7 @@
 
   .category-buttons {
     justify-content: left;
+    z-index: 101 !important;
   }
 
   .blocks-container {

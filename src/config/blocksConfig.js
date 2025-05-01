@@ -674,6 +674,7 @@ export const blocksByCategory = {
       ],
       command: (melodyId) => `${melodyId}:`
     },
+    /*
     {
       type: 'sound_1',
       title: 'Soita ääni',
@@ -803,7 +804,7 @@ export const blocksByCategory = {
         { value: 'K10', label: 'Gähnen' }
       ],
       command: (soundId) => `${soundId}:`
-    }
+    }*/
   ],
   /*
   'Settings': [

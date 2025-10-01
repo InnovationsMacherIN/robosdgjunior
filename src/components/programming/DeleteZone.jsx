@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import '../../styles/DeleteZone.css';
 import RoboTrash from "../../assets/icons/RoboTrash.jsx";
 
-const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
+const DeleteZone = ({ onDelete, isDraggingBlock, isDraggingExistingBlock, onDragOverPosition }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { t } = useTranslation();
 
@@ -21,8 +21,7 @@ const DeleteZone = ({ onDelete, isDraggingBlock, onDragOverPosition }) => {
 
   return (
     <div
-      className={`delete-zone ${isHovered ? 'hovered' : ''} ${isDraggingBlock ? 'visible' : ''}`}
-      onDragOver={(e) => {
+        className={`delete-zone ${isHovered ? 'hovered' : ''} ${isDraggingBlock && isDraggingExistingBlock ? 'visible' : ''}`}      onDragOver={(e) => {
         e.preventDefault();
         setIsHovered(true);
         onDragOverPosition(-1);

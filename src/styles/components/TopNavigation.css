@@ -54,8 +54,6 @@
 .button-menu {
   background-color: var(--secondary-color);
   color: var(--text-light);
-  height:65px;
-  width: 65px;
   box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
   border-radius:250px !important;
 }
@@ -69,7 +67,7 @@
 }
 
 .button-profile {
-  background-color: var(--secondary-color);
+  background-color: #ffffff;
   color: var(--text-light);
   height:65px;
   box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
@@ -176,6 +174,14 @@
   transform-origin: center;
 }
 
+
+@media screen and (min-width: 769px) {
+  .button-menu {
+    width: 65px !important;
+    height: 65px !important;
+    padding:10px;
+  }
+}
 /* Mobile
 */
 @media screen and (max-width: 768px) {
@@ -185,38 +191,50 @@
   }
 
   .button.button-start {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
     padding:10px;
   }
 
   .button.button-stop {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
     padding:10px;
   }
 
   .button.button-profile {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
     padding:10px;
   }
 
   .button.button-save {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
+    padding:10px;
+  }
+
+  .button-menu {
+    min-width: 55px !important;
+    max-height: 55px !important;
     padding:10px;
   }
 
   .button.button-connect {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
+    padding:10px;
+  }
+
+  .button.button-clear {
+    min-width: 55px;
+    max-height: 55px;
     padding:10px;
   }
 
   .button.button-code-view {
-    min-width: 50px;
-    max-height: 50px;
+    min-width: 55px;
+    max-height: 55px;
     padding:10px;
   }
 
@@ -234,8 +252,8 @@
 
 
   .button {
-    max-width: 50px;
-    max-height: 50px;
+    min-width: 55px !important;
+    min-height: 55px !important;
     padding:10px !important;
   }
 
@@ -262,5 +280,34 @@
   .category-button {
     width: 70px !important;
     height: 60px !important;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .top-nav {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .control-buttons:first-of-type {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+  }
+
+  .control-buttons:first-of-type .logo {
+    margin-right: none;
+  }
+
+  .control-buttons:first-of-type .button {
+    margin-left: 5px;
+  }
+
+  .control-buttons:last-of-type {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5%;
   }
 }

@@ -1,6 +1,8 @@
 .icon-selector {
   position: relative;
   display: inline-block;
+  margin-left: 0;
+  margin-top: 9px;
 }
 
 .icon-button svg {
@@ -62,8 +64,8 @@
 /* Icon buttons */
 .icon-button {
   background: white;
-  min-width: 70px !important;
-  min-height: 70px !important;
+  min-width: 90px !important;
+  min-height: 90px !important;
   max-height: 90px !important;
   max-width: 90px !important;
   padding: 10px !important;
@@ -83,6 +85,10 @@
 
 /* Tablet-specific styles */
 @media (max-width: 1024px) {
+  .icon-selector {
+    margin-top: 9px;
+  }
+
   .icon-popup {
     width: 90%;
     max-width: 400px;
@@ -103,5 +109,12 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     justify-items: center;
+  }
+}
+
+/* lisäsin marginin, näyttää muuten oudolta */
+@media (max-width: 768px) {
+  .icon-selector {
+    margin-left: 0px;
   }
 }

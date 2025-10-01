@@ -9,7 +9,8 @@ const ZOOM_SPEED = 0.001;
 const ZoomableArea = ({ children,
                         onDeleteBlock,
                         onDragOverPosition,
-                        isDraggingBlock
+                        isDraggingBlock,
+                        isDraggingExistingBlock
                       }) => {
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
@@ -144,6 +145,7 @@ const ZoomableArea = ({ children,
       }}
     >
       <DeleteZone
+        isDraggingExistingBlock={isDraggingExistingBlock}
         isDraggingBlock={isDraggingBlock} // Muutettu tämä rivi
         onDelete={(block, index) => {
           onDeleteBlock(block, index);

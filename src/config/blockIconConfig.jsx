@@ -23,35 +23,50 @@ import icon_wait from "../assets/icons/robo-wait.svg";
 import icon_repeat from "../assets/icons/robo-repeat-v2.svg";
 import icon_stop from "../assets/icons/robo-stop-block.svg";
 import icon_pirouette from "../assets/icons/robo-pirouette.svg";
+import icon_happy from "../assets/icons/icon-emoji-happy.svg";
+import icon_sad from "../assets/icons/icon-emoji-sad.svg";
+import icon_clap from "../assets/icons/icon-emoji-clap.svg";
+import icon_mushroom from "../assets/icons/icon-emoji-mushroom.svg";
+import icon_saber from "../assets/icons/icon-emoji-saber.svg";
+import icon_laugh from "../assets/icons/icon-emoji-laugh.svg";
+import icon_rainbow from "../assets/icons/icon-emoji-rainbow.svg";
+import icon_magic from "../assets/icons/icon-emoji-magic.svg";
+import icon_gift from "../assets/icons/icon-emoji-gift.svg";
+import icon_richtig from "../assets/icons/icon-emoji-checkmark.svg";
+import icon_falsch from "../assets/icons/icon-emoji-stop.svg";
+import icon_wink from "../assets/icons/icon-emoji-wink.svg";
+import icon_links from "../assets/icons/icon-emoji-left.svg";
+import icon_rechts from "../assets/icons/icon-emoji-right.svg";
 
-const BlockIconConfig = ({ blockId }) => {
 
-  const getIconSrc = (blockId) => {
-    switch (blockId) {
+const BlockIconConfig = ({ blockType }) => {
+
+  const getIconSrc = (blockType) => {
+    switch (blockType) {
       case 'start':
         return icon_start;
       case 'end':
         return icon_stop;
       case 'melody_1':
-        return icon_emoji_love;
+        return icon_clap;
       case 'melody_2':
         return icon_emoji_love;
       case 'melody_3':
-        return icon_emoji_love;
+        return icon_saber;
       case 'melody_4':
-        return icon_emoji_love;
+        return icon_mushroom;
       case 'melody_5':
         return icon_emoji_love;
       case 'melody_6':
         return icon_emoji_love;
       case 'melody_7':
-        return icon_emoji_love;
+        return icon_laugh;
       case 'melody_8':
-        return icon_emoji_love;
+        return icon_rainbow;
       case 'melody_9':
-        return icon_emoji_love;
+        return icon_magic;
       case 'melody_10':
-        return icon_emoji_love;
+        return icon_gift;
       case 'sound_1':
         return icon_emoji_love;
       case 'sound_2':
@@ -96,13 +111,13 @@ const BlockIconConfig = ({ blockId }) => {
       case 'pirouette':
         return icon_pirouette
       case 'show-picture_1':
-        return icon_picture
+        return icon_laugh
       case 'show-picture_2':
-        return icon_picture
+        return icon_emoji_love
       case 'show-picture_3':
         return icon_picture
       case 'show-picture_4':
-        return icon_picture
+        return icon_sad
       case 'show-picture_5':
         return icon_picture
       case 'show-picture_6':
@@ -110,17 +125,17 @@ const BlockIconConfig = ({ blockId }) => {
       case 'show-picture_7':
         return icon_picture
       case 'show-picture_8':
-        return icon_picture
+        return icon_richtig
       case 'show-picture_9':
-        return icon_picture
+        return icon_falsch
       case 'show-picture_10':
-        return icon_picture
+        return icon_wink
       case 'show-picture_11':
         return icon_picture
       case 'show-picture_12':
-        return icon_picture
+        return icon_links
       case 'show-picture_13':
-        return icon_picture
+        return icon_rechts
       case 'wait':
         return icon_wait
       case 'repeat':
@@ -133,7 +148,7 @@ const BlockIconConfig = ({ blockId }) => {
 
   return (
     <div className="block-icon-container">
-      <img src={getIconSrc(blockId)} alt="Block Icon" className="block-icon"/>
+      <img src={getIconSrc(blockType)} alt="Block Icon" className="block-icon"/>
     </div>
   );
 };

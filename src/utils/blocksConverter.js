@@ -39,7 +39,7 @@ const convertBlocksToCommands = (blocks) => {
         commands += childCommands;
       }
     } else {
-    switch(block.id) {
+    switch(block.type) {
       // Display 'A'
       case 'show-text':
         // Tarkistetaan että teksti on olemassa ennen sen lähettämistä

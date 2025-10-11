@@ -1,3 +1,23 @@
+/**
+ * @file ProgrammingArea.jsx
+ * @description The main programming area where blocks are dropped and arranged.
+ * @module components/programming/ProgrammingArea
+ * @param {Object} props - The component props.
+ * @param {Array} props.droppedBlocks - The blocks dropped in the programming area.
+ * @param {boolean} props.isExecuting - Whether the program is executing.
+ * @param {function} props.handleDragOver - A function to handle the drag over event.
+ * @param {function} props.handleDrop - A function to handle a drop event.
+ * @param {function} props.onUpdateBlock - A function to update a block.
+ * @param {function} props.handleDragStart - A function to handle the start of a drag event.
+ * @param {function} props.handleBlockInputChange - A function to handle a change in a block's input value.
+ * @param {function} props.onChildInputChange - A function to handle a change in a child block's input value.
+ * @param {function} props.onDeleteBlock - A function to delete a block.
+ * @param {function} props.onDragOverPosition - A function to handle the drag over position.
+ * @param {boolean} props.resetView - Whether to reset the view.
+ * @param {boolean} props.isDraggingBlock - Whether a block is being dragged.
+ * @param {boolean} props.isDraggingExistingBlock - Whether an existing block is being dragged.
+ * @returns {React.ReactElement} The ProgrammingArea component.
+ */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +26,6 @@ import '../../styles/components/ProgrammingArea.css';
 import '../../styles/draggableBlocks.css';
 import DroppedBlock from './Block';
 
-// zoomausvakiot
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2;
 const ZOOM_SPEED = 0.001;
@@ -28,26 +47,26 @@ const ProgrammingArea = ({
                          }) => {
   const { t } = useTranslation();
 
-  // ketjun positio statet
   const [activeChain, setActiveChain] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [chainPositions, setChainPositions] = useState({});
-
-  // zoom/panorointi statet
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-
-  // kosketus statet
   const touchCount = useRef(0);
   const previousTouchDistance = useRef(null);
-  const [gestureType, setGestureType] = useState(null); // zoom, panning ja null
+  const [gestureType, setGestureType] = useState(null);
   const initialTouchDistance = useRef(null);
   const ZOOM_THRESHOLD = 30;
 
   const areaRef = useRef(null);
 
+  /**
+   * @function calculatePanBoundaries
+   * @description Calculates the boundaries for panning.
+   * @returns {Object} The minimum and maximum x coordinates for panning.
+   */
   const calculatePanBoundaries = useCallback(() => {
     if (!areaRef.current) return { minX: -Infinity, maxX: Infinity };
 
@@ -55,7 +74,6 @@ const ProgrammingArea = ({
     const contentElement = areaRef.current.querySelector('.zoomable-content');
     const blockChain = contentElement?.querySelector('.block-chain-container');
 
-    // oikea koko, kaikki mukaan tuosta alilootasta
     let contentWidth = 0;
     if (blockChain) {
       const blockChainRect = blockChain.getBoundingClientRect();
@@ -65,15 +83,17 @@ const ProgrammingArea = ({
       contentWidth = contentElement.scrollWidth;
     }
 
-    // skaalauksen mukaan boundaryt. tämä oli bugi, nyt pystyy saavuttamaan lopun kaikilla skaalauksilla
     const buffer = 100 / scale;
-
     const minX = Math.min(containerWidth/scale - contentWidth - buffer, 0);
     const maxX = buffer;
 
     return { minX, maxX };
   }, [scale, chainPositions]);
 
+  /**
+   * @function centerViewOnContent
+   * @description Centers the view on the content.
+   */
   const centerViewOnContent = useCallback(() => {
     if (!areaRef.current) return;
 
@@ -84,7 +104,6 @@ const ProgrammingArea = ({
 
       if (container && blockChain) {
         setScale(1);
-
         setTranslate({ x: 0, y: 0 });
       }
     }, 50);
@@ -96,7 +115,6 @@ const ProgrammingArea = ({
     }
   }, [droppedBlocks.length, centerViewOnContent]);
 
-  // zoomaus hiiren rullalla
   useEffect(() => {
     const container = areaRef.current;
     if (!container) return;
@@ -125,7 +143,11 @@ const ProgrammingArea = ({
     return () => container.removeEventListener('wheel', handleWheel);
   }, [scale, translate]);
 
-  // hiiripanning
+  /**
+   * @function handleMouseDown
+   * @description Handles the mouse down event for panning.
+   * @param {Event} e - The mouse down event.
+   */
   const handleMouseDown = useCallback((e) => {
     if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
       setIsPanning(true);
@@ -135,12 +157,15 @@ const ProgrammingArea = ({
     }
   }, []);
 
+  /**
+   * @function handleMouseMove
+   * @description Handles the mouse move event for panning.
+   * @param {Event} e - The mouse move event.
+   */
   const handleMouseMove = useCallback((e) => {
     if (isPanning) {
       const dx = (e.clientX - startPos.x) / scale;
-
       const newX = translate.x + dx;
-
       const { minX, maxX } = calculatePanBoundaries();
       const constrainedX = Math.min(Math.max(newX, minX), maxX);
 
@@ -151,6 +176,10 @@ const ProgrammingArea = ({
     }
   }, [isPanning, startPos, scale, activeChain, translate, calculatePanBoundaries]);
 
+  /**
+   * @function handleMouseUp
+   * @description Handles the mouse up event for panning.
+   */
   const handleMouseUp = useCallback(() => {
     if (isPanning) {
       setIsPanning(false);
@@ -163,6 +192,12 @@ const ProgrammingArea = ({
     }
   }, [isPanning, activeChain]);
 
+  /**
+   * @function getTouchDistance
+   * @description Calculates the distance between two touches.
+   * @param {Array} touches - The touches.
+   * @returns {number} The distance between the touches.
+   */
   const getTouchDistance = (touches) => {
     if (touches.length < 2) return null;
 
@@ -171,6 +206,12 @@ const ProgrammingArea = ({
     return Math.sqrt(dx * dx + dy * dy);
   };
 
+  /**
+   * @function getTouchMidpoint
+   * @description Calculates the midpoint between two touches.
+   * @param {Array} touches - The touches.
+   * @returns {Object} The midpoint between the touches.
+   */
   const getTouchMidpoint = (touches) => {
     return {
       x: (touches[0].clientX + touches[1].clientX) / 2,
@@ -178,11 +219,15 @@ const ProgrammingArea = ({
     };
   };
 
+  /**
+   * @function handleTouchStart
+   * @description Handles the touch start event for panning and zooming.
+   * @param {Event} e - The touch start event.
+   */
   const handleTouchStart = useCallback((e) => {
     touchCount.current = e.touches.length;
 
     if (e.touches.length === 2) {
-      // e.preventDefault();
       setIsPanning(true);
       setStartPos(getTouchMidpoint(e.touches));
 
@@ -193,13 +238,16 @@ const ProgrammingArea = ({
     }
   }, []);
 
+  /**
+   * @function handleTouchMove
+   * @description Handles the touch move event for panning and zooming.
+   * @param {Event} e - The touch move event.
+   */
   const handleTouchMove = useCallback((e) => {
     if (e.touches.length === 2) {
-      // e.preventDefault();
       const currentMidpoint = getTouchMidpoint(e.touches);
       const currentDistance = getTouchDistance(e.touches);
 
-      // gesture tyypin määrittely jos ei ole jo
       if (gestureType === null && initialTouchDistance.current) {
         const distanceDelta = Math.abs(currentDistance - initialTouchDistance.current);
         if (distanceDelta > ZOOM_THRESHOLD) {
@@ -212,13 +260,9 @@ const ProgrammingArea = ({
         }
       }
 
-      // default on panning
       if (gestureType === 'pan' || gestureType === null) {
         const dx = (currentMidpoint.x - startPos.x) / scale;
-
         const newX = translate.x + dx;
-
-        // pistetään boundaryt
         const { minX, maxX } = calculatePanBoundaries();
         const constrainedX = Math.min(Math.max(newX, minX), maxX);
 
@@ -228,15 +272,11 @@ const ProgrammingArea = ({
           previousTouchDistance.current &&
           currentDistance) {
 
-        // zoomauksen säätöraja, jos ei ole tarpeeksi niin ei zoomata. muuten liikkuu koko höskä koko
-        // ajan teki mitä hyvänsä. ZOOM_THRESHOLD on myös yhtä tärkeä
         const pinchRatio = currentDistance / previousTouchDistance.current;
         if (Math.abs(pinchRatio - 1) > 0.03) {
           const smoothingFactor = 0.7;
           const smoothedPinchRatio = 1 + (pinchRatio - 1) * smoothingFactor;
-
           const newScale = Math.min(Math.max(scale * smoothedPinchRatio, MIN_ZOOM), MAX_ZOOM);
-
           const rect = areaRef.current.getBoundingClientRect();
           const touchX = (currentMidpoint.x - rect.left) / scale;
 
@@ -249,22 +289,31 @@ const ProgrammingArea = ({
         }
       }
 
-      // päivitetään edellinen distanssi seuraavaa laskentaa varten
       previousTouchDistance.current = currentDistance;
     }
   }, [isPanning, startPos, scale, translate, gestureType, calculatePanBoundaries]);
 
+  /**
+   * @function handleTouchEnd
+   * @description Handles the touch end event for panning and zooming.
+   * @param {Event} e - The touch end event.
+   */
   const handleTouchEnd = useCallback((e) => {
     touchCount.current = e.touches.length;
     if (touchCount.current < 2) {
       setIsPanning(false);
       previousTouchDistance.current = null;
       initialTouchDistance.current = null;
-      setGestureType(null); // resetoidaan gesturetyyppi kun päästetään irti
+      setGestureType(null);
     }
   }, []);
 
-  // chain drag handlerit
+  /**
+   * @function handleChainDragStart
+   * @description Handles the start of a chain drag event.
+   * @param {Event} e - The drag event.
+   * @param {string} chainId - The ID of the chain being dragged.
+   */
   const handleChainDragStart = useCallback((e, chainId) => {
     let target = null;
 
@@ -289,6 +338,11 @@ const ProgrammingArea = ({
     chain.classList.add('dragging');
   }, []);
 
+  /**
+   * @function handleChainDrag
+   * @description Handles a chain drag event.
+   * @param {Event} e - The drag event.
+   */
   const handleChainDrag = useCallback((e) => {
     if (!activeChain) return;
 
@@ -302,6 +356,10 @@ const ProgrammingArea = ({
     }));
   }, [activeChain, dragOffset, scale]);
 
+  /**
+   * @function handleChainDragEnd
+   * @description Handles the end of a chain drag event.
+   */
   const handleChainDragEnd = useCallback(() => {
     if (!activeChain) return;
 
@@ -313,18 +371,25 @@ const ProgrammingArea = ({
     setActiveChain(null);
   }, [activeChain]);
 
-  // block drag handlerit
+  /**
+   * @function handleBlockDragStart
+   * @description Handles the start of a block drag event.
+   * @param {Event} e - The drag event.
+   * @param {Object} block - The block being dragged.
+   */
   const handleBlockDragStart = (e, block) => {
     if (handleDragStart) {
       handleDragStart(e, block);
     }
   };
 
+  /**
+   * @function handleBlockDragEnd
+   * @description Handles the end of a block drag event.
+   */
   const handleBlockDragEnd = () => {
-    // console.log("EI MITÄÄN")
   };
 
-  // estetään selaimen natiivizoomi
   useEffect(() => {
     const preventDefault = (e) => {
       if (e.ctrlKey && (e.key === '-' || e.key === '=' || e.key === '+')) {

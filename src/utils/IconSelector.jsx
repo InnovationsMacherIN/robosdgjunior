@@ -1,3 +1,12 @@
+/**
+ * @file IconSelector.jsx
+ * @description A component for selecting a profile icon.
+ * @module utils/IconSelector
+ * @param {Object} props - The component props.
+ * @param {function} props.onSelectIcon - A function to be called when an icon is selected.
+ * @param {string} props.currentIcon - The currently selected icon.
+ * @returns {React.ReactElement} The IconSelector component.
+ */
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Bird, Egg, Laugh, Square } from 'lucide-react';
@@ -18,28 +27,16 @@ import Peace from "../assets/icons/robo-usericon-peace.svg";
 import '../styles/components/IconSelector.css';
 import RoboClose from '../assets/icons/robo-close.jsx';
 
-/**
- * IconSelector Component
- *
- * Displays a full-screen popup for selecting profile icons.
- * Uses similar styling and behavior to CustomNumberInput.
- *
- * @param {Object} props
- * @param {function} props.onSelectIcon - Callback when icon is selected
- * @param {Object} props.currentIcon - Currently selected icon component
- */
 const IconSelector = ({ onSelectIcon, currentIcon }) => {
   const [showPopup, setShowPopup] = useState(false);
 
-  // Available icons - currently using placeholders
   const iconOptions = [
-    ArrowUp, Coin, Book, Equality,    // Row 1 first half
-    Water, Sun, Heart,          // Row 1 second half
-    House, Eight, Transport,          // Row 2 first half
-    Tree, Soup, Fish, Peace      // Row 2 second half
+    ArrowUp, Coin, Book, Equality,
+    Water, Sun, Heart,
+    House, Eight, Transport,
+    Tree, Soup, Fish, Peace
   ];
 
-  // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (e.target.classList.contains('popup-overlay')) {
@@ -56,13 +53,21 @@ const IconSelector = ({ onSelectIcon, currentIcon }) => {
     };
   }, [showPopup]);
 
+  /**
+   * @function handleIconSelect
+   * @description Handles the selection of an icon.
+   * @param {string} Icon - The selected icon.
+   */
   const handleIconSelect = (Icon) => {
-    console.log(Icon)
     onSelectIcon(Icon);
     setShowPopup(false);
   };
 
-  // Render the popup using portal
+  /**
+   * @function renderPopup
+   * @description Renders the icon selection popup.
+   * @returns {React.ReactElement} The icon selection popup.
+   */
   const renderPopup = () => {
     if (!showPopup) return null;
 

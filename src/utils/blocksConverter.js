@@ -1,37 +1,35 @@
-// blocksConverter.js
-// Converts programming blocks to micro:bit commands based on R4Gblocks.js functionality
-
+/**
+ * @file blocksConverter.js
+ * @description This file contains utility functions for converting programming blocks into a command string that can be sent to the micro:bit.
+ * @module utils/blocksConverter
+ */
 const DELIMITER = ':';
 const FLOAT_DELIMITER = '.0:';
 const FULL_VELOCITY = 'Gb15';
 
-// Motor velocity state (käytetään pirouette ja muissa toiminnoissa)
 let motorVelocity = {
   1: '15',
   2: '15'
 };
 
-// Movement combinations from R4Gblocks.js
 const COMBINATIONS = [
   ['Bv0.3','W0.1','Bz0.3','W0.1','BL0.3','W0.1','BR0.6','W0.1','BL0.6',
-    'W0.1','BR0.6','W0.1','BL0.6','W0.1','BR0.3'], // dance
-  ['BL0.1','W0.1','Bv0.3','W0.1','BR0.2','W0.1','Bv0.3','W0.1','BL0.2'], // zigzag
-  ['BL0.1','BR0.2','BL0.2','BR0.2','BL0.1'] // shake
+    'W0.1','BR0.6','W0.1','BL0.6','W0.1','BR0.3'],
+  ['BL0.1','W0.1','Bv0.3','W0.1','BR0.2','W0.1','Bv0.3','W0.1','BL0.2'],
+  ['BL0.1','BR0.2','BL0.2','BR0.2','BL0.1']
 ];
 
 /**
- * Converts a sequence of programming blocks to micro:bit commands
+ * @function convertBlocksToCommands
+ * @description Converts a sequence of programming blocks to micro:bit commands.
+ * @param {Array} blocks - The blocks to be converted.
+ * @returns {string} The command string.
  */
 const convertBlocksToCommands = (blocks) => {
-  console.log('Converting blocks to commands:', blocks);
   let commands = '';
-
-  // Start with full velocity
-  //commands += FULL_VELOCITY + DELIMITER;
 
   blocks.forEach(block => {
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
-      // Jos kyseessä on container-block (toisto), käsitellään sen sisältö erikseen
       const childCommands = convertBlocksToCommands(block.childBlocks);
       const times = parseInt(block.inputValue) || 1;
 
@@ -40,9 +38,7 @@ const convertBlocksToCommands = (blocks) => {
       }
     } else {
     switch(block.type) {
-      // Display 'A'
       case 'show-text':
-        // Tarkistetaan että teksti on olemassa ennen sen lähettämistä
         if (block.inputValue) {
           commands += `${block.inputValue}${DELIMITER}`;
         }
@@ -131,7 +127,6 @@ const convertBlocksToCommands = (blocks) => {
         commands += `A00${DELIMITER}`;
         break;
 
-      // Movements 'B'
       case 'forward':
         const fwdDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(fwdDuration)) {
@@ -174,7 +169,6 @@ const convertBlocksToCommands = (blocks) => {
         }
         break;
 
-      // Combinations 'K'
       case 'dance':
         commands += getCombinationCommands('dance', block.inputValue, block.secondInputValue);
         break;
@@ -191,7 +185,6 @@ const convertBlocksToCommands = (blocks) => {
         commands += handlePirouette(block.inputValue);
         break;
 
-      // Melody/Sounds
       case 'melody_1':
         if (block.options[0].value) {
           commands += `${block.options[0].value}${DELIMITER}`;
@@ -312,7 +305,6 @@ const convertBlocksToCommands = (blocks) => {
         }
         break;
 
-      // Settings
       case 'motor':
         if (block.inputValue && block.secondInputValue) {
           const speed = parseInt(block.secondInputValue);
@@ -327,7 +319,6 @@ const convertBlocksToCommands = (blocks) => {
         }
         break;
 
-      // Program Control
       case 'wait':
         const waitDuration = parseFloat(block.inputValue);
         if (!isNaN(waitDuration)) {
@@ -336,29 +327,25 @@ const convertBlocksToCommands = (blocks) => {
         break;
 
       case 'start':
-        // Ei tarvitse tuottaa komentoa
         break;
     }
     }
   });
 
-  // Poistetaan viimeinen kaksoispiste jos se on olemassa
-  //if (commands.endsWith(DELIMITER)) {
-  //  commands = commands.slice(0, -1);
-  //}
-
-  console.log('Converted commands:', commands);
-
   return commands;
 };
 
 /**
- * Creates commands for movement combinations (dance, zigzag, shake)
+ * @function getCombinationCommands
+ * @description Creates commands for movement combinations (dance, zigzag, shake).
+ * @param {string} type - The type of combination.
+ * @param {number} repetitions - The number of repetitions.
+ * @param {string} intensity - The intensity of the combination.
+ * @returns {string} The command string.
  */
 const getCombinationCommands = (type, repetitions, intensity) => {
   let commands = '';
 
-  // Set speed based on intensity
   if (intensity === 'middle') {
     commands = 'Gb14' + DELIMITER;
   } else if (intensity === 'strong') {
@@ -367,7 +354,6 @@ const getCombinationCommands = (type, repetitions, intensity) => {
     commands = 'Gb10' + DELIMITER;
   }
 
-  // Add combination commands based on type
   const combinationIndex = type === 'dance' ? 0 : type === 'zigzag' ? 1 : 2;
   for (let i = 0; i < repetitions; i++) {
     COMBINATIONS[combinationIndex].forEach(cmd => {
@@ -375,7 +361,6 @@ const getCombinationCommands = (type, repetitions, intensity) => {
     });
   }
 
-  // Reset motor speeds
   commands += `G1${motorVelocity['1']}${DELIMITER}`;
   commands += `G2${motorVelocity['2']}${DELIMITER}`;
 
@@ -383,14 +368,16 @@ const getCombinationCommands = (type, repetitions, intensity) => {
 };
 
 /**
- * Handle pirouette command from R4Gblocks.js
+ * @function handlePirouette
+ * @description Handles the pirouette command.
+ * @param {number} repetitions - The number of repetitions.
+ * @returns {string} The command string.
  */
 const handlePirouette = (repetitions) => {
   const turns = repetitions * 1.5;
   const duration = turns + (turns % 1 === 0 ? '.0' : '');
   let commands = `Gb20${DELIMITER}BL${duration}${DELIMITER}W0.1${DELIMITER}BR${duration}${DELIMITER}`;
 
-  // Reset motor speeds
   commands += `G1${motorVelocity['1']}${DELIMITER}`;
   commands += `G2${motorVelocity['2']}${DELIMITER}`;
 

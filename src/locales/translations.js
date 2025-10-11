@@ -1,4 +1,8 @@
-// src/locales/translations.js
+/**
+ * @file translations.js
+ * @description This file contains the translations for the application.
+ * @module locales/translations
+ */
 export const translations = {
   de: {
     controls: {

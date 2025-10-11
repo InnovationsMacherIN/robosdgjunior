@@ -1,26 +1,10 @@
 /**
- * ProgrammingInterface.jsx
- *
- * Main React component of the application that manages:
- * - Programming block state and handling.
- * - Bluetooth connection to micro:bit device.
- * - Main UI elements and  layout
- *
- * Uses refs for maintaining Bluetooth connection and state management
- * for block handling and program execution.
- *
- * Structure:
- * - TopNavigation: Top navigation bar with buttons for connecting, executing and clearing blocks.
- * - ZoomableArea: Wrapper for programming area with zoom and drag functionality.
- *    -> ProgrammingArea: Main area for dropping and managing blocks. LOCATED INSIDE ZOOMABLE AREA
- * - BlocksPanel: Block selection panel with categories and blocks.
- * - Ble3: Bluetooth connection component.
- *
- *
- *
- * @component
+ * @file ProgrammingInterface.jsx
+ * @description Main component for the programming interface.
+ * @module components/ProgrammingInterface
+ * @param {Object} props - The component props.
+ * @returns {React.ReactElement} The main programming interface.
  */
-
 import React, { useState, useRef, useEffect } from 'react';
 import TopNavigation from './navigation/TopNavigation';
 import ProgrammingArea from './programming/ProgrammingArea';
@@ -33,27 +17,12 @@ import { saveBlocks, loadBlocks, hasSavedBlocks, clearSavedBlocks } from '../uti
 import ZoomableArea from '../utils/zoomableArea';
 import {CodeViewPopUp} from "../utils/CodeViewPopUp.jsx";
 import { v4 as uuidv4 } from 'uuid';
-
 import '../styles/ProgrammingInterface.css';
 import '../styles/CodeViewPopUp.css';
-
-//import PasswordModal from "./PasswordModal.jsx";
 
 const ProgrammingInterface = () => {
   const { t } = useTranslation();
 
-  /**
-   * State declaratiions
-   *
-   * @state {string} selectedCategory - Currently selected block category
-   * @state {Array} droppedBlocks - Blocks placed in the programming area
-   * @state {boolean} isExecuting - Flag for program execution status.
-   * @state {boolean} connected - Bluetooth connection status.
-   * @state {number} currentDropPosition - Current drop position for block reordering
-   * @state {boolean} isDraggingBlock - Flag for block dragging status
-   * @state {boolean} isBlocksView - Flag for block view status
-   *
-   */
   const [selectedCategory, setSelectedCategory] = useState('Steering');
   const [droppedBlocks, setDroppedBlocks] = useState([]);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -66,27 +35,25 @@ const ProgrammingInterface = () => {
   const [hasEndBlock, setHasEndBlock] = useState(false);
   const [resetView, setResetView] = useState(false);
   const [wasJustCleared, setWasJustCleared] = useState(false);
+  const ble3Ref = useRef();
 
-  //const [isTablet] = useState(/iPad|Android/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent));
-
+  /**
+   * @function toggleView
+   * @description Toggles the view between the programming interface and the code view.
+   */
   const toggleView = () => {
     setIsBlocksView(!isBlocksView)
   }
 
-  const ble3Ref = useRef();
-
+  /**
+   * @function handleConnected
+   * @description Handles the connection status of the Bluetooth device.
+   * @param {boolean} isConnected - The connection status.
+   */
   const handleConnected = (isConnected) => {
     setConnected(isConnected);
   };
 
-  /**
-   * saveBlocks - effect
-   *
-   * Loads saved blocks from local storage when component mounts
-   *
-   * @returns {void}
-   *
-  */
   useEffect(() => {
     if (hasSavedBlocks()) {
       const savedBlocks = loadBlocks();
@@ -96,44 +63,30 @@ const ProgrammingInterface = () => {
     }
   }, []);
 
-  /**
-   * saveBlocks - effect
-   *
-   * Saves blocks to local storage when droppedBlocks state changes
-   *
-   * @returns {void}
-   */
   useEffect(() => {
     if (droppedBlocks.length > 0) {
       saveBlocks(droppedBlocks);
     }
-    console.log(droppedBlocks)
   }, [droppedBlocks]);
 
   /**
-   * handleUploadBlocks - handler
-   * Updates droppedBlocks state with new blocks uploaded from file
-   *
-   *@param {data} data - Uploaded block data
+   * @function handleUploadBlocks
+   * @description Handles the upload of blocks from a file.
+   * @param {Object} data - The block data to upload.
    */
   const handleUploadBlocks = (data) => {
     setDroppedBlocks(data);
   };
 
   /**
-   * handleDragStart - handler
-   * Handles the start of block dragging
-   * Prepares block data for transfer including input values
-   *
-   * @param {DragEvent} e - Drag event
-   * @param {Object} block - Block data object
+   * @function handleDragStart
+   * @description Handles the start of a drag event.
+   * @param {Event} e - The drag event.
+   * @param {Object} block - The block being dragged.
    */
   const handleDragStart = (e, block) => {
-    console.log('Drag start:', block);
-
     e.stopPropagation();
 
-    // ei sallita startin tai endin liikuttelua
     if (
         (block.type === 'start' && hasStartBlock) ||
         (block.type === 'end' && hasEndBlock)
@@ -147,19 +100,16 @@ const ProgrammingInterface = () => {
     setIsDraggingBlock(true);
     setIsDraggingExistingBlock(!isNaN(fromIndex));
 
-    // palikan luonti kaikilla tarpeellisilla tiedoilla
     const blockToTransfer = {
       ...block,
       id: block.id || uuidv4(),
       inputValue: e.target.querySelector('input, select')?.value,
     };
 
-    // Add second input value if needed
     if (block.hasSecondInput) {
       blockToTransfer.secondInputValue = e.target.querySelector('[id$=second-input]')?.value;
     }
 
-    // data sisäisille dragauksille
     const internalData = {
       fromIndex: parseInt(e.currentTarget.dataset.index, 10),
       isChildBlock: block.isChildBlock || false,
@@ -171,48 +121,28 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * handleDragOver - event
-   * Prevents default behavior during drag over to allow dropping
-   *
-   * @param {DragEvent} e - Drag event
+   * @function handleDragOver
+   * @description Handles the drag over event.
+   * @param {Event} e - The drag event.
    */
   const handleDragOver = (e) => {
     e.preventDefault();
-    // We don't need any additional logic here as the actual
-    // drag over handling happens in the Block component
   };
 
   /**
-   * handleDragOverPosition - handler
-   * Updates the current drop position during drag operation
-   * Used as a callback for drag over events to track where blocks can be dropped
-   *
-   * @param {number} toIndex - Target index for the block being dragged
-   *                          -1 indicates drop in delete zone
-   *                          null indicates drop at end of list
-   * @returns {void}
-   *
-   * @example
-   * // When dragging over second block position
-   * handleDragOverPosition(1)
-   *
-   * // When dragging over delete zone
-   * handleDragOverPosition(-1)
+   * @function handleDragOverPosition
+   * @description Handles the drag over position.
+   * @param {number} toIndex - The index of the block being dragged over.
    */
   const handleDragOverPosition = (toIndex) => {
-    //console.log('Drag over position:', toIndex);
     setCurrentDropPosition(toIndex);
   };
 
   /**
-   * handleDrop - Handles block dropping in programming area
-   *Manages both new block addition and reordering of existing blocks.
-   *Cleanup removes visual indicators after drop operation.
-   *
-   * @param {DragEvent} e - Drop event
-   * @param {Object} dropEvent - Drop event data
-   * @returns {void}
-   *
+   * @function handleDrop
+   * @description Handles the drop event.
+   * @param {Event} e - The drop event.
+   * @param {Object} dropEvent - The drop event data.
    */
   const handleDrop = (e, dropEvent) => {
     e.preventDefault();
@@ -236,10 +166,8 @@ const ProgrammingInterface = () => {
     try {
       const isTouchEvent = e.type === 'touchend';
 
-      // desktopin droppilogiikka
       if (!isTouchEvent && handleDesktopDrop(e)) return;
 
-      // drop target elementti
       let dropTarget;
       if (isTouchEvent) {
         const touch = e.changedTouches?.[0];
@@ -252,17 +180,13 @@ const ProgrammingInterface = () => {
         dropTarget = e.target;
       }
 
-      // katotaan onko se childcontainer
       const childContainer = dropTarget?.closest('.child-blocks-container');
       const isChildContainer = !!childContainer;
 
-      // TOUCH EVENT HANDLING
       if (isTouchEvent) {
         if (dropEvent?.isInternalDrag === true) {
-          console.log("INTERNAL TOUCH DROP");
           handleInternalTouchDrop(e, dropEvent);
         } else {
-          console.log("EXTERNAL TOUCH DROP");
           handleExternalTouchDrop(e, dropEvent);
         }
         return;
@@ -274,6 +198,12 @@ const ProgrammingInterface = () => {
     }
   };
 
+  /**
+   * @function handleDesktopDrop
+   * @description Handles the drop event for desktop devices.
+   * @param {Event} e - The drop event.
+   * @returns {boolean} - Whether the drop was handled.
+   */
   const handleDesktopDrop = (e) => {
     if (!e.dataTransfer?.types.includes('application/json')) {
       return false;
@@ -286,8 +216,6 @@ const ProgrammingInterface = () => {
       if (hasInternalData) {
         try {
           internalData = JSON.parse(e.dataTransfer.getData('application/internal'));
-          // tämä on nyt tämmöinen hack, en nyt osaa oikein muuten määrittää onko se blockpanelista
-          // vaiko programmingarealta peräisin.
           const isInternalDrag = internalData && typeof internalData.fromIndex === 'number';
 
           if (isInternalDrag) {
@@ -306,57 +234,58 @@ const ProgrammingInterface = () => {
     }
   };
 
+  /**
+   * @function handleMoveFromChildToMain
+   * @description Moves a block from a child container to the main programming area.
+   * @param {Object} internalData - The internal data of the block being moved.
+   * @param {Object} blockData - The data of the block being moved.
+   */
   const handleMoveFromChildToMain = (internalData, blockData) => {
     const { parentIndex, fromIndex } = internalData;
 
     setDroppedBlocks(blocks => {
-      // kopio blockeista
       const newBlocks = JSON.parse(JSON.stringify(blocks));
-
-      // parent block talteen
       const parentBlock = newBlocks[parentIndex];
       if (!parentBlock?.childBlocks) return newBlocks;
 
-      // liikutettava block talteen
       const blockToMove = parentBlock.childBlocks[fromIndex];
       if (!blockToMove) return newBlocks;
 
-      // muokataan repeatin ominaisuudet pois
       const movedBlock = {
         ...blockToMove,
         isChildBlock: false,
         parentIndex: null
       };
 
-      // poistetaan childblockeista
       parentBlock.childBlocks = parentBlock.childBlocks.filter((_, idx) => idx !== fromIndex);
 
-      // liikutetaan drop positioon
       let insertPos = currentDropPosition !== null && currentDropPosition !== -1
           ? currentDropPosition
           : newBlocks.length;
 
-      // etsitään start ja end jos ne on olemassa
       const startBlockIndex = newBlocks.findIndex(block => block.type === 'start');
       const endBlockIndex = newBlocks.findIndex(block => block.type === 'end');
 
-      // varmistetaan ettei aseteta starttia edelle
       if (startBlockIndex !== -1 && insertPos <= startBlockIndex) {
-        insertPos = startBlockIndex + 1; // laitetaan startin jälkeen
+        insertPos = startBlockIndex + 1;
       }
 
-      // varmistetaan ettei aseteta endin jälkeen
       if (endBlockIndex !== -1 && insertPos > endBlockIndex) {
-        insertPos = endBlockIndex; // laitetaan endin edelle
+        insertPos = endBlockIndex;
       }
 
-      // laitetaan blocki pääalueelle
       newBlocks.splice(insertPos, 0, movedBlock);
       return newBlocks;
     });
   };
 
-  // aika sama kuin siirrossa childista mainiin
+  /**
+   * @function handleMoveFromMainToChild
+   * @description Moves a block from the main programming area to a child container.
+   * @param {Object} internalData - The internal data of the block being moved.
+   * @param {Object} blockData - The data of the block being moved.
+   * @param {number} targetParentIndex - The index of the target parent block.
+   */
   const handleMoveFromMainToChild = (internalData, blockData, targetParentIndex) => {
     const { fromIndex } = internalData;
 
@@ -369,20 +298,24 @@ const ProgrammingInterface = () => {
         parentIndex: targetParentIndex
       };
 
-      // alustetaan childblocks array jos tarvitaan
       if (!newBlocks[targetParentIndex].childBlocks) {
         newBlocks[targetParentIndex].childBlocks = [];
       }
 
       newBlocks[targetParentIndex].childBlocks.push(blockToMove);
-
-      // poistetaan pääalueelta
       newBlocks.splice(fromIndex, 1);
 
       return newBlocks;
     });
   };
 
+  /**
+   * @function handleChildBlockReorder
+   * @description Reorders a block within a child container.
+   * @param {number} parentIndex - The index of the parent block.
+   * @param {number} fromIndex - The original index of the block.
+   * @param {number} toIndex - The new index of the block.
+   */
   const handleChildBlockReorder = (parentIndex, fromIndex, toIndex) => {
     setDroppedBlocks(blocks => {
       const newBlocks = JSON.parse(JSON.stringify(blocks));
@@ -390,17 +323,19 @@ const ProgrammingInterface = () => {
 
       if (!parentBlock?.childBlocks) return newBlocks;
 
-      // siirrettävä blocki
       const [blockToMove] = parentBlock.childBlocks.splice(fromIndex, 1);
-
-      // uusi positio
       parentBlock.childBlocks.splice(toIndex, 0, blockToMove);
 
       return newBlocks;
     });
   };
 
-  // DESKTOP dragging programming arean sisällä
+  /**
+   * @function handleDesktopInternalDrop
+   * @description Handles an internal drop event on a desktop device.
+   * @param {Event} e - The drop event.
+   * @returns {boolean} - Whether the drop was handled.
+   */
   const handleDesktopInternalDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -409,24 +344,20 @@ const ProgrammingInterface = () => {
     const internalData = JSON.parse(e.dataTransfer.getData('application/internal') || '{}');
     const dropTarget = e.target;
 
-    // tarkista onko delete zonessa
     if (dropTarget?.closest('.delete-zone')) {
       handleDeleteBlock(blockData, internalData.fromIndex);
       return true;
     }
 
-    // estetään duplikaatit jos liikutellaan paikallaan
     if (internalData.fromIndex === currentDropPosition) {
       return true;
     }
 
-    // tarkista jos ollaan siirtämässä childblockia main arealle
     if (internalData.isChildBlock && !e.target?.closest('.child-blocks-container')) {
       handleMoveFromChildToMain(internalData, blockData);
       return true;
     }
 
-    // tarkista jos ollaan siirtämässä blockia repeatiin
     const targetContainer = e.target?.closest('.child-blocks-container');
     if (!internalData.isChildBlock && targetContainer) {
       const parentContainer = targetContainer.closest('.block-container');
@@ -439,7 +370,6 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // tarkista, jos liikutellaan repeatien sisällä childeja
     if (internalData.isChildBlock && targetContainer) {
       const targetParentBlock = targetContainer.closest('.block-container');
       const targetParentIndex = parseInt(targetParentBlock?.dataset.index, 10);
@@ -454,7 +384,6 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // perus reorder blockien sisällä
     if (internalData.fromIndex !== currentDropPosition &&
         currentDropPosition !== null &&
         currentDropPosition !== -1) {
@@ -465,11 +394,15 @@ const ProgrammingInterface = () => {
     return false;
   };
 
-  // DESKTOP blockien liikuttelu blockspanelista programmingarealle
+  /**
+   * @function handleDesktopExternalDrop
+   * @description Handles an external drop event on a desktop device.
+   * @param {Event} e - The drop event.
+   * @returns {boolean} - Whether the drop was handled.
+   */
   const handleDesktopExternalDrop = (e) => {
     const blockData = JSON.parse(e.dataTransfer.getData('application/json'));
 
-    // startin käsittely
     if (blockData.type === 'start') {
       if (hasStartBlock) return true;
       setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
@@ -477,7 +410,6 @@ const ProgrammingInterface = () => {
       return true;
     }
 
-    // endin käsittely
     if (blockData.type === 'end') {
       if (hasEndBlock) return true;
       setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
@@ -485,7 +417,6 @@ const ProgrammingInterface = () => {
       return true;
     }
 
-    // tarkista ollaanko siirtämässä repeatiin
     const dropTarget = e.target;
     const repeatContainer = dropTarget?.closest('.child-blocks-container');
     if (repeatContainer) {
@@ -497,7 +428,6 @@ const ProgrammingInterface = () => {
             return true;
           }
 
-          // luo uusi blocki
           const newBlock = {
             ...blockData,
             id: uuidv4(),
@@ -527,14 +457,11 @@ const ProgrammingInterface = () => {
             const newBlocks = JSON.parse(JSON.stringify(blocks));
             const parentBlock = newBlocks[parentIndex];
 
-            // initialisoi childbockit jos tarvii
             if (!parentBlock.childBlocks) {
               parentBlock.childBlocks = [];
             }
 
             const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
-
-            // lisää childblockeihin
             parentBlock.childBlocks.push(newBlock);
             return newBlocks;
           });
@@ -544,23 +471,19 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // tavallisten palikoiden käsittely
     const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
 
     setDroppedBlocks(blocks => {
       const endIndex = blocks.findIndex(b => b.type === 'end');
 
-      // jos ollaan laittamassa tiettyyn paikkaan
       if (currentDropPosition !== null && currentDropPosition !== -1) {
         const newBlocks = [...blocks];
-        // ei sallita laittamista ennen starttia
         if (currentDropPosition <= 0 && blocks[0]?.type === 'start') return blocks;
         if (endIndex !== -1 && currentDropPosition >= endIndex) return blocks;
         newBlocks.splice(currentDropPosition, 0, newBlock);
         return newBlocks;
       }
 
-      // jos end on olemassa, laita sitä ennen
       if (endIndex !== -1) {
         const newBlocks = [...blocks];
         newBlocks.splice(endIndex, 0, newBlock);
@@ -573,11 +496,15 @@ const ProgrammingInterface = () => {
     return true;
   };
 
-  // luo uusi blocki default valueilla
+  /**
+   * @function createNewBlockWithDefaults
+   * @description Creates a new block with default values.
+   * @param {Object} block - The block to create.
+   * @returns {Object} - The new block.
+   */
   const createNewBlockWithDefaults = (block) => {
     const newBlock = { ...block };
 
-    // jos tehdään uusi, nollataan childBlocks
     if (newBlock.type === 'repeat') {
       newBlock.childBlocks = [];
     }
@@ -593,50 +520,50 @@ const ProgrammingInterface = () => {
     return newBlock;
   };
 
+  /**
+   * @function handleMoveBetweenChildContainers
+   * @description Moves a block between child containers.
+   * @param {number} sourceParentIndex - The index of the source parent block.
+   * @param {number} sourceChildIndex - The index of the source child block.
+   * @param {number} targetParentIndex - The index of the target parent block.
+   */
   const handleMoveBetweenChildContainers = (sourceParentIndex, sourceChildIndex, targetParentIndex) => {
     setDroppedBlocks(blocks => {
       const newBlocks = JSON.parse(JSON.stringify(blocks));
-
-      // otetaan alkuperäinen repeat block talteen
       const sourceParent = newBlocks[sourceParentIndex];
       if (!sourceParent?.childBlocks) return newBlocks;
 
-      // kohde repeat block
       const targetParent = newBlocks[targetParentIndex];
       if (!targetParent?.childBlocks) return newBlocks;
 
-      // liikutettava block
       const blockToMove = sourceParent.childBlocks[sourceChildIndex];
       if (!blockToMove) return newBlocks;
 
-      // kopio ja uusi parent index
       const movedBlock = {
         ...blockToMove,
         parentIndex: targetParentIndex
       };
 
-      // poistetaan vanhasta
       sourceParent.childBlocks = sourceParent.childBlocks.filter((_, idx) => idx !== sourceChildIndex);
-
-      // lisätään uuteen
       targetParent.childBlocks.push(movedBlock);
 
       return newBlocks;
     });
   };
 
-  // (KOSKETUS) handlataan palikoiden järjestely programmin arean sisällä
+  /**
+   * @function handleInternalTouchDrop
+   * @description Handles an internal drop event on a touch device.
+   * @param {Event} e - The drop event.
+   * @param {Object} dropEvent - The drop event data.
+   */
   const handleInternalTouchDrop = (e, dropEvent) => {
     e._touchHandled = true;
 
     const blockData = JSON.parse(dropEvent['application/json']);
-
-    console.log("BLOCKDATA", blockData)
-
     const touch = e.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 
-    // estetään repeatien siirto repeatien sisään
     if ((blockData.isContainer || blockData.type === 'repeat') && touch) {
       const elementsAtPoint = document.elementsFromPoint(touch.clientX, touch.clientY);
 
@@ -645,18 +572,15 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // tarkista onko delete zonessa
     if (dropTarget?.closest('.delete-zone')) {
       handleDeleteBlock(blockData, dropEvent.fromIndex);
       return;
     }
 
-    // data dropeventistä
     const fromIndex = dropEvent.fromIndex;
     const isChildBlock = dropEvent.isChildBlock;
     const parentIndex = dropEvent.parentIndex;
 
-    // etsi target container/blocki
     const targetContainer = dropTarget?.closest('.child-blocks-container');
     const targetBlock = dropTarget?.closest('.block');
     let targetIndex = -1;
@@ -665,32 +589,27 @@ const ProgrammingInterface = () => {
       targetIndex = parseInt(targetBlock.dataset.index, 10);
     }
 
-    // tarkasta ollaanko järjestelemässä uudelleen repeatin sisällä
     if (isChildBlock && targetContainer) {
       const targetParentIndex = parseInt(targetContainer.closest('.block-container').dataset.index, 10);
 
       if (targetParentIndex === parentIndex && !isNaN(targetIndex)) {
-        // järjestellään uudelleen jos indeksi on eri kuin aluksi
         if (fromIndex !== targetIndex) {
           handleChildBlockReorder(parentIndex, fromIndex, targetIndex);
         }
         return;
       }
 
-      // tarkista jos ollaan liikuttamassa repeatista toiseen
       if (targetParentIndex !== parentIndex) {
         handleMoveBetweenChildContainers(parentIndex, fromIndex, targetParentIndex);
         return;
       }
     }
 
-    // tarkista jos ollaan liikuttamassa repeatista mainiin
     if (isChildBlock && !targetContainer) {
       handleMoveFromChildToMain({ parentIndex, fromIndex }, blockData);
       return;
     }
 
-    // tarkista jos ollaan liikuttamassa mainista repeatiin
     if (!isChildBlock && targetContainer) {
       const targetParentBlock = targetContainer.closest('.block-container');
       const targetParentIndex = parseInt(targetParentBlock.dataset.index, 10);
@@ -701,7 +620,6 @@ const ProgrammingInterface = () => {
       return;
     }
 
-    // järjestele uudestaan
     if (fromIndex !== currentDropPosition &&
         currentDropPosition !== null &&
         currentDropPosition !== -1) {
@@ -709,13 +627,17 @@ const ProgrammingInterface = () => {
     }
   };
 
-  // (KOSKETUS) handlaa uuden blockin lisäys blockspaneelista
+  /**
+   * @function handleExternalTouchDrop
+   * @description Handles an external drop event on a touch device.
+   * @param {Event} e - The drop event.
+   * @param {Object} dropEvent - The drop event data.
+   */
   const handleExternalTouchDrop = (e, dropEvent) => {
     const blockData = dropEvent.blockData;
     const touch = e.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 
-    // handlaa start palikka
     if (blockData.type === 'start') {
       if (hasStartBlock) return;
       setDroppedBlocks((blocks) => [createNewBlockWithDefaults(blockData), ...blocks]);
@@ -723,7 +645,6 @@ const ProgrammingInterface = () => {
       return;
     }
 
-    // handlaa end palikka
     if (blockData.type === 'end') {
       if (hasEndBlock) return;
       setDroppedBlocks((blocks) => [...blocks, createNewBlockWithDefaults(blockData)]);
@@ -731,7 +652,6 @@ const ProgrammingInterface = () => {
       return;
     }
 
-    // tarkista, ollaanko laittamassa repeatiin
     const repeatContainer = dropTarget?.closest('.child-blocks-container');
     if (repeatContainer) {
       const parentBlock = repeatContainer.closest('.block-container');
@@ -742,23 +662,19 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // käsittele peruspalikat programmin arealla
     const newBlock = createNewBlockWithDefaults({ ...blockData, id: uuidv4() });
 
     setDroppedBlocks(blocks => {
       const endIndex = blocks.findIndex(b => b.type === 'end');
 
-      // jos ollaan laittamassa tiettyyn paikkaan ja se on validi
       if (currentDropPosition !== null && currentDropPosition !== -1) {
         const newBlocks = [...blocks];
-        // älä salli ennen startia tai jälkeen endin
         if (currentDropPosition <= 0 && blocks[0]?.type === 'start') return blocks;
         if (endIndex !== -1 && currentDropPosition >= endIndex) return blocks;
         newBlocks.splice(currentDropPosition, 0, newBlock);
         return newBlocks;
       }
 
-      // jos end olemassa, laita ennen sitä
       if (endIndex !== -1) {
         const newBlocks = [...blocks];
         newBlocks.splice(endIndex, 0, newBlock);
@@ -769,15 +685,18 @@ const ProgrammingInterface = () => {
     });
   };
 
-  // (KOSKETUS) handlaa blockin laittaminen repeat blockiin
+  /**
+   * @function handleChildContainerDrop
+   * @description Handles a drop event on a child container.
+   * @param {Object} dropEvent - The drop event data.
+   * @param {HTMLElement} dropTarget - The drop target element.
+   */
   const handleChildContainerDrop = (dropEvent, dropTarget) => {
     const parentIndex = parseInt(dropTarget.closest('.block-container').dataset.index, 10);
     let droppedBlockData = { ...dropEvent.blockData, id: uuidv4() };
 
-    // ei sallita start/end blockien laittoa
     if (['start', 'end', 'repeat'].includes(droppedBlockData.type)) return;
 
-    // primary input
     if (droppedBlockData.hasInput) {
       if (droppedBlockData.defaultValue !== undefined) {
         droppedBlockData.inputValue = droppedBlockData.defaultValue;
@@ -788,7 +707,6 @@ const ProgrammingInterface = () => {
       }
     }
 
-    // secondary input
     if (droppedBlockData.hasSecondInput) {
       if (droppedBlockData.secondInputDefault !== undefined) {
         droppedBlockData.secondInputValue = droppedBlockData.secondInputDefault;
@@ -805,15 +723,13 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * handleReorder - handler
-   * Updates block order when block is dragged within programming area.
-   *
-   * @param {number} fromIndex - Original position
-   * @param {number} toIndex - new position, where block is dropped
+   * @function handleReorder
+   * @description Reorders the blocks in the programming area.
+   * @param {number} fromIndex - The original index of the block.
+   * @param {number} toIndex - The new index of the block.
    */
   const handleReorder = (fromIndex, toIndex) => {
     setDroppedBlocks((blocks) => {
-      // validoi indeksit ensin
       if (fromIndex < 0 || fromIndex >= blocks.length || toIndex < 0) {
         return blocks;
       }
@@ -823,16 +739,13 @@ const ProgrammingInterface = () => {
         return blocks;
       }
 
-      // ei saa siirtää aloitus tai lopetuspalikotia
       if (blockToMove.type === 'start' || blockToMove.type === 'end') {
         return blocks;
       }
 
-      // tarkasta aloitus ja lopetuspalikoiden paikka
       const startPos = blocks.findIndex((b) => b.type === 'start');
       const endPos = blocks.findIndex((b) => b.type === 'end');
 
-      // älä salli laittaa ennen aloitusta tai lopetuksen jälkeen
       if (startPos !== -1 && toIndex <= startPos) return blocks;
       if (endPos !== -1 && toIndex >= endPos) return blocks;
 
@@ -844,23 +757,21 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * isINternalDrag - handler
-   * Identifies if block is being dragged within programming area.
-   *
-   * @param {DragEvent} e - Drop event
-   * @returns {boolean} - true if internal drag
+   * @function isInternalDrag
+   * @description Checks if a drag event is internal.
+   * @param {Event} e - The drag event.
+   * @returns {boolean} - Whether the drag event is internal.
    */
   const isInternalDrag = (e) => {
     return e.dataTransfer.types.includes('application/internal') ?? false;
   }
 
   /**
-   * Updates block input values when they are changed in programming area
-   *
-   * @param {number} index - Index of the block in droppedBlocks array
-   * @param {string|number} value - New value for the input
-   * @param {boolean} isSecondInput - Whether updating first or second input
-   * @returns {void}
+   * @function handleBlockInputChange
+   * @description Handles a change in a block's input value.
+   * @param {number} index - The index of the block.
+   * @param {*} value - The new value.
+   * @param {boolean} isSecondInput - Whether the input is the second input.
    */
   const handleBlockInputChange = (index, value, isSecondInput) => {
     setDroppedBlocks(blocks => {
@@ -878,6 +789,14 @@ const ProgrammingInterface = () => {
     });
   };
 
+  /**
+   * @function handleChildBlockInputChange
+   * @description Handles a change in a child block's input value.
+   * @param {number} parentIndex - The index of the parent block.
+   * @param {number} childIndex - The index of the child block.
+   * @param {*} value - The new value.
+   * @param {boolean} isSecondInput - Whether the input is the second input.
+   */
   const handleChildBlockInputChange = (parentIndex, childIndex, value, isSecondInput) => {
     setDroppedBlocks(blocks => {
       const newBlocks = [...blocks];
@@ -897,13 +816,9 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * handleClearBlocks - handler
-   * Clears all blocks from the programming area
-   * Prompts user for confirmation
-   *
-   * @returns {boolean} - true if user confirms
-   * @function
-   *
+   * @function handleClearBlocks
+   * @description Clears all blocks from the programming area.
+   * @returns {boolean} - Whether the blocks were cleared.
    */
   const handleClearBlocks = () => {
     if (window.confirm(t('confirms.clearAllBlocks'))) {
@@ -920,7 +835,6 @@ const ProgrammingInterface = () => {
         setResetView(false);
       }, 100);
 
-      // Force a refresh of local storage
       localStorage.removeItem('savedBlocks');
 
       return true;
@@ -929,20 +843,11 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * handleExecute - handler
-   * Handles program execution
-   * Checks if micro:bit is connected and if blocks are present and if program starts with 'start' block
-   * If all conditions are met, setIsExecuting flag to true and sends commands to micro:bit
-   * Converts blocks to commands (using convertBlocksToCommands method from utils/blocksConverter.js component)
-   * and sends them to micro:bit via Bluetooth (using ble3Ref.current.sendData method from Ble3 component)
-   *
-   * @throws {Error} If connection is missing or execution fails
-   * @returns {Promise<void>}
+   * @function handleExecute
+   * @description Executes the program.
    */
   const handleExecute = async () => {
-    console.log('Execute program');
     if (!ble3Ref.current?.isConnected()) {
-      console.log('Not connected');
       alert(t('alerts.connectMicrobit'));
       return;
     }
@@ -957,14 +862,12 @@ const ProgrammingInterface = () => {
       return;
     }
 
-    // Tarkista, että ketjussa ei ole enempää kuin yksi 'end' palikka
     const endBlocks = droppedBlocks.filter(block => block.type === 'end');
     if (endBlocks.length > 1) {
       alert(t('alerts.tooManyEndBlocks'));
       return;
     }
 
-    // Tarkista, että viimeinen palikka on 'end'
     if (droppedBlocks[droppedBlocks.length - 1].type !== 'end') {
       alert(t('alerts.endBlockRequired'));
       return;
@@ -974,10 +877,8 @@ const ProgrammingInterface = () => {
     setIsExecuting(true);
     try {
       const commands = convertBlocksToCommands(droppedBlocks);
-      //console.log('Sending commands:', commands); // Debug log
       await ble3Ref.current.sendData(commands);
     } catch (error) {
-      //console.error(t('errors.executionFailed'), error);
       alert(t('alerts.executionFailed'));
     } finally {
       setIsExecuting(false);
@@ -985,18 +886,15 @@ const ProgrammingInterface = () => {
   };
 
   /**
-   * handleDeleteBlock - Removes block from programming area
-   *
-   * @param {Object} blockToDelete - Block to be deleted
-   * @param {number} blockToDeleteIndex - Index of block to delete
-   * @returns {void}
+   * @function handleDeleteBlock
+   * @description Deletes a block from the programming area.
+   * @param {Object} blockToDelete - The block to delete.
+   * @param {number} blockToDeleteIndex - The index of the block to delete.
    */
-
   const handleDeleteBlock = (blockToDelete, blockToDeleteIndex) => {
     setIsDraggingBlock(false);
     setIsDraggingExistingBlock(false);
 
-    // eritellään childblockin ja tavallisen blockin poisto
     if (blockToDelete.isChildBlock && blockToDelete.parentIndex !== undefined) {
       handleChildBlockDeletion(blockToDelete);
     } else {
@@ -1004,7 +902,11 @@ const ProgrammingInterface = () => {
     }
   };
 
-  // poisto repeat blockin sisältä
+  /**
+   * @function handleChildBlockDeletion
+   * @description Deletes a child block from a parent block.
+   * @param {Object} blockToDelete - The block to delete.
+   */
   const handleChildBlockDeletion = (blockToDelete) => {
     setDroppedBlocks(currentBlocks => {
       const newBlocks = [...currentBlocks];
@@ -1012,7 +914,6 @@ const ProgrammingInterface = () => {
       const parentBlock = newBlocks[parentIndex];
 
       if (parentBlock && Array.isArray(parentBlock.childBlocks)) {
-        // etsi ja poista chilblock id:n perusteella
         const childIndexToDelete = parentBlock.childBlocks.findIndex(
             child => child.id === blockToDelete.id
         );
@@ -1028,7 +929,11 @@ const ProgrammingInterface = () => {
     });
   };
 
-  // perus blockien poisto
+  /**
+   * @function handleRegularBlockDeletion
+   * @description Deletes a regular block from the programming area.
+   * @param {Object} blockToDelete - The block to delete.
+   */
   const handleRegularBlockDeletion = (blockToDelete) => {
     const blockId = typeof blockToDelete === 'object' ? blockToDelete.id : blockToDelete;
 
@@ -1037,6 +942,12 @@ const ProgrammingInterface = () => {
     });
   };
 
+  /**
+   * @function handleUpdateBlock
+   * @description Updates a block in the programming area.
+   * @param {number} index - The index of the block to update.
+   * @param {Object} updatedBlock - The updated block.
+   */
   const handleUpdateBlock = (index, updatedBlock) => {
     const newBlocks = [...droppedBlocks];
     newBlocks[index] = updatedBlock;

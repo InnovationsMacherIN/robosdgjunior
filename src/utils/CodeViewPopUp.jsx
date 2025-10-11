@@ -1,18 +1,17 @@
+/**
+ * @file CodeViewPopUp.jsx
+ * @description A component that displays a pseudo-code representation of the block-based program.
+ * @module utils/CodeViewPopUp
+ * @param {Object} props - The component props.
+ * @param {function} props.toggleView - A function to toggle the view.
+ * @param {Array} props.blocks - The blocks to be displayed as code.
+ * @returns {React.ReactElement} The CodeViewPopUp component.
+ */
 import React, { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import RoboClose from "../assets/icons/robo-close.jsx";
 import '../styles/CodeViewPopUp.css'
 
-/**
- * CodeView Component
- *
- * Displays a pseudo-code representation of the block-based program.
- * Supports both JavaScript and Python syntax with typewriter animation.
- *
- * @param {Object} props
- * @param {Array} props.blocks - Array of programming blocks
- * @param {function} props.onClose - Handler for closing the code view
- */
 const CodeView = ({ blocks = [], onClose }) => {
   const { t } = useTranslation();
   const [displayedCode, setDisplayedCode] = useState('');
@@ -20,27 +19,37 @@ const CodeView = ({ blocks = [], onClose }) => {
   const [language, setLanguage] = useState('javascript');
 
   /**
-   * Helper function to safely get values from block config
+   * @function getSafeValue
+   * @description A helper function to safely get values from the block configuration.
+   * @param {Object} block - The block to get the value from.
+   * @param {string} property - The property to get.
+   * @param {*} defaultValue - The default value to return if the property is not found.
+   * @returns {*} The value of the property or the default value.
    */
   const getSafeValue = (block, property, defaultValue = "") => {
     return block[property] !== undefined ? block[property] : defaultValue;
   };
 
   /**
-   * Helper function to get option label
+   * @function getOptionLabel
+   * @description A helper function to get the label of an option.
+   * @param {Object} block - The block to get the option label from.
+   * @returns {string} The label of the option.
    */
   const getOptionLabel = (block) => {
     if (block.options && block.options.length > 0) {
-      console.log(block.options);
       const option = block.options.find(opt => opt.value === block.inputValue);
-      //return option ? option.label : block.inputValue;
       return block.options[0].label;
     }
     return block.inputValue;
   };
 
   /**
-   * Converts a block to JavaScript pseudo-code
+   * @function blockToJS
+   * @description Converts a block to JavaScript pseudo-code.
+   * @param {Object} block - The block to convert.
+   * @param {number} indent - The indentation level.
+   * @returns {string} The JavaScript pseudo-code.
    */
   const blockToJS = (block, indent = 0) => {
     const spacing = '  '.repeat(indent);
@@ -91,7 +100,6 @@ ${spacing}startProgram();\n`;
 
       case block.type.match(/^show-picture_\d+/)?.input:
         const picLabel = getOptionLabel(block);
-        console.log(block)
         return `${spacing}    await robot.showPicture("${picLabel}", ${block.inputValue}); // Show ${picLabel} for ${inputValue} seconds\n`;
 
       case 'repeat':
@@ -131,7 +139,11 @@ ${spacing}startProgram();\n`;
   };
 
   /**
-   * Converts a block to Python pseudo-code
+   * @function blockToPython
+   * @description Converts a block to Python pseudo-code.
+   * @param {Object} block - The block to convert.
+   * @param {number} indent - The indentation level.
+   * @returns {string} The Python pseudo-code.
    */
   const blockToPython = (block, indent = 0) => {
     const spacing = '  '.repeat(indent);
@@ -224,7 +236,9 @@ ${spacing}asyncio.run(start_program())\n`;
   };
 
   /**
-   * Generates complete program code from all blocks
+   * @function generateFullCode
+   * @description Generates the complete program code from all the blocks.
+   * @returns {string} The complete program code.
    */
   const generateFullCode = () => {
     let code = '// =================================\n';
@@ -238,13 +252,11 @@ ${spacing}asyncio.run(start_program())\n`;
     return code;
   };
 
-  // Reset animation when language changes
   useEffect(() => {
     setIsTyping(true);
     setDisplayedCode('');
   }, [language]);
 
-  // Typewriter effect animation
   useEffect(() => {
     const fullCode = generateFullCode();
     let currentIndex = 0;
@@ -259,12 +271,11 @@ ${spacing}asyncio.run(start_program())\n`;
         setIsTyping(false);
         clearInterval(typingInterval);
       }
-    }, 20); // Typing speed (ms per character)
+    }, 20);
 
     return () => clearInterval(typingInterval);
   }, [blocks, isTyping, language]);
 
-  // Retro style for code display
   const codeStyle = {
     fontFamily: "'Courier New', monospace",
     backgroundColor: '#000',
@@ -279,14 +290,12 @@ ${spacing}asyncio.run(start_program())\n`;
     minHeight: '300px'
   };
 
-  // Cursor style
   const cursorStyle = {
     borderRight: isTyping ? '2px solid #00ff00' : 'none',
     animation: isTyping ? 'blink 1s step-end infinite' : 'none',
     paddingRight: '2px'
   };
 
-  // Button style
   const buttonStyle = {
     backgroundColor: 'transparent',
     color: '#00ff00',

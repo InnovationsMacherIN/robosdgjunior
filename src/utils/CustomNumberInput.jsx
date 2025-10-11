@@ -1,23 +1,21 @@
+/**
+ * @file CustomNumberInput.jsx
+ * @description A custom number input component that displays a popup numpad.
+ * @module utils/CustomNumberInput
+ * @param {Object} props - The component props.
+ * @param {number|string} props.value - The current value of the input.
+ * @param {function} props.onChange - A function to be called when the value changes.
+ * @param {number|string} props.defaultValue - The default value of the input.
+ * @returns {React.ReactElement} The CustomNumberInput component.
+ */
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/CustomNumberInput.css';
 import RoboClose from "../assets/icons/robo-close.jsx";
 
-/**
- * CustomNumberInput Component
- *
- * Enhanced number input that shows a full-screen popup numpad.
- * Uses React Portal to render the popup at the root level.
- *
- * @param {Object} props
- * @param {number|string} props.value - Current input value
- * @param {function} props.onChange - Value change handler
- * @param {number|string} props.defaultValue - Default value
- */
 const CustomNumberInput = ({ value, onChange, defaultValue }) => {
   const [showPopup, setShowPopup] = useState(false);
 
-  // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (e.target.classList.contains('popup-overlay')) {
@@ -34,20 +32,32 @@ const CustomNumberInput = ({ value, onChange, defaultValue }) => {
     };
   }, [showPopup]);
 
+  /**
+   * @function handleButtonClick
+   * @description Handles a click on a number button.
+   * @param {number} number - The number that was clicked.
+   */
   const handleButtonClick = (number) => {
     onChange(number);
     setShowPopup(false);
   };
 
+  /**
+   * @function handleInputClick
+   * @description Handles a click on the input.
+   * @param {Event} e - The click event.
+   */
   const handleInputClick = (e) => {
-    // containerit jostain syystä tekee käsittämättömiä asioita ja ei näytä tätä jos ei
-    // tee stopPropagation
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     setShowPopup(true);
   };
 
-  // Render the popup using portal
+  /**
+   * @function renderPopup
+   * @description Renders the number pad popup.
+   * @returns {React.ReactElement} The number pad popup.
+   */
   const renderPopup = () => {
     if (!showPopup) return null;
 

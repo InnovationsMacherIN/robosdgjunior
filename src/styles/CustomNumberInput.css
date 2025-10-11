@@ -1,3 +1,7 @@
+/**
+ * @file CustomNumberInput.css
+ * @description This file contains the styles for the custom number input component.
+ */
 @font-face {
   font-family: 'CustomFont';
   src: url('../assets/fonts/MoreSugar-Regular.otf') format('truetype');
@@ -34,7 +38,6 @@
   z-index: 9999;
 }
 
-/* Semi-transparent overlay */
 .popup-overlay {
   position: absolute;
   top: 0;
@@ -44,7 +47,6 @@
   background: rgba(255, 255, 255, 0.8);
 }
 
-/* Number pad popup */
 .popup {
   position: relative;
   background: #003C9A;
@@ -60,7 +62,6 @@
   max-height: 90vh;
 }
 
-/* Number buttons */
 .number-button {
   background: white;
   width: 100px;
@@ -91,7 +92,6 @@
   border-radius: 50%;
 }
 
-/* Tablet-specific styles */
 @media (max-width: 1024px) {
   .popup {
     width: 280px;

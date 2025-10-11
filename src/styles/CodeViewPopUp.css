@@ -1,3 +1,7 @@
+/**
+ * @file CodeViewPopUp.css
+ * @description This file contains the styles for the code view popup.
+ */
 @font-face {
   font-family: 'CustomFont';
   src: url('../assets/fonts/MoreSugar-Regular.otf') format('truetype');
@@ -10,19 +14,15 @@
 }
 
 .code-view-popup button {
-
-/*background-color: rgb(255, 255, 255);
-color: black;
-border: 1px solid rgb(255, 255, 255);*/
-padding: 5px 15px;
-margin-top: 0px;
-margin-bottom: 20px !important;
-border-radius: 200px;
-font-family: 'CustomFont', sans-serif !important;
-font-size: 18px !important;
-cursor: pointer;
-text-shadow: none !important;
-transition: 0.3s;
+  padding: 5px 15px;
+  margin-top: 0px;
+  margin-bottom: 20px !important;
+  border-radius: 200px;
+  font-family: 'CustomFont', sans-serif !important;
+  font-size: 18px !important;
+  cursor: pointer;
+  text-shadow: none !important;
+  transition: 0.3s;
 }
 
 .code-view-popup-container {

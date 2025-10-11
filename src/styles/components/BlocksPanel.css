@@ -1,11 +1,7 @@
-/* BlocksPanel.css */
-
-/* Input Field Base Styles
- * Common styles for all input types in blocks
- * Used for text, number and select inputs in blocks when block is in BlockPanel area
+/**
+ * @file BlocksPanel.css
+ * @description This file contains the styles for the blocks panel.
  */
-
-/* Touch drag styles */
 .block-dragging {
   transform: scale(1.05);
   transition: transform 0.2s;
@@ -13,37 +9,25 @@
   touch-action: none;
 }
 
-/* Highlight potential drop targets */
 .programming-area.drag-over {
   background-color: rgba(37, 99, 235, 0.1);
   transition: background-color 0.2s;
 }
 
-/* Prevent text selection during touch drag */
 .block {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
-  touch-action: none; /* Prevents browser touch actions */
+  touch-action: none;
 }
 
 @media (hover: none) and (pointer: coarse) {
-  /* Estä natiivin selaimen touchmove käyttäytyminen */
   .block {
     touch-action: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Isommat touch kohteet tabletilla
-  .block-input-container input,
-  .block-input-container select {
-    min-height: 44px;
-    min-width: 44px;
-    font-size: 16px;
-  }*/
-
-  /* Selkeämpi visuaalinen palaute */
   .block-dragging {
     transform: scale(1.1);
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
@@ -55,35 +39,18 @@
   }
 }
 
-/* Touch-friendly block size on tablets */
 @media (max-width: 1024px) {
   .block {
-    min-height: 60px; /* Slightly larger touch target */
-    margin-bottom: 1rem; /* More space between blocks */
+    min-height: 60px;
+    margin-bottom: 1rem;
   }
 
   .block-input-container input,
   .block-input-container select {
-    min-height: 24px; /* Larger touch targets for inputs */
-    font-size: 16px; /* Prevent iOS zoom on focus */
+    min-height: 24px;
+    font-size: 16px;
   }
 }
-/*
-.block-input-container {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 0;
-  border-top: 2px solid black;
-  border-radius: 4px 4px 4px 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.0);
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  border-bottom: 2px solid black;
-}*/
-
 
 .blocks-container {
   display: flex;
@@ -118,18 +85,12 @@
   min-width: 50px;
 }
 
-/* Range Input Container
- * Wrapper for range slider and its value display
- */
 .range-container {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
 }
 
-/* Range Slider Styling
- * Custom styling for range input type
- */
 .block-input-range {
   flex-grow: 1;
   height: 6px;
@@ -139,9 +100,6 @@
   outline: none;
 }
 
-/* Range Slider Thumb
- * Custom styling for the draggable thumb element
- */
 .block-input-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
@@ -152,14 +110,10 @@
   transition: background .3s ease-in-out;
 }
 
-/* Range Slider Thumb Hover State */
 .block-input-range::-webkit-slider-thumb:hover {
   background: var(--primary-hover);
 }
 
-/* Range Value Display
- * Shows current value of range slider
- */
 .range-value {
   min-width: 2.5em;
   text-align: center;
@@ -169,14 +123,10 @@
   font-size: 0.8rem;
 }
 
-/* Select Input Styling
- * Custom styling for dropdown selects
- */
 .block-input-select {
   cursor: pointer;
 }
 
-/* Select Options Styling */
 .block-input-select option {
   padding: var(--spacing-1) var(--spacing-2);
 }
@@ -194,23 +144,19 @@
   background-color: #F71F66;
 }
 
-
-/* categories section. Some of these settings are alo in programmingInterface */
 .categories {
-  position: relative; /* Ensure the container is the reference point for absolute positioning */
+  position: relative;
   overflow-y: auto;
 }
 
-
-/* Robo Illustration Container for the image of the robot*/
 @media (min-width: 768px) {
   .robo-illustration-container {
-    position: absolute; /* Position relative to the .categories container */
+    position: absolute;
     top: 150px;
     right: 0px;
     width: auto;
     height: auto;
-    z-index: 100; /* Ensure it stays on top of other content */
+    z-index: 100;
   }
 
   .robo-illustration::after {

@@ -1,8 +1,7 @@
-// src/utils/blockStorage.js
-
 /**
- * Vakiot tallennusavaimille
- * Keskitetty paikka kaikille sovelluksen käyttämille tallennusavaimille
+ * @file blockStorage.js
+ * @description This file contains utility functions for managing the storage of programming blocks in the session storage.
+ * @module utils/blockStorage
  */
 export const STORAGE_KEYS = {
   SESSION_ID: 'r4e_session_id',
@@ -12,8 +11,9 @@ export const STORAGE_KEYS = {
 };
 
 /**
- * Luo tai palauttaa nykyisen session ID:n
- * @returns {string} Uniikki session ID
+ * @function getSessionId
+ * @description Creates or returns the current session ID.
+ * @returns {string} The unique session ID.
  */
 export const getSessionId = () => {
   let sessionId = sessionStorage.getItem(STORAGE_KEYS.SESSION_ID);
@@ -25,9 +25,10 @@ export const getSessionId = () => {
 };
 
 /**
- * Tallentaa ohjelmointilohkot sessioon
- * @param {Array} blocks Tallennettavat lohkot
- * @returns {boolean} Onnistuiko tallennus
+ * @function saveBlocks
+ * @description Saves the programming blocks to the session.
+ * @param {Array} blocks - The blocks to be saved.
+ * @returns {boolean} Whether the save was successful.
  */
 export const saveBlocks = (blocks) => {
   try {
@@ -40,14 +41,14 @@ export const saveBlocks = (blocks) => {
     sessionStorage.setItem(STORAGE_KEYS.LAST_SAVE, Date.now().toString());
     return true;
   } catch (error) {
-    console.error('Virhe lohkojen tallennuksessa:', error);
     return false;
   }
 };
 
 /**
- * Lataa tallennetut lohkot sessiosta
- * @returns {Array|null} Tallennetut lohkot tai null jos ei löydy
+ * @function loadBlocks
+ * @description Loads the saved blocks from the session.
+ * @returns {Array|null} The saved blocks or null if none are found.
  */
 export const loadBlocks = () => {
   try {
@@ -56,22 +57,20 @@ export const loadBlocks = () => {
 
     const parsedData = JSON.parse(saveData);
 
-    // Tarkistetaan että data on samasta sessiosta
     if (parsedData.sessionId !== getSessionId()) {
-      console.warn('Ladattu data on eri sessiosta');
       return null;
     }
 
     return parsedData.blocks;
   } catch (error) {
-    console.error('Virhe lohkojen latauksessa:', error);
     return null;
   }
 };
 
 /**
- * Tallentaa väliaikaiset lohkot (esim. automaattitallennus)
- * @param {Array} blocks Tallennettavat lohkot
+ * @function saveTempBlocks
+ * @description Saves temporary blocks (e.g., for autosave).
+ * @param {Array} blocks - The blocks to be saved.
  */
 export const saveTempBlocks = (blocks) => {
   try {
@@ -82,20 +81,21 @@ export const saveTempBlocks = (blocks) => {
     };
     sessionStorage.setItem(STORAGE_KEYS.TEMP_BLOCKS, JSON.stringify(saveData));
   } catch (error) {
-    console.error('Virhe väliaikaisten lohkojen tallennuksessa:', error);
   }
 };
 
 /**
- * Tarkistaa onko sessiossa tallennettuja lohkoja
- * @returns {boolean} true jos löytyy tallennettuja lohkoja
+ * @function hasSavedBlocks
+ * @description Checks if there are saved blocks in the session.
+ * @returns {boolean} True if there are saved blocks.
  */
 export const hasSavedBlocks = () => {
   return !!sessionStorage.getItem(STORAGE_KEYS.BLOCKS);
 };
 
 /**
- * Tyhjentää kaikki tallennetut lohkot sessiosta
+ * @function clearSavedBlocks
+ * @description Clears all saved blocks from the session.
  */
 export const clearSavedBlocks = () => {
   sessionStorage.removeItem(STORAGE_KEYS.BLOCKS);
@@ -104,8 +104,9 @@ export const clearSavedBlocks = () => {
 };
 
 /**
- * Palauttaa viimeisimmän tallennuksen aikaleiman
- * @returns {number|null} Aikaleima millisekunteina tai null jos ei tallennuksia
+ * @function getLastSaveTime
+ * @description Returns the timestamp of the last save.
+ * @returns {number|null} The timestamp in milliseconds or null if there are no saves.
  */
 export const getLastSaveTime = () => {
   const timestamp = sessionStorage.getItem(STORAGE_KEYS.LAST_SAVE);

@@ -1,9 +1,24 @@
+/**
+ * @file SavePopup.jsx
+ * @description A component that provides a popup for saving and loading block data.
+ * @module utils/SavePopup
+ * @param {Object} props - The component props.
+ * @param {function} props.onClose - A function to close the popup.
+ * @param {function} props.onDownload - A function to download the block data.
+ * @param {function} props.onUpload - A function to upload block data.
+ * @returns {React.ReactElement} The SavePopup component.
+ */
 import React from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/SavePopup.css';
 import RoboClose from '../assets/icons/robo-close.jsx';
 
 const SavePopup = ({ onClose, onDownload, onUpload }) => {
+  /**
+   * @function handleFileChange
+   * @description Handles the file change event for the file input.
+   * @param {Event} event - The file change event.
+   */
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {

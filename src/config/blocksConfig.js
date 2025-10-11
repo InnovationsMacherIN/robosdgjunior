@@ -14,7 +14,7 @@ export const blocksByCategory = {
       action: 'START',
       command: 'start:'
     },
-    {
+    /*{
       type: 'repeat',
       title: 'Toista',
       description: 'Toista sisällä olevat lohkot määrätyn kerran',
@@ -35,7 +35,7 @@ export const blocksByCategory = {
         }
         return commands;
       }
-    },
+    },*/
     {
       type: 'wait',
       title: 'Odota',
@@ -106,7 +106,7 @@ export const blocksByCategory = {
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    {
+    /*{
       type: 'show-picture_3',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
@@ -122,7 +122,7 @@ export const blocksByCategory = {
         { value: '03', label: 'Herz klein' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
-    },
+    },*/
     {
       type: 'show-picture_4',
       title: 'Näytä kuva',
@@ -140,7 +140,7 @@ export const blocksByCategory = {
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    {
+    /*{
       type: 'show-picture_5',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
@@ -190,7 +190,7 @@ export const blocksByCategory = {
         { value: '07', label: 'Überrascht' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
-    },
+    },*/
     {
       type: 'show-picture_8',
       title: 'Näytä kuva',
@@ -242,7 +242,7 @@ export const blocksByCategory = {
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    {
+    /*{
       type: 'show-picture_11',
       title: 'Näytä kuva',
       description: 'Näytä valittu kuva LED-näytöllä',
@@ -258,7 +258,7 @@ export const blocksByCategory = {
         { value: '11', label: 'Alien' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
-    },
+    },*/
     {
       type: 'show-picture_12',
       title: 'Näytä kuva',
@@ -596,7 +596,7 @@ export const blocksByCategory = {
       ],
       command: (melodyId) => `${melodyId}:`
     },
-    {
+    /*{
       type: 'melody_5',
       title: 'Soita melodia',
       description: 'Soita valittu melodia',
@@ -621,7 +621,7 @@ export const blocksByCategory = {
         { value: 'M06', label: 'Tango Kriminalis' }
       ],
       command: (melodyId) => `${melodyId}:`
-    },
+    },*/
     {
       type: 'melody_7',
       title: 'Soita melodia',

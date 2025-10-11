@@ -1,11 +1,16 @@
-// src/utils/useTouchDrag.js
-
+/**
+ * @file useTouchDrag.js
+ * @description A custom hook for handling touch-based drag and drop functionality.
+ * @module utils/useTouchDrag
+ * @param {Object} options - The options for the hook.
+ * @param {function} options.onDragStart - The function to call when a drag starts.
+ * @param {function} options.onDragMove - The function to call when a drag moves.
+ * @param {function} options.onDragEnd - The function to call when a drag ends.
+ * @param {boolean} options.createClone - Whether to create a clone of the dragged element.
+ * @returns {Object} The handlers for the touch events, a boolean indicating if a drag is in progress, and the drag state.
+ */
 import { useEffect, useRef, useState } from 'react';
 
-/**
- * Custom hook for handling touch drag operations on tablets
- * Provides touch-specific drag and drop functionality while preserving mouse events
- */
 export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({
@@ -33,8 +38,6 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
   };
 
   const handleTouchStart = (e) => {
-    // Prevent default only if we're not touching an input
-    console.log("handleTouchStart");
     if (!e.target.closest('input, select')) {
       if (createClone) {
         e.preventDefault();
@@ -45,15 +48,12 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
 
     let target = null;
 
-    // repeat blockit on block-container luokassa
     if (touch.target.closest('.block')) {
       target = touch.target.closest('.block');
       e.stopPropagation();
     } else if (touch.target.closest('.block-container')) {
       target = touch.target.closest('.block-container');
     }
-
-    console.log(target)
 
     if (!target) return;
 
@@ -64,7 +64,6 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
       currentY: touch.clientY,
       target: target,
       createClone,
-      //clone: null,
       blockData: null
     };
 
@@ -73,15 +72,12 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
         onDragStart(dragState.current);
       }
       setIsDragging(true);
-    }, 200); // Slightly longer delay to prevent accidental drags
+    }, 200);
   };
 
   const handleTouchMove = (e) => {
     if (!isDragging || !dragState.current.target) return;
 
-    //console.log("Handle handleTouchMove");
-
-    //e.preventDefault();
     const touch = e.touches[0];
 
     dragState.current.currentX = touch.clientX;
@@ -97,7 +93,6 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
       });
     }
 
-    // Update clone position if it exists
     if (dragState.current.clone) {
       dragState.current.clone.style.left = `${touch.clientX - dragState.current.clone.offsetWidth / 2}px`;
       dragState.current.clone.style.top = `${touch.clientY - dragState.current.clone.offsetHeight / 2}px`;
@@ -113,14 +108,12 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
     }
 
     if (onDragEnd) {
-      //console.log("Block from blockspanel handleTouchEnd", e, dragState.current);
       onDragEnd(e, dragState.current);
     }
 
     cleanupDrag();
   };
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       cleanupDrag();
@@ -147,9 +140,9 @@ export const useTouchDrag = ({ onDragStart, onDragMove, onDragEnd, createClone =
       onTouchStart: handleTouchStart,
       onTouchMove: handleTouchMove,
       onTouchEnd: handleTouchEnd,
-      onTouchCancel: handleTouchEnd // Add touch cancel handler
+      onTouchCancel: handleTouchEnd
     },
     isDragging,
-    dragState // Export dragState for external access
+    dragState
   };
 };

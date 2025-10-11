@@ -1,4 +1,7 @@
-/* ProgrammingArea.css */
+/**
+ * @file ProgrammingArea.css
+ * @description This file contains the styles for the programming area.
+ */
 .programming-area {
   position: relative;
   width: 100%;
@@ -68,8 +71,6 @@
   border-left: 20px solid #f3f4f6;
 }
 
-
-/* Block shifting animation */
 .block {
   position: relative;
   border-radius: var(--radius-md);
@@ -82,7 +83,6 @@
   margin-bottom: -21px;
 }
 
-/* Drop indicator styles */
 .block-drop-indicator {
   position: absolute;
   width: 100%;
@@ -108,25 +108,24 @@
 }
 
 .block.drop-target {
-  outline: none; /* Poistetaan outline koska haamupalikka näyttää position */
-  transform: translateX(4rem); /* Siirretään kohdeblokki oikealle */
+  outline: none;
+  transform: translateX(4rem);
 }
 
 .block.shift-right {
   transform: translateX(4rem);
 }
 
-/* Block colors - lisätään takaisin värimääritykset */
 .block-steering {
-  background-size: contain; /* Skaalaa SVG kokonaan näkyville */
-  background-repeat: no-repeat; /* Ei toisteta taustaa */
-  background-position: center; /* Keskitetään tausta */
-  position: relative; /* Salli lapsielementtien sijoittelu */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
   margin-right: -2px !important;
   margin-top:2px;
   margin-left: -14px !important;
-  justify-content: center; /* Keskitys vaakasuunnassa */
-  align-items: center; /* Keskitys pystysuunnassa */
+  justify-content: center;
+  align-items: center;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.14"><path fill="%23585758" stroke="%23000000" stroke-width="2" d="M111.91,161.14H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V.65c0-.45.45-.77.87-.61l51.1,18.46c1.75.63,3.67.61,5.41-.05L111.01.06c.43-.16.88.15.88.61v64.74c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
 }
@@ -145,15 +144,14 @@
 }
 
 .block-movement {
-  width: 117px; /* Leveys vastaa SVG:n viewBox-arvoa */
-  height: 163px; /* Korkeus vastaa SVG:n viewBox-arvoa */
-  background-size: contain; /* Skaalaa SVG kokonaan näkyville */
-  background-repeat: no-repeat; /* Ei toisteta taustaa */
-  background-position: center; /* Keskitetään tausta */
-  position: relative; /* Salli lapsielementtien sijoittelu */
-
-  justify-content: center; /* Keskitys vaakasuunnassa */
-  align-items: center; /* Keskitys pystysuunnassa */
+  width: 117px;
+  height: 163px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  justify-content: center;
+  align-items: center;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.41"><path fill="%23003c9a" stroke="%23000000" stroke-width="2" d="M111.91,161.41H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.77L55.15,1.33c3.16-1.81,7.06-1.76,10.17.13l46.59,28.31v35.92c-.01,1.37-1.13,2.48-2.5,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
 }
@@ -190,14 +188,14 @@
 }
 
 .block-sound {
-  background-size: contain; /* Skaalaa SVG kokonaan näkyville */
-  background-repeat: no-repeat; /* Ei toisteta taustaa */
-  background-position: center; /* Keskitetään tausta */
-  position: relative; /* Salli lapsielementtien sijoittelu */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
   margin-right: -10px;
   margin-top: 1px !important;
-  justify-content: center; /* Keskitys vaakasuunnassa */
-  align-items: center; /* Keskitys pystysuunnassa */
+  justify-content: center;
+  align-items: center;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 162.57"><path fill="%23f71f66" stroke="%23000000" stroke-width="2" d="M111.91,160.57H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V29.68c0-.76.51-1.42,1.24-1.62L109.57.07c1.17-.32,2.32.56,2.32,1.77v63.01c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
 }
@@ -210,9 +208,8 @@
   background-position: center;
   position: relative;
   margin-right: -10px;
-
-  justify-content: center; /* Keskitys vaakasuunnassa */
-  align-items: center; /* Keskitys pystysuunnassa */
+  justify-content: center;
+  align-items: center;
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 113.91 163.14"><path fill="%23585758" stroke="%23000000" stroke-width="2" d="M111.91,161.14H5.58v-45.86c0-1.37-1.11-2.49-2.49-2.49h-.61c-1.37,0-2.49-1.11-2.49-2.49v-37.23c0-1.37,1.11-2.49,2.49-2.49h.61c1.37,0,2.49-1.11,2.49-2.49V.65c0-.45.45-.77.87-.61l51.1,18.46c1.75.63,3.67.61,5.41-.05L111.01.06c.43-.16.88.15.88.61v64.74c0,1.37-1.11,2.48-2.48,2.48h0c-1.37,0-2.49,1.11-2.49,2.49v42.44c0,1.37,1.11,2.49,2.49,2.49h.01c1.37,0,2.49,1.11,2.49,2.49v43.34Z"/></svg>');
   min-height: 150px !important;
 }
@@ -242,7 +239,6 @@
   font-size: 0.9rem;
 }
 
-/* Debug view */
 .debug-view {
   margin-top: var(--spacing-4);
   padding: var(--spacing-4);
@@ -257,7 +253,6 @@
   word-wrap: break-word;
 }
 
-/* Button styles */
 .button-execute {
   background-color: var(--success-color);
   color: white;
@@ -277,7 +272,7 @@
 .button-clear {
   background-color: var(--error-color);
   color: var(--text-light);
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
   border: 3px solid #1D1D1B !important;
 }
@@ -287,7 +282,6 @@
   cursor: not-allowed;
 }
 
-/* ProgrammingArea.css */
 .programming-area .block-input-container {
   position: absolute;
   bottom: -10px;
@@ -347,11 +341,6 @@
   }
 }
 
-
-
-
-
-/* Container-lohkon perustyylit */
 .block-container {
   position: relative;
   min-height: 120px;
@@ -363,19 +352,14 @@
   padding: 1rem;
 }
 
-
-/* Lisätään uudet tyylit pystyviivoille */
-/* Pystyviivat repeat-blockin reunoilla */
 .programming-area .block-container::before,
 .programming-area .block-container::after {
   content: '';
   position: absolute;
-  /* Muutetaan bottom arvoa niin että viivat päättyvät väkäseen */
   background-color: transparent;
   min-height: 110px;
 }
 
-/* Vasen pystyviiva */
 .programming-area .block-container::before {
   left: 1px;
   background-image: url("../../assets/icons/robo-repeat-block-start.svg");
@@ -385,7 +369,7 @@
   top: 45px;
   z-index: 1000;
 }
-/* Oikea pystyviiva */
+
 .programming-area .block-container::after {
   right: 1px;
   background-image: url("/src/assets/icons/robo-repeat-block-end.svg");
@@ -396,9 +380,6 @@
   min-height: 113px;
 }
 
-
-
-/* Lisätään vaakaviiva */
 .programming-area .block-container {
   position: relative;
 }
@@ -413,10 +394,8 @@
   background-color: #95c11f;
   border-radius: 5px;
   border: 2.5px solid black;
-  /*z-index: 1;   Varmistetaan että viiva on päällimmäisenä */
 }
 
-/* Container-lohkon pääsisältö (otsikko ja inputit) */
 .programming-area .block-container .block-input-container {
   position: absolute;
   bottom: -40px;
@@ -433,7 +412,6 @@
   z-index: 100;
 }
 
-/* Drag & drop tyylit */
 .block-container.drag-over {
   border-color: white;
   transform: scale(1.02);
@@ -461,9 +439,6 @@
   transition: all 0.2s;
 }
 
-/* Mobile
-*/
-
 @media screen and (max-width: 768px) {
 
   .blocks-container {
@@ -486,4 +461,3 @@
   }
 
 }
-

@@ -1,6 +1,7 @@
-/* src/styles/blockIconConfig.css */
-
-/* Container styles */
+/**
+ * @file blockIconConfig.css
+ * @description This file contains the styles for the block icons.
+ */
 .block-icon-container {
   position: absolute;
   top: 55%;
@@ -31,9 +32,7 @@
   width: 65px;
 }
 
-/* Base icon styles */
 .block-icon {
-  /* Ikonin perusasetukset */
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -41,25 +40,19 @@
   transition: all 0.2s ease;
 }
 
-/* Movement block specific styles */
 .movement-icon {
-  /* Perhonen.png kuvan erityisasetukset */
   filter: brightness(1.0);
 }
 
-/* Sound block specific styles */
 .sound-icon {
-  /* Puoli-pallo.svg kuvan erityisasetukset */
   filter: brightness(1.0);
 }
 
-/* Hover effects */
 .block:hover .block-icon {
   opacity: 1;
   transform: scale(1.0);
 }
 
-/* High contrast theme support */
 @media (prefers-contrast: high) {
   .block-icon {
     opacity: 1;
@@ -67,14 +60,12 @@
   }
 }
 
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .block-icon {
     transition: none;
   }
 }
 
-/* Print styles */
 @media print {
   .block-icon {
     opacity: 1;

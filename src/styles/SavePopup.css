@@ -1,3 +1,7 @@
+/**
+ * @file SavePopup.css
+ * @description This file contains the styles for the save popup component.
+ */
 .save-popup-container {
   position: fixed;
   top: 0;

@@ -1,15 +1,15 @@
-/* Zoomable Area styles */
+/**
+ * @file zoomableArea.css
+ * @description This file contains the styles for the zoomable area component.
+ */
 .zoomable-container {
-  /* Prevents the default zoom of the full page*/
   overscroll-behavior: none;
   touch-action: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /* Lisätty pyöristys reunoihin paremman UX:n vuoksi */
   border-radius: 8px;
-  /* Lisätty varjo erottamaan alue paremmin */
   box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
   width: 100%;
   min-width: 100%;
@@ -24,18 +24,15 @@
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* Lisätty padding reunoille jotta sisältö ei mene aivan kiinni reunoihin */
   padding: var(--spacing-4);
 }
 
-  /* Webkit-tuki */
   @supports (-webkit-touch-callout: none) {
     .zoomable-container {
       -webkit-overflow-scrolling: touch;
     }
   }
 
-/* Lisätty scroll bars */
 .zoomable-container::-webkit-scrollbar {
   width: 8px;
   height: 8px;

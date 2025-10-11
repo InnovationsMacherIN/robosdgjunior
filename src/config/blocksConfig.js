@@ -1,49 +1,28 @@
+/**
+ * @file blocksConfig.js
+ * @description This file contains the configuration for all the programming blocks available in the application.
+ * @module config/blocksConfig
+ */
 export const categories = ['Control', 'LED Display', 'Movement', 'Sounds'];
-// export const categories = ['Steering', 'LED Display', 'Movements', 'Combinations', 'Sounds', 'Settings']; ORIGINAL
-
-// ProgrammingInterface.jsx
-// ProgrammingInterface.jsx blocksByCategory päivitys
 
 export const blocksByCategory = {
   'Control': [
     {
       type: 'start',
-      title: 'Kun Start painettu',
-      description: 'Ohjelman tulee alkaa tällä lohkolla',
-      className: 'block-steering block-start', // lisätty start-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
+      title: 'When Start is pressed',
+      description: 'The program must start with this block',
+      className: 'block-steering block-start',
       action: 'START',
       command: 'start:'
     },
-    /*{
-      type: 'repeat',
-      title: 'Toista',
-      description: 'Toista sisällä olevat lohkot määrätyn kerran',
-      className: 'block-steering block-container', // lisätty container-luokka
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Toistot',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      isContainer: true, // merkitään että tämä voi sisältää muita lohkoja
-      childBlocks: [], // taulukko sisällä oleville lohkoille
-      command: (times, childCommands) => {
-        // Toistaa sisällä olevien lohkojen komennot määrätyn kertaa
-        let commands = '';
-        for(let i = 0; i < times; i++) {
-          commands += childCommands;
-        }
-        return commands;
-      }
-    },*/
     {
       type: 'wait',
-      title: 'Odota',
-      description: 'Odota määrätty aika',
+      title: 'Wait',
+      description: 'Wait for a specified time',
       className: 'block-settings',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.9,
       inputStep: 0.1,
@@ -52,251 +31,154 @@ export const blocksByCategory = {
     },
     {
       type: 'end',
-      title: 'Loppu',
-      description: 'Ohjelman tulee päättyä tähän lohkoon',
-      className: 'block-steering block-end', // lisätty end-luokka, jotta voidaan tehdä spesifi CSS-muotoilu
+      title: 'End',
+      description: 'The program must end with this block',
+      className: 'block-steering block-end',
       action: 'END',
       command: 'end:'
     }
   ],
   'LED Display': [
-    /*{
-      type: 'show-text',
-      title: 'Kirjoita',
-      description: 'Näytä teksti LED-näytöllä (max 8 merkkiä)',
-      className: 'block-display',
-      action: 'SHOW_TEXT',
-      hasInput: true,
-      inputType: 'text',
-      inputLabel: 'Teksti',
-      maxLength: 8,
-      command: (text) => `${text}:`
-    },*/
     {
       type: 'show-picture_1',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '01', label: 'Fröhlich' }
+        { value: '01', label: 'Happy' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
       type: 'show-picture_2',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '02', label: 'Herz' }
+        { value: '02', label: 'Heart' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    /*{
-      type: 'show-picture_3',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
-      className: 'block-display',
-      action: 'SHOW_PICTURE',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      options: [
-        { value: '03', label: 'Herz klein' }
-      ],
-      command: (picId, duration) => `A${picId}${duration}:`
-    },*/
     {
       type: 'show-picture_4',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '04', label: 'Traurig' }
+        { value: '04', label: 'Sad' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    /*{
-      type: 'show-picture_5',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
-      className: 'block-display',
-      action: 'SHOW_PICTURE',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      options: [
-        { value: '05', label: 'Böse' }
-      ],
-      command: (picId, duration) => `A${picId}${duration}:`
-    },
-    {
-      type: 'show-picture_6',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
-      className: 'block-display',
-      action: 'SHOW_PICTURE',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      options: [
-        { value: '06', label: 'Müde' }
-      ],
-      command: (picId, duration) => `A${picId}${duration}:`
-    },
-    {
-      type: 'show-picture_7',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
-      className: 'block-display',
-      action: 'SHOW_PICTURE',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      options: [
-        { value: '07', label: 'Überrascht' }
-      ],
-      command: (picId, duration) => `A${picId}${duration}:`
-    },*/
     {
       type: 'show-picture_8',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '08', label: 'Richtig' }
+        { value: '08', label: 'Correct' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
       type: 'show-picture_9',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '09', label: 'Falsch' }
+        { value: '09', label: 'Incorrect' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
       type: 'show-picture_10',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '10', label: 'Zwinkern' }
+        { value: '10', label: 'Wink' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
-    /*{
-      type: 'show-picture_11',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
-      className: 'block-display',
-      action: 'SHOW_PICTURE',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Sekunnit',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      options: [
-        { value: '11', label: 'Alien' }
-      ],
-      command: (picId, duration) => `A${picId}${duration}:`
-    },*/
     {
       type: 'show-picture_12',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '12', label: 'Pfeil nach links' }
+        { value: '12', label: 'Arrow left' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
       type: 'show-picture_13',
-      title: 'Näytä kuva',
-      description: 'Näytä valittu kuva LED-näytöllä',
+      title: 'Show picture',
+      description: 'Show the selected picture on the LED display',
       className: 'block-display',
       action: 'SHOW_PICTURE',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       options: [
-        { value: '13', label: 'Pfeil nach rechts' }
+        { value: '13', label: 'Arrow right' }
       ],
       command: (picId, duration) => `A${picId}${duration}:`
     },
     {
       type: 'leds-off',
-      title: 'Sammuta näyttö',
-      description: 'Sammuttaa LED-näytön',
+      title: 'Turn off display',
+      description: 'Turns off the LED display',
       className: 'block-display',
       action: 'LEDS_OFF',
       command: 'A00:'
@@ -305,12 +187,12 @@ export const blocksByCategory = {
   'Movement': [
     {
       type: 'forward',
-      title: 'Eteenpäin',
-      description: 'Liiku eteenpäin',
+      title: 'Forward',
+      description: 'Move forward',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -319,12 +201,12 @@ export const blocksByCategory = {
     },
     {
       type: 'backward',
-      title: 'Taaksepäin',
-      description: 'Liiku taaksepäin',
+      title: 'Backward',
+      description: 'Move backward',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -333,12 +215,12 @@ export const blocksByCategory = {
     },
     {
       type: 'left',
-      title: 'Vasemmalle',
-      description: 'Käänny vasemmalle',
+      title: 'Left',
+      description: 'Turn left',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -347,12 +229,12 @@ export const blocksByCategory = {
     },
     {
       type: 'right',
-      title: 'Oikealle',
-      description: 'Käänny oikealle',
+      title: 'Right',
+      description: 'Turn right',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -361,12 +243,12 @@ export const blocksByCategory = {
     },
     {
       type: 'turn-left',
-      title: 'Käänny paikallaan vasemmalle',
-      description: 'Käänny vasemmalle paikallasi',
+      title: 'Turn left in place',
+      description: 'Turn left in place',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -375,12 +257,12 @@ export const blocksByCategory = {
     },
     {
       type: 'turn-right',
-      title: 'Käänny paikallaan oikealle',
-      description: 'Käänny oikealle paikallasi',
+      title: 'Turn right in place',
+      description: 'Turn right in place',
       className: 'block-movement',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Sekunnit',
+      inputLabel: 'Seconds',
       inputMin: 0.1,
       inputMax: 9.0,
       inputStep: 0.1,
@@ -389,165 +271,86 @@ export const blocksByCategory = {
     },
     {
       type: 'dance',
-      title: 'Tanssi',
-      description: 'Suorita tanssiliike',
+      title: 'Dance',
+      description: 'Perform a dance move',
       className: 'block-combination',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Toistot',
+      inputLabel: 'Repetitions',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       hasSecondInput: true,
       secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
+      secondInputLabel: 'Intensity',
       options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
+        { value: 'easy', label: 'Light' },
+        { value: 'middle', label: 'Medium' },
+        { value: 'strong', label: 'Strong' }
       ],
       command: 'DANCE'
     },
     {
       type: 'zigzag',
-      title: 'Siksak',
-      description: 'Liiku siksakilla',
+      title: 'Zigzag',
+      description: 'Move in a zigzag pattern',
       className: 'block-combination',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Toistot',
+      inputLabel: 'Repetitions',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       hasSecondInput: true,
       secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
+      secondInputLabel: 'Intensity',
       options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
+        { value: 'easy', label: 'Light' },
+        { value: 'middle', label: 'Medium' },
+        { value: 'strong', label: 'Strong' }
       ],
       command: 'ZIGZAG'
     },
     {
       type: 'shake',
-      title: 'Ravista',
-      description: 'Ravistele robottia',
+      title: 'Shake',
+      description: 'Shake the robot',
       className: 'block-combination',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Toistot',
+      inputLabel: 'Repetitions',
       inputMin: 1,
       inputMax: 9,
       defaultValue: 1,
       hasSecondInput: true,
       secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
+      secondInputLabel: 'Intensity',
       options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
+        { value: 'easy', label: 'Light' },
+        { value: 'middle', label: 'Medium' },
+        { value: 'strong', label: 'Strong' }
       ],
       command: 'SHAKE'
     },
     {
       type: 'pirouette',
-      title: 'Piruetti',
-      description: 'Pyörähdä ympäri',
+      title: 'Pirouette',
+      description: 'Spin around',
       className: 'block-combination',
       hasInput: true,
       inputType: 'number',
-      inputLabel: 'Toistot',
+      inputLabel: 'Repetitions',
       inputMin: 1,
       inputMax: 5,
       defaultValue: 1,
       command: 'PIROUETTE'
     }
   ],
-  /*
-  'Combinations': [
-    {
-      type: 'dance',
-      title: 'Tanssi',
-      description: 'Suorita tanssiliike',
-      className: 'block-combination',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Toistot',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      hasSecondInput: true,
-      secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
-      options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
-      ],
-      command: 'DANCE'
-    },
-    {
-      type: 'zigzag',
-      title: 'Siksak',
-      description: 'Liiku siksakilla',
-      className: 'block-combination',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Toistot',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      hasSecondInput: true,
-      secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
-      options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
-      ],
-      command: 'ZIGZAG'
-    },
-    {
-      type: 'shake',
-      title: 'Ravista',
-      description: 'Ravistele robottia',
-      className: 'block-combination',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Toistot',
-      inputMin: 1,
-      inputMax: 9,
-      defaultValue: 1,
-      hasSecondInput: true,
-      secondInputType: 'select',
-      secondInputLabel: 'Voimakkuus',
-      options: [
-        { value: 'easy', label: 'Kevyt' },
-        { value: 'middle', label: 'Keskitaso' },
-        { value: 'strong', label: 'Voimakas' }
-      ],
-      command: 'SHAKE'
-    },
-    {
-      type: 'pirouette',
-      title: 'Piruetti',
-      description: 'Pyörähdä ympäri',
-      className: 'block-combination',
-      hasInput: true,
-      inputType: 'number',
-      inputLabel: 'Toistot',
-      inputMin: 1,
-      inputMax: 5,
-      defaultValue: 1,
-      command: 'PIROUETTE'
-    }
-  ],*/
   'Sounds': [
     {
       type: 'melody_1',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -559,25 +362,25 @@ export const blocksByCategory = {
     },
     {
       type: 'melody_2',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
-      inputLabel: 'Melody_Romantisch',
+      inputLabel: 'Melody_Romantic',
       options: [
-        { value: 'M02', label: 'Romantisch' }
+        { value: 'M02', label: 'Romantic' }
       ],
       command: (melodyId) => `${melodyId}:`
     },
     {
       type: 'melody_3',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
-      inputLabel: 'Melody_Star_wars',
+      inputLabel: 'Melody_Star_Wars',
       options: [
         { value: 'M03', label: 'Star Wars' }
       ],
@@ -585,8 +388,8 @@ export const blocksByCategory = {
     },
     {
       type: 'melody_4',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -596,36 +399,10 @@ export const blocksByCategory = {
       ],
       command: (melodyId) => `${melodyId}:`
     },
-    /*{
-      type: 'melody_5',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Melody_Donauwalzer',
-      options: [
-        { value: 'M05', label: 'Donauwalzer' }
-      ],
-      command: (melodyId) => `${melodyId}:`
-    },
-    {
-      type: 'melody_6',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Melody_tango',
-      options: [
-        { value: 'M06', label: 'Tango Kriminalis' }
-      ],
-      command: (melodyId) => `${melodyId}:`
-    },*/
     {
       type: 'melody_7',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -637,8 +414,8 @@ export const blocksByCategory = {
     },
     {
       type: 'melody_8',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -650,8 +427,8 @@ export const blocksByCategory = {
     },
     {
       type: 'melody_9',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -663,8 +440,8 @@ export const blocksByCategory = {
     },
     {
       type: 'melody_10',
-      title: 'Soita melodia',
-      description: 'Soita valittu melodia',
+      title: 'Play melody',
+      description: 'Play the selected melody',
       className: 'block-sound',
       hasInput: true,
       inputType: 'select',
@@ -673,161 +450,6 @@ export const blocksByCategory = {
         { value: 'M10', label: 'Happy Birthday' }
       ],
       command: (melodyId) => `${melodyId}:`
-    },
-    /*
-    {
-      type: 'sound_1',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Kichern',
-      options: [
-        { value: 'K01', label: 'Kichern' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_2',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Fröhlich',
-      options: [
-        { value: 'K02', label: 'Fröhlich' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_3',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Hallo',
-      options: [
-        { value: 'K03', label: 'Hallo' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_4',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Mysteriös',
-      options: [
-        { value: 'K04', label: 'Mysteriös' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_5',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Traurig',
-      options: [
-        { value: 'K05', label: 'Traurig' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_6',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Rutschen',
-      options: [
-        { value: 'K06', label: 'Rutschen' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_7',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Aufsteigen',
-      options: [
-        { value: 'K07', label: 'Aufsteigen' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_8',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Federn',
-      options: [
-        { value: 'K08', label: 'Federn' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_9',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Funkeln',
-      options: [
-        { value: 'K09', label: 'Funkeln' }
-      ],
-      command: (soundId) => `${soundId}:`
-    },
-    {
-      type: 'sound_10',
-      title: 'Soita ääni',
-      description: 'Soita valittu ääni (vain micro:bit V2)',
-      className: 'block-sound',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Sound_Gähnen',
-      options: [
-        { value: 'K10', label: 'Gähnen' }
-      ],
-      command: (soundId) => `${soundId}:`
-    }*/
-  ],
-  /*
-  'Settings': [
-    {
-      type: 'motor',
-      title: 'Moottorin nopeus',
-      description: 'Säädä moottorin nopeutta',
-      className: 'block-settings',
-      hasInput: true,
-      inputType: 'select',
-      inputLabel: 'Moottori',
-      options: [
-        { value: '2', label: 'Vasen' },
-        { value: '1', label: 'Oikea' },
-        { value: 'b', label: 'Molemmat' }
-      ],
-      hasSecondInput: true,
-      secondInputType: 'number',
-      secondInputLabel: 'Nopeus',
-      secondInputMin: 1,
-      secondInputMax: 31,
-      defaultValue: 20,
-      command: (motor, speed) => `G${motor}${speed < 10 ? '0' + speed : speed}:`
-    },
-  ]*/
+    }
+  ]
 };

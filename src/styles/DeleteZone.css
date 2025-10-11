@@ -1,3 +1,7 @@
+/**
+ * @file DeleteZone.css
+ * @description This file contains the styles for the delete zone component.
+ */
 .delete-zone {
   position: absolute;
   bottom: 2rem;

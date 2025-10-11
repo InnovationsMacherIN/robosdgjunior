@@ -1,3 +1,9 @@
+/**
+ * @file Main application entry point.
+ * @module main
+ * @description This file initializes the React application, sets up internationalization with i18next,
+ * and renders the main ProgrammingInterface component into the DOM.
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';

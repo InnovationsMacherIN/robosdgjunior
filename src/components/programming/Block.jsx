@@ -1,18 +1,20 @@
 /**
- * Block - Component ( returns DroppedBlock )
- * Represents a single block in the programming area
- *
- * @component
- * @param {Object} props
- * @param {Object} props.block - The block data
- * @param {number} props.index - Block's index in programming area
- * @param {function} props.onInputChange - Handler for input value changes
- * @param {function} props.onDragStart - Handler for drag start event
- * @param {function} props.onDragEnd - Handler for drag end event
- * @param {function} props.onDragOverPosition - Handler for drag over position updates
- * @returns {React.ReactElement} A draggable programming block
+ * @file Block.jsx
+ * @description A component that represents a single block in the programming area.
+ * @module components/programming/Block
+ * @param {Object} props - The component props.
+ * @param {Object} props.block - The block data.
+ * @param {number} props.index - The block's index in the programming area.
+ * @param {function} props.onInputChange - A function to handle input value changes.
+ * @param {function} props.onChildInputChange - A function to handle child input value changes.
+ * @param {function} props.onDragStart - A function to handle the start of a drag event.
+ * @param {function} props.onDragEnd - A function to handle the end of a drag event.
+ * @param {function} props.onDragOverPosition - A function to handle the drag over position.
+ * @param {function} props.handleDrop - A function to handle a drop event.
+ * @param {boolean} props.isChildBlock - Whether the block is a child block.
+ * @param {number} props.parentIndex - The index of the parent block.
+ * @returns {React.ReactElement} The DroppedBlock component.
  */
-
 import React, {useRef, useState, useEffect} from 'react';
 import '../../styles/BlockVisualElements.css';
 import BlockIconConfig from "../../config/blockIconConfig";
@@ -35,8 +37,6 @@ const DroppedBlock = ({
                       }) => {
 
   const [hasChildren, setHasChildren] = useState(false);
-
-  // Block.jsx:ssä
   const { handlers: touchHandlers, isDragging: isTouchDragging, dragState } = useTouchDrag({
     createClone: false,
     onDragStart: (dragData) => {
@@ -44,7 +44,6 @@ const DroppedBlock = ({
       if (!blockElement) return;
       dragData.isChildBlock = !!block.isChildBlock;
 
-      // ei sallita dragia start blockissa
       const isStartOrEndBlock = block.type === 'start' || block.type === 'end';
       if (isStartOrEndBlock) return;
 
@@ -54,7 +53,6 @@ const DroppedBlock = ({
         dragState.current.isChildBlock = isChildBlock || false;
         dragState.current.parentIndex = parentIndex;
 
-        // luo synteettinen event
         const syntheticEvent = {
           target: {
             querySelector: (selector) => blockElement.querySelector(selector)
@@ -71,7 +69,6 @@ const DroppedBlock = ({
           }
         };
 
-        // sisällä isChildBlock ja parentindex block dataan
         const blockForDrag = {
           ...block,
           isChildBlock: isChildBlock,
@@ -92,16 +89,13 @@ const DroppedBlock = ({
     onDragMove: (moveData) => {
       if (!isTouchDragging) return;
 
-      // Liikuta draggattavaa elementtiä
       const block = dragState.current.target;
       if (block) {
         block.style.position = 'relative';
         block.style.zIndex = '1000';
-        //block.style.transition = 'none';
         block.style.transform = `translate(${moveData.dx}px, ${moveData.dy}px)`;
       }
 
-      // Etsi kohde elementti
       const dropTarget = document.elementFromPoint(moveData.x, moveData.y);
       const blockElement = dropTarget?.closest('.block, .block-container');
 
@@ -110,24 +104,20 @@ const DroppedBlock = ({
         const relativeY = moveData.y - rect.top;
         const height = rect.height;
 
-        // Poista vanhat indikaattorit
         document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
         document.querySelectorAll('.block.drop-target').forEach(el =>
             el.classList.remove('drop-target'));
         document.querySelectorAll('.block.shift-right').forEach(el =>
             el.classList.remove('shift-right'));
 
-        // Lisää visuaaliset indikaattorit
         blockElement.classList.add('drop-target');
 
-        // Lisää shift-right luokka seuraaville blokeille
         let nextElement = blockElement.nextElementSibling;
         while (nextElement) {
           nextElement.classList.add('shift-right');
           nextElement = nextElement.nextElementSibling;
         }
 
-        // Päivitä drop positio
         if (onDragOverPosition) {
           const position = relativeY < height / 2 ? 'before' : 'after';
           const toIndex = parseInt(blockElement.dataset.index || '0');
@@ -139,7 +129,6 @@ const DroppedBlock = ({
     onDragEnd: (e, endData) => {
       const block = dragState.current.target;
       if (block) {
-        // Poista kaikki draggaukseen liittyvät tyylit
         block.style.transform = '';
         block.style.position = '';
         block.style.zIndex = '';
@@ -148,7 +137,6 @@ const DroppedBlock = ({
         block.classList.remove('drop-target');
       }
 
-      // Poista kaikki visuaaliset indikaattorit kaikilta elementeiltä
       document.querySelectorAll('.block-drop-indicator').forEach(el => el.remove());
       document.querySelectorAll('.block.drop-target').forEach(el => {
         el.classList.remove('drop-target');
@@ -176,31 +164,20 @@ const DroppedBlock = ({
   });
 
   useEffect(() => {
-    //console.log("child blocks use effect");
     if (block.isContainer && block.childBlocks && block.childBlocks.length > 0) {
       if (!hasChildren) {
         setHasChildren(true);
       }
-      //console.log('child blocks:', block.childBlocks);
     }
   }, [block.childBlocks]);
 
-  /**
-   * blockRef - Reference
-   * Reference to block DOM element for drag and drop operations in programming area
-   *
-   * @type {React.RefObject}
-   */
   const blockRef = useRef(null);
 
   /**
-   * handleDragStart - handler (function)
-   * Handles the start of drag operation
-   * Sets drag data and calls parent drag start handler
-   *
-   * @param {DragEvent} e - Drag event object
+   * @function handleDragStart
+   * @description Handles the start of a drag operation.
+   * @param {DragEvent} e - The drag event object.
    */
-  // DroppedBlock (Block.jsx) komponentissa
   const handleDragStart = (e) => {
         if (block.type === 'start') {
           e.preventDefault();
@@ -217,7 +194,6 @@ const DroppedBlock = ({
           onDragStart(e, blockForDrag);
         }
 
-        // Mark data for internal reorder
         e.dataTransfer.setData('application/internal', JSON.stringify({
           fromIndex: index,
           isChildBlock,
@@ -229,16 +205,12 @@ const DroppedBlock = ({
       };
 
   /**
-   * handleDragOver - handler (function)
-   *
-   * Handles drag over events on block
-   * Updates visual indicators and calculates drop position
-   *
-   * @param {DragEvent} e - Drag event object
+   * @function handleDragOver
+   * @description Handles drag over events on the block.
+   * @param {DragEvent} e - The drag event object.
    */
   const handleDragOver = (e) => {
     e.preventDefault();
-    // Just set the drop position, no direct DOM manipulation
     const rect = blockRef.current?.getBoundingClientRect();
     if (!rect) return;
     const position = (e.clientY - rect.top) < (rect.height / 2) ? 'before' : 'after';
@@ -247,18 +219,14 @@ const DroppedBlock = ({
   };
 
   /**
-   * handleDragLeave - handler (function)
-   *
-   * Handles drag leave events
-   * Removes visual indicators when dragged block leaves the area
-   *
-   * @param {DragEvent} e - Drag event object
+   * @function handleDragLeave
+   * @description Handles drag leave events on the block.
+   * @param {DragEvent} e - The drag event object.
    */
   const handleDragLeave = (e) => {
     const blockElement = blockRef.current;
     if (!blockElement) return;
 
-    // Poistetaan indikaattorit ja siirtymät viiveellä
     setTimeout(() => {
       if (!blockElement.matches(':hover')) {
         blockElement.classList.remove('drop-target');
@@ -269,9 +237,10 @@ const DroppedBlock = ({
     }, 50);
   };
 
-
   /**
-   * uusi
+   * @function handleContainerDragOver
+   * @description Handles drag over events on the container.
+   * @param {DragEvent} e - The drag event object.
    */
   const handleContainerDragOver = (e) => {
     if (block.isContainer) {
@@ -281,6 +250,10 @@ const DroppedBlock = ({
     }
   };
 
+  /**
+   * @function handleContainerDragLeave
+   * @description Handles drag leave events on the container.
+   */
   const handleContainerDragLeave = () => {
     if (block.isContainer) {
       blockRef.current.classList.remove('drag-over');
@@ -288,32 +261,22 @@ const DroppedBlock = ({
   };
 
   /**
-   * handleInputChange - handler (function)
-   * Handles input value changes for a block
-   * Updates block state through parent callback
-   *
-   * @param {string|number} value - New value from input
-   * @param {boolean} isSecondInput - Whether updating first or second input
+   * @function handleInputChange
+   * @description Handles input value changes for a block.
+   * @param {string|number} value - The new value from the input.
+   * @param {boolean} isSecondInput - Whether the input is the second input.
    */
   const handleInputChange = (value, isSecondInput = false) => {
     onInputChange(index, value, isSecondInput, block.isChildBlock, block.parentIndex);
   };
 
   /**
-   * renderBlockInput - function
-   * Renders appropriate input element based on input type
-   * Supports number and select inputs
-   *
-   * @param {Object} block - Block containing input configuration
-   * @param {string} block.inputType - Type of input ('number' or 'select')
-   * @param {Array} [block.options] - Options for select input
-   * @param {number} [block.inputMin] - Minimum value for number input
-   * @param {number} [block.inputMax] - Maximum value for number input
-   * @param {number} [block.inputStep] - Step value for number input
-   * @param {*} block.defaultValue - Default value for the input
-   * @returns {React.ReactElement} Input element based on block type
+   * @function renderBlockInput
+   * @description Renders the appropriate input element based on the input type.
+   * @param {Object} block - The block containing the input configuration.
+   * @param {number} index - The index of the block.
+   * @returns {React.ReactElement} The input element.
    */
-  // In Block.jsx, modify the renderBlockInput function:
   const renderBlockInput = (block, index) => {
     switch(block.inputType) {
       case 'number':
@@ -342,7 +305,6 @@ const DroppedBlock = ({
             />
         );
       default:
-        console.warn("Unknown input type:", block.inputType, "for block:", block.type);
         return (
             <div></div>
         );
@@ -350,34 +312,10 @@ const DroppedBlock = ({
   };
 
   /**
-   * renderSecondInput - function
-   * Renders secondary input element for block
-   * Used when block requires two inputs (e.g., duration and intensity)
-   *
-   * @param {Object} block - Block containing second input configuration
-   * @param {string} block.secondInputType - Type of second input ('number' or 'select')
-   * @param {number} [block.secondInputMin] - Minimum value for number input
-   * @param {number} [block.secondInputMax] - Maximum value for number input
-   * @param {*} block.secondInputDefault - Default value for the second input
-   * @param {Array} [block.options] - Options array for select input
-   * @returns {React.ReactElement} Secondary input element based on input type
-   *
-   * @example
-   * // For a number input
-   * renderSecondInput({
-   *   secondInputType: 'number',
-   *   secondInputMin: 0,
-   *   secondInputMax: 10,
-   *   secondInputDefault: 5
-   * });
-   *
-   * @example
-   * // For a select input
-   * renderSecondInput({
-   *   secondInputType: 'select',
-   *   options: [{value: 'easy', label: 'Easy'}, {value: 'hard', label: 'Hard'}],
-   *   secondInputDefault: 'easy'
-   * });
+   * @function renderSecondInput
+   * @description Renders the second input element for a block.
+   * @param {Object} block - The block containing the second input configuration.
+   * @returns {React.ReactElement} The second input element.
    */
   const renderSecondInput = (block) => {
     if (block.secondInputType === 'number') {
@@ -395,33 +333,12 @@ const DroppedBlock = ({
     );
   };
 
-
   /**
-   * renderBlockValue - function
-   * Renders text representation of block's current values
-   * Formats both primary and secondary input values for display
-   *
-   * @param {Object} block - Block to render value for
-   * @param {*} [block.inputValue] - Primary input value
-   * @param {*} [block.secondInputValue] - Secondary input value
-   * @param {string} [block.inputType] - Type of primary input
-   * @param {Array} [block.options] - Options array for select inputs
-   * @returns {string} Formatted string representing block's current values
-   *
-   * @example
-   * // For a block with single value
-   * // Returns "(5)"
-   * renderBlockValue({ inputValue: 5 });
-   *
-   * @example
-   * // For a block with two values
-   * // Returns "(5, easy)"
-   * renderBlockValue({
-   *   inputValue: 5,
-   *   secondInputValue: 'easy'
-   * });
+   * @function renderBlockValue
+   * @description Renders the text representation of a block's current values.
+   * @param {Object} block - The block to render the value for.
+   * @returns {string} The formatted string representing the block's current values.
    */
-
   const renderBlockValue = (block) => {
     let valueText = '';
 

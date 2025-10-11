@@ -1,3 +1,15 @@
+/**
+ * @file zoomableArea.jsx
+ * @description A component that provides a zoomable and pannable area.
+ * @module utils/zoomableArea
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The content to be rendered within the zoomable area.
+ * @param {function} props.onDeleteBlock - A function to delete a block.
+ * @param {function} props.onDragOverPosition - A function to handle the drag over position.
+ * @param {boolean} props.isDraggingBlock - Whether a block is being dragged.
+ * @param {boolean} props.isDraggingExistingBlock - Whether an existing block is being dragged.
+ * @returns {React.ReactElement} The ZoomableArea component.
+ */
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import DeleteZone from "../components/programming/DeleteZone.jsx";
 import '../styles/DeleteZone.css';
@@ -49,8 +61,12 @@ const ZoomableArea = ({ children,
     return () => container.removeEventListener('wheel', handleWheel);
   }, [scale, translate]);
 
+  /**
+   * @function handleMouseDown
+   * @description Handles the mouse down event for panning.
+   * @param {Event} e - The mouse down event.
+   */
   const handleMouseDown = useCallback((e) => {
-    // Aloita panorointi vain jos ctrl/cmd on painettu
     if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
       setIsPanning(true);
       setStartPos({ x: e.clientX, y: e.clientY });
@@ -59,6 +75,11 @@ const ZoomableArea = ({ children,
     }
   }, []);
 
+  /**
+   * @function handleMouseMove
+   * @description Handles the mouse move event for panning.
+   * @param {Event} e - The mouse move event.
+   */
   const handleMouseMove = useCallback((e) => {
     if (isPanning) {
       const dx = (e.clientX - startPos.x) / scale;
@@ -68,6 +89,10 @@ const ZoomableArea = ({ children,
     }
   }, [isPanning, startPos, scale]);
 
+  /**
+   * @function handleMouseUp
+   * @description Handles the mouse up event for panning.
+   */
   const handleMouseUp = useCallback(() => {
     if (isPanning) {
       setIsPanning(false);
@@ -77,10 +102,13 @@ const ZoomableArea = ({ children,
     }
   }, [isPanning]);
 
-  // Kosketusnäyttö tuki
+  /**
+   * @function handleTouchStart
+   * @description Handles the touch start event for panning.
+   * @param {Event} e - The touch start event.
+   */
   const handleTouchStart = useCallback((e) => {
     touchCount.current = e.touches.length;
-    // Aloita panorointi vain kahdella sormella
     if (e.touches.length === 2) {
       setIsPanning(true);
       setStartPos({
@@ -91,6 +119,11 @@ const ZoomableArea = ({ children,
     }
   }, []);
 
+  /**
+   * @function handleTouchMove
+   * @description Handles the touch move event for panning.
+   * @param {Event} e - The touch move event.
+   */
   const handleTouchMove = useCallback((e) => {
     if (isPanning && e.touches.length === 2) {
       const currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
@@ -106,6 +139,11 @@ const ZoomableArea = ({ children,
     }
   }, [isPanning, startPos, scale]);
 
+  /**
+   * @function handleTouchEnd
+   * @description Handles the touch end event for panning.
+   * @param {Event} e - The touch end event.
+   */
   const handleTouchEnd = useCallback((e) => {
     touchCount.current = e.touches.length;
     if (touchCount.current < 2) {
@@ -113,7 +151,6 @@ const ZoomableArea = ({ children,
     }
   }, []);
 
-  // Estä selaimen oma zoomaus
   useEffect(() => {
     const preventDefault = (e) => {
       if (e.ctrlKey && (e.key === '-' || e.key === '=' || e.key === '+')) {
@@ -146,7 +183,7 @@ const ZoomableArea = ({ children,
     >
       <DeleteZone
         isDraggingExistingBlock={isDraggingExistingBlock}
-        isDraggingBlock={isDraggingBlock} // Muutettu tämä rivi
+        isDraggingBlock={isDraggingBlock}
         onDelete={(block, index) => {
           onDeleteBlock(block, index);
         }}

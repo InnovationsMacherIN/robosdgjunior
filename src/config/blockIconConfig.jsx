@@ -1,9 +1,11 @@
 /**
- * This component is used to display an icon for a block based on the block ID.
- * The block ID is passed as a prop to the component, and the component returns
- * the corresponding icon based on the block ID.
+ * @file blockIconConfig.jsx
+ * @description A component that displays an icon for a block based on the block type.
+ * @module config/blockIconConfig
+ * @param {Object} props - The component props.
+ * @param {string} props.blockType - The type of the block.
+ * @returns {React.ReactElement} The BlockIconConfig component.
  */
-
 import React from 'react';
 import '../styles/blockIconConfig.css';
 import icon_nuoli from "../assets/icons/robo-arrow-ahead.svg";
@@ -41,6 +43,12 @@ import icon_rechts from "../assets/icons/icon-emoji-right.svg";
 
 const BlockIconConfig = ({ blockType }) => {
 
+  /**
+   * @function getIconSrc
+   * @description Returns the source of the icon for a given block type.
+   * @param {string} blockType - The type of the block.
+   * @returns {string} The source of the icon.
+   */
   const getIconSrc = (blockType) => {
     switch (blockType) {
       case 'start':
@@ -87,7 +95,6 @@ const BlockIconConfig = ({ blockType }) => {
         return icon_emoji_love;
       case 'sound_10':
         return icon_emoji_love;
-        //return icon_puoli;
       case 'forward':
         return icon_nuoli;
       case 'backward':
@@ -140,9 +147,8 @@ const BlockIconConfig = ({ blockType }) => {
         return icon_wait
       case 'repeat':
         return icon_repeat
-      // Add more cases for other block IDs
       default:
-        return ''; // Default icon or empty string if no icon
+        return '';
     }
   };
 

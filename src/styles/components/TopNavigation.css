@@ -1,9 +1,7 @@
-/* TopNavigation.css */
-
-/* Main Navigation Container
-* Fixed position top bar on top of the page containing primary controls
-* Uses flexbox for equal spacing between button groups
-*/
+/**
+ * @file TopNavigation.css
+ * @description This file contains the styles for the top navigation bar.
+ */
 .top-nav {
   display: flex;
   justify-content: space-between;
@@ -13,33 +11,25 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Control Button Groups
-* Contains groups of related action buttons
-* Uses flexbox with consistent spacing
-*/
 .control-buttons {
   display: flex;
   gap: var(--spacing-2);
 }
 
-/* Action Buttons
-* Different button styles for different actions
-* Using CSS variables for consistent theming
-*/
 .button-start {
   background-color: var(--success-color);
   height:65px;
   min-font-size: 60px;
   color: var(--text-light);
   border-radius:250px !important;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .button-stop {
   background-color: var(--error-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
@@ -47,14 +37,14 @@
   background-color: var(--primary-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
 .button-menu {
   background-color: var(--secondary-color);
   color: var(--text-light);
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
@@ -62,7 +52,7 @@
   background-color: var(--secondary-color);
   color: var(--text-light);
   height:65px;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
@@ -70,37 +60,27 @@
   background-color: #ffffff;
   color: var(--text-light);
   height:65px;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
 .button-code-view {
   color: var(--text-light);
   height:65px;
-  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2); /* Epätasaisuutta */
+  box-shadow: 0px 1px 0 black, 2px 3px 0 rgba(0, 0, 0, 0.2);
   border-radius:250px !important;
 }
 
-/* Button Hover Effects
-* Subtle animation for better interactivity
-*/
 .button:hover {
   opacity: 0.9;
   transform: translateY(-0px);
 }
 
-/* Dropdown Menu Container
-* Positioned relative for absolute positioning of content
-*/
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-/* Dropdown Content
-* Hidden by default, shown on hover
-* Uses absolute positioning with shadow for depth
-*/
 .dropdown-content {
   display: none;
   position: absolute;
@@ -112,23 +92,14 @@
   border-radius: var(--radius-md);
 }
 
-/* Dropdown Hover State
-* Shows dropdown content when container is hovered
-*/
 .dropdown:hover .dropdown-content {
   display: block;
 }
 
-/* Language Selector Container
-* Contains language selection options
-*/
 .language-selector {
   padding: 1rem;
 }
 
-/* Language Selector Header
-* Descriptive text above language options
-*/
 .language-selector span {
   display: block;
   padding-bottom: 0.5rem;
@@ -136,10 +107,6 @@
   font-size: 0.9rem;
 }
 
-/* Language Option Buttons
-* Individual language selection buttons
-* Full width with hover effect
-*/
 .language-selector button {
   display: block;
   width: 100%;
@@ -150,9 +117,6 @@
   cursor: pointer;
 }
 
-/* Language Button Hover State
-* Visual feedback for interactive elements
-*/
 .language-selector button:hover {
   background-color: var(--background-light);
 }
@@ -182,8 +146,7 @@
     padding:10px;
   }
 }
-/* Mobile
-*/
+
 @media screen and (max-width: 768px) {
 
   .logo svg {

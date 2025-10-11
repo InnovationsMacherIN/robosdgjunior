@@ -1,16 +1,27 @@
+/**
+ * @file PasswordModal.jsx
+ * @description A modal component for entering a password.
+ * @module components/PasswordModal
+ * @param {Object} props - The component props.
+ * @param {function} props.onCorrectPassword - The function to call when the correct password is entered.
+ * @returns {React.ReactElement} The password modal component.
+ */
 import React, { useState } from 'react';
 
 const PasswordModal = ({ onCorrectPassword }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // The correct password - in a real app this would come from a secure source
   const CORRECT_PASSWORD = 'robo4earth2024';
 
+  /**
+   * @function handleSubmit
+   * @description Handles the form submission.
+   * @param {Event} e - The form submission event.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === CORRECT_PASSWORD) {
-      // Store in sessionStorage that password has been entered correctly
       sessionStorage.setItem('r4e_authorized', 'true');
       onCorrectPassword();
     } else {

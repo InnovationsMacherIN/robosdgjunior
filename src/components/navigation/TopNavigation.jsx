@@ -1,27 +1,20 @@
 /**
- * TopNavigation component
- *
- * This component is responsible for rendering the top navigation bar of the application.
- * It contains buttons for starting and stopping the program, saving and loading blocks,
- * connecting and disconnecting from the robot, changing the language of the application,
- * and toggling between the block view and the code view.
- *
- * @param {object} props
- * @param {array} props.droppedBlocks
- * @param {function} props.onClearBlocks
- * @param {function} props.onConnectClick
- * @param {function} props.onDisconnectClick
- * @param {function} props.onStartClick
- * @param {boolean} props.connected
- * @param {boolean} props.isExecuting
- * @param {boolean} props.isBlocksView
- * @param {function} props.toggleView
- * @param {function} props.onUploadBlocks
- *
- * @returns {JSX.Element} Which is the TopNavigation component
+ * @file TopNavigation.jsx
+ * @description The top navigation bar of the application.
+ * @module components/navigation/TopNavigation
+ * @param {Object} props - The component props.
+ * @param {Array} props.droppedBlocks - The blocks dropped in the programming area.
+ * @param {function} props.onClearBlocks - The function to call when the clear blocks button is clicked.
+ * @param {function} props.onConnectClick - The function to call when the connect button is clicked.
+ * @param {function} props.onDisconnectClick - The function to call when the disconnect button is clicked.
+ * @param {function} props.onStartClick - The function to call when the start button is clicked.
+ * @param {boolean} props.connected - Whether the application is connected to the robot.
+ * @param {boolean} props.isExecuting - Whether the program is executing.
+ * @param {boolean} props.isBlocksView - Whether the blocks view is active.
+ * @param {function} props.toggleView - The function to call to toggle the view.
+ * @param {function} props.onUploadBlocks - The function to call when blocks are uploaded.
+ * @returns {React.ReactElement} The top navigation component.
  */
-
-
 import React, { useState, useEffect } from 'react';
 import { Menu,} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +45,6 @@ const TopNavigation = ({
   const { t, i18n } = useTranslation();
   const [Icon, setIcon] = useState(defaultIcon);
   const [showSavePopup, setShowSavePopup] = useState(false);
-
   const [isPulsing, setIsPulsing] = useState(false);
 
   useEffect(() => {
@@ -63,14 +55,28 @@ const TopNavigation = ({
     }
   }, [connected]);
 
+  /**
+   * @function changeLanguage
+   * @description Changes the language of the application.
+   * @param {string} lng - The language to change to.
+   */
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
 
+  /**
+   * @function changeIcon
+   * @description Changes the icon of the application.
+   * @param {string} newIcon - The new icon to use.
+   */
   const changeIcon = (newIcon) => {
     setIcon(newIcon);
   };
 
+  /**
+   * @function handleDownload
+   * @description Downloads the dropped blocks as a JSON file.
+   */
   const handleDownload = () => {
     const dataStr = JSON.stringify(droppedBlocks, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });

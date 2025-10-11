@@ -1,4 +1,8 @@
-// Ble3.jsx
+/**
+ * @file Ble3.jsx
+ * @description A component for handling Bluetooth Low Energy (BLE) communication with a micro:bit device.
+ * @module components/bluetooth/Ble3
+ */
 import { Component } from 'react';
 
 class Ble3 extends Component {
@@ -15,8 +19,11 @@ class Ble3 extends Component {
     };
   }
 
+  /**
+   * @function connect
+   * @description Connects to a Bluetooth device.
+   */
   async connect() {
-    console.log('Connecting...');
     try {
       const device = await this.requestBluetoothDevice();
       await device.gatt.connect();
@@ -47,10 +54,8 @@ class Ble3 extends Component {
 
       this.setState({ connected: true });
       this.props.onConnected(true);
-      console.log('Connected successfully');
 
     } catch (error) {
-      console.error('Connection failed:', error);
       this.setState({
         deviceCache: null,
         characteristicCache_tx: null,
@@ -61,6 +66,10 @@ class Ble3 extends Component {
     }
   }
 
+  /**
+   * @function disconnect
+   * @description Disconnects from the Bluetooth device.
+   */
   disconnect() {
     if (!this.state.deviceCache) {
       return;
@@ -77,6 +86,11 @@ class Ble3 extends Component {
     this.props.onConnected(false);
   }
 
+  /**
+   * @function requestBluetoothDevice
+   * @description Requests a Bluetooth device from the user.
+   * @returns {Promise<BluetoothDevice>} The selected Bluetooth device.
+   */
   async requestBluetoothDevice() {
     const filters = [{ namePrefix: 'BBC micro:bit' }];
     const optionalServices = [
@@ -92,11 +106,15 @@ class Ble3 extends Component {
 
       return device;
     } catch (error) {
-      console.error(error);
       throw error;
     }
   }
 
+  /**
+   * @function connectDeviceAndCacheCharacteristics
+   * @description Connects to a device and caches its characteristics.
+   * @param {BluetoothDevice} device - The device to connect to.
+   */
   async connectDeviceAndCacheCharacteristics(device) {
     const server = await device.gatt.connect();
     const service = await server.getPrimaryService(
@@ -114,6 +132,11 @@ class Ble3 extends Component {
     this.setState({ characteristicCache_tx, characteristicCache_rx });
   }
 
+  /**
+   * @function startNotifications
+   * @description Starts notifications for a characteristic.
+   * @param {BluetoothRemoteGATTCharacteristic} characteristic - The characteristic to start notifications for.
+   */
   async startNotifications(characteristic) {
     await characteristic.startNotifications();
     characteristic.addEventListener(
@@ -122,73 +145,84 @@ class Ble3 extends Component {
     );
   }
 
+  /**
+   * @function isConnected
+   * @description Checks if the device is connected.
+   * @returns {boolean} Whether the device is connected.
+   */
   isConnected() {
     return this.state.connected;
   }
 
+  /**
+   * @function sendData
+   * @description Sends data to the device.
+   * @param {Array<string>} commands - The commands to send.
+   * @param {number} counter - The current command index.
+   */
   async sendData(commands, counter = 0) {
     if (!this.state.connected || !this.state.characteristicCache_rx) {
       throw new Error('Not connected to device');
     }
 
-    // Jos counter on 0, kyseessä on uusi komentosarja
     if (counter === 0) {
       if (this.state.stopButtonClicked) {
         this.setState({ stopButtonClicked: false });
-        console.log("reset stop button");
       }
-      // Muunnetaan string-muotoiset komennot arrayksi
       if (typeof commands === 'string') {
         commands = commands.split(':').filter(cmd => cmd).map(cmd => cmd + ':');
       }
-      console.log('Starting new command sequence:', commands);
     }
 
-    // Lähetetään nykyinen komento
     const encoder = new TextEncoder('utf-8');
     const data = encoder.encode(commands[counter]);
 
-    console.log('Sending command:', commands[counter]);
     this.setState({ sending_data: true });
 
     try {
       await this.state.characteristicCache_rx.writeValue(data);
 
-      // Odotetaan vahvistusta micro:bitiltä
       await Promise.race([
         this.waitForConfirmation(counter),
         this.timeout(20000)
       ]);
 
-      // Jos ei olla vielä viimeisessä komennossa ja stop-nappia ei ole painettu
       if (counter < commands.length - 1 && !this.state.stopButtonClicked) {
-        // Rekursiivinen kutsu seuraavalle komennolle
         await this.sendData(commands, counter + 1);
       }
 
     } catch (error) {
-      console.error('Error in sendData:', error);
       this.setState({ sending_data: false });
       throw error;
     }
 
-    // Jos tämä oli viimeinen komento tai tuli virhe
     if (counter === commands.length - 1 || this.state.stopButtonClicked) {
       this.setState({ sending_data: false });
     }
   }
 
+  /**
+   * @function timeout
+   * @description A timeout promise.
+   * @param {number} ms - The timeout in milliseconds.
+   * @returns {Promise<void>}
+   */
   timeout(ms) {
     return new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Command timeout')), ms)
     );
   }
 
+  /**
+   * @function waitForConfirmation
+   * @description Waits for a confirmation from the device.
+   * @param {number} counter - The current command index.
+   * @returns {Promise<number>} The next command index.
+   */
   waitForConfirmation(counter) {
     return new Promise((resolve, reject) => {
       const handleResponse = (event) => {
         const value = new TextDecoder().decode(event.target.value).trim();
-        console.log('Received confirmation:', value);
 
         if (value === 'OK' || value === 'UC') {
           this.state.characteristicCache_tx.removeEventListener(

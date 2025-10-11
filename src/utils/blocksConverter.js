@@ -133,42 +133,42 @@ const convertBlocksToCommands = (blocks) => {
 
       // Movements 'B'
       case 'forward':
-        const fwdDuration = parseFloat(block.inputValue);
+        const fwdDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(fwdDuration)) {
           commands += `Bv${fwdDuration}${fwdDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
         break;
 
       case 'backward':
-        const bwdDuration = parseFloat(block.inputValue);
+        const bwdDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(bwdDuration)) {
           commands += `Bz${bwdDuration}${bwdDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
         break;
 
       case 'left':
-        const leftDuration = parseFloat(block.inputValue);
+        const leftDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(leftDuration)) {
           commands += `Bl${leftDuration}${leftDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
         break;
 
       case 'right':
-        const rightDuration = parseFloat(block.inputValue);
+        const rightDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(rightDuration)) {
           commands += `Br${rightDuration}${rightDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
         break;
 
       case 'turn-left':
-        const turnLeftDuration = parseFloat(block.inputValue);
+        const turnLeftDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(turnLeftDuration)) {
           commands += `BL${turnLeftDuration}${turnLeftDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
         break;
 
       case 'turn-right':
-        const turnRightDuration = parseFloat(block.inputValue);
+        const turnRightDuration = parseFloat(block.inputValue) * 0.25;
         if (!isNaN(turnRightDuration)) {
           commands += `BR${turnRightDuration}${turnRightDuration % 1 === 0 ? '.0' : ''}${DELIMITER}`;
         }
